@@ -3,11 +3,7 @@ import {
   createStackNavigator,
   createSwitchNavigator,
   createBottomTabNavigator,
-  NavigationScreenConfigProps,
-  NavigationBottomTabScreenOptions,
-  TabScene,
-  NavigationScreenConfig,
-  NavigationState
+  TabScene
 } from "react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { compose } from "recompose";
@@ -15,17 +11,33 @@ import { compose } from "recompose";
 import EStyleSheet from "react-native-extended-stylesheet";
 
 import AchievementsScreen from "../Screens/Achievements";
+import AchievementsCreateScreen from "../Screens/AchievementsCreate";
 
 import { withUser } from "../Providers/UserProvider";
 
 const loggedInNavigation = createBottomTabNavigator(
   {
-    AchievementsScreen: { screen: AchievementsScreen }
+    AchievementsScreen: {
+      screen: createStackNavigator(
+        {
+          AchievementScreen: {
+            screen: AchievementsScreen
+          },
+
+          CreateScreen: {
+            screen: AchievementsCreateScreen
+          }
+        },
+        { initialRouteName: "CreateScreen" }
+      ),
+      navigationOptions: {
+        title: AchievementsScreen.navigationOptions.title
+      }
+    }
   },
   // @ts-ignore
   {
     // Default config for all screens
-    // headerMode: "none",
     tabBarPosition: "bottom",
     initialRouteName: "AchievementsScreen",
     swipeEnabled: true,
@@ -35,16 +47,12 @@ const loggedInNavigation = createBottomTabNavigator(
     },
 
     tabBarOptions: {
-      activeTintColor: () => EStyleSheet.value("$colorSecondary"),
-      inactiveTintColor: () => EStyleSheet.value("$colorDisabled"),
-      showLabel: false,
-      style: () => ({
-        backgroundColor: EStyleSheet.value("$colorPrimary")
-      })
+      showLabel: true
     },
     order: ["AchievementsScreen"],
 
     navigationOptions: ({ navigation }) => ({
+      headerMode: "float",
       tabBarIcon: ({ focused, tintColor }: TabScene) => {
         const { routeName } = navigation.state;
 
@@ -69,11 +77,7 @@ const LoggedOutNavigation = createStackNavigator(
     AchievementsScreen: { screen: AchievementsScreen }
   },
   {
-    initialRouteName: "AchievementsScreen",
-    headerMode: "none",
-    navigationOptions: {
-      headerStyle: {}
-    }
+    initialRouteName: "AchievementsScreen"
   }
 );
 

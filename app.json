@@ -2,7 +2,8 @@
   "expo": {
     "sdkVersion": "27.0.0"
   },
-  "name": "Eventyr",
-  "displayName": "Eventyr",
-  "appVersion": "0.1"
+  "name": "Achievements",
+  "displayName": "Achievements",
+  "appVersion": "0.1",
+  "apiUrl": "http://localhost:3000/graphql"
 }

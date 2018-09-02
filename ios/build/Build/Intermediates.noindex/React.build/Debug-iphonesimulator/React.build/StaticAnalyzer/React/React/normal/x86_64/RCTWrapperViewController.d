@@ -1,19 +1,19 @@
 dependencies: \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Views/RCTWrapperViewController.m \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Views/RCTWrapperViewController.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTEventDispatcher.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTBridge.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTDefines.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTBridgeModule.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTFrameUpdate.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTInvalidating.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Views/RCTNavItem.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Views/RCTComponent.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTUtils.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTAssert.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Views/UIView+React.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/YGEnums.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/YGMacros.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Views/RCTAutoInsetsProtocol.h
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Views/RCTWrapperViewController.m \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Views/RCTWrapperViewController.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTEventDispatcher.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTBridge.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTDefines.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Views/RCTNavItem.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Views/RCTComponent.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTUtils.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTAssert.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Views/UIView+React.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/YGEnums.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/YGMacros.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Views/RCTAutoInsetsProtocol.h

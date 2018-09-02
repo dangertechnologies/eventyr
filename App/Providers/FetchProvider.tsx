@@ -55,8 +55,6 @@ class FetchProvider extends React.Component<Props, State> {
   };
 
   componentWillMount() {
-    console.log("TRYING TO RENDER FETCHPROVIDER");
-    console.log(this.props);
     if (
       this.props.cache &&
       this.props.cache.credentials &&
@@ -115,8 +113,8 @@ class FetchProvider extends React.Component<Props, State> {
     const { graphQLErrors, networkError, response } = result;
 
     console.log("NETWORK ERROR:");
-    console.log(JSON.stringify(response));
-    console.log(JSON.stringify(graphQLErrors));
+    console.warn(JSON.stringify(response));
+    console.warn(JSON.stringify(graphQLErrors));
     if (graphQLErrors) {
       graphQLErrors.map(({ message }) => console.log(message));
     }
@@ -124,7 +122,7 @@ class FetchProvider extends React.Component<Props, State> {
     // result.errors = null;
 
     if (networkError) {
-      console.debug({ name: "Network error", value: networkError });
+      console.warn({ name: "Network error", value: networkError });
 
       this.props.ui.notifyError("Something went wrong");
     }
@@ -147,7 +145,10 @@ class FetchProvider extends React.Component<Props, State> {
   };
 
   render() {
-    console.log({ provider: "Fetch", props: omit(this.props, "cache") });
+    console.log({
+      provider: "Fetch",
+      props: omit(this.props, ["cache", "children"])
+    });
 
     const contextValue: FetchContext = {
       link: this.state.link,

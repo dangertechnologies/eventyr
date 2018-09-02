@@ -110,7 +110,7 @@ class UserProvider extends React.Component<Props, State> {
     console.log({
       provider: "User",
       value: contextValue,
-      props: omit(this.props, "cache")
+      props: omit(this.props, ["cache", "children"])
     });
     return <Provider value={contextValue}>{this.props.children}</Provider>;
   }
@@ -118,7 +118,7 @@ class UserProvider extends React.Component<Props, State> {
 
 const QUERY_USER = gql`
   query UserCheck {
-    user {
+    currentUser {
       id
       ...userInfo
     }

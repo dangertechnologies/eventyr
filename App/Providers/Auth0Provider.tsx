@@ -23,6 +23,10 @@ export interface Credentials extends PasswordRealmResponse {
   refreshToken?: string | undefined;
 }
 
+interface RefreshTokenParams {
+  refreshToken: string;
+}
+
 export interface Auth0Context {
   createUser: Function;
   resetPassword: Function;
@@ -30,9 +34,7 @@ export interface Auth0Context {
   loginTwitter: Function;
   loginFacebook: Function;
   loginEmail: Function;
-  refreshAuthToken: (
-    { refreshToken }: { refreshToken: string }
-  ) => Promise<any>;
+  refreshAuthToken(options: RefreshTokenParams): Promise<any>;
   userInfo: { [key: string]: any };
   credentials: Credentials;
 }

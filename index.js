@@ -5,4 +5,4 @@ import themes from "./App/Themes";
 EStyleSheet.build(themes.default);
 import App from "./App/App";
 
-AppRegistry.registerComponent("Eventyr", () => App);
+AppRegistry.registerComponent("Achievements", () => App);

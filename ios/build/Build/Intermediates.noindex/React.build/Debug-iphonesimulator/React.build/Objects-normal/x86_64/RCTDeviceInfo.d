@@ -1,15 +1,15 @@
 dependencies: \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Modules/RCTDeviceInfo.m \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Modules/RCTDeviceInfo.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTBridge.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTDefines.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTBridgeModule.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTFrameUpdate.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTInvalidating.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Modules/RCTAccessibilityManager.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTAssert.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTEventDispatcher.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/UIUtils/RCTUIUtils.h \
-  /Users/amnesthesia/Code/AchievementsApp/Achievements/node_modules/react-native/React/Base/RCTUtils.h
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Modules/RCTDeviceInfo.m \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Modules/RCTDeviceInfo.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTBridge.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTDefines.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Modules/RCTAccessibilityManager.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTAssert.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTEventDispatcher.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/UIUtils/RCTUIUtils.h \
+  /Users/amnesthesia/Code/AchievementsApp/Eventyr/node_modules/react-native/React/Base/RCTUtils.h
