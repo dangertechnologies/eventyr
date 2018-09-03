@@ -39,6 +39,7 @@ type AchievementEdge {
 type Category {
   icon: String!
   id: ID!
+  points: Int!
   title: String!
 }
 
@@ -262,6 +263,7 @@ type Query {
     last: Int
     search: String
   ): CountryConnection!
+  currentUser: User!
   icons(
     # Returns the elements in the list that come after the specified cursor.
     after: String

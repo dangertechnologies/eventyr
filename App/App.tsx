@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StatusBar } from "react-native";
 import { Root } from "native-base";
+import { PortalProvider, WhitePortal } from "react-native-portal";
 
 // Providers
 import AuthorizedFetch from "./Providers/FetchProvider";
@@ -28,7 +29,11 @@ const RootContainer = () => (
                   <Web.Provider>
                     <View style={{ flex: 1 }}>
                       <StatusBar barStyle="light-content" hidden />
-                      <Navigation />
+
+                      <PortalProvider>
+                        <Navigation />
+                        <WhitePortal name="outside" />
+                      </PortalProvider>
                     </View>
                   </Web.Provider>
                 </CurrentUser.Provider>

@@ -3,33 +3,51 @@ import {
   createStackNavigator,
   createSwitchNavigator,
   createBottomTabNavigator,
-  TabScene
+  TabScene,
+  NavigationScreenConfig
 } from "react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { compose } from "recompose";
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import AchievementsScreen from "../Screens/Achievements";
-import AchievementsCreateScreen from "../Screens/AchievementsCreate";
+import AchievementsScreen from "../Screens/Achievements/Achievements";
+import AchievementsCreateScreen from "../Screens/Achievements/Create/AchievementsCreate";
 
 import { withUser } from "../Providers/UserProvider";
+
+const AchievementsTab = createStackNavigator(
+  {
+    AchievementScreen: {
+      screen: AchievementsScreen
+    },
+
+    CreateScreen: {
+      screen: AchievementsCreateScreen
+    }
+  },
+  { initialRouteName: "CreateScreen" }
+);
+
+/**
+ * Disable showing TabBar on certain screens, e.g the
+ * map screen and the create screen.
+ */
+AchievementsTab.navigationOptions = ({
+  navigation
+}: NavigationScreenConfig<any>) => {
+  const { routes, index } = navigation.state;
+  const { routeName } = routes[index];
+
+  return {
+    tabBarVisible: routeName !== "CreateScreen"
+  };
+};
 
 const loggedInNavigation = createBottomTabNavigator(
   {
     AchievementsScreen: {
-      screen: createStackNavigator(
-        {
-          AchievementScreen: {
-            screen: AchievementsScreen
-          },
-
-          CreateScreen: {
-            screen: AchievementsCreateScreen
-          }
-        },
-        { initialRouteName: "CreateScreen" }
-      ),
+      screen: AchievementsTab,
       navigationOptions: {
         title: AchievementsScreen.navigationOptions.title
       }

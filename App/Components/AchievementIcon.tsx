@@ -5,7 +5,7 @@ import { IconProps } from "react-native-vector-icons/Icon";
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 
-interface Props extends IconProps {
+export interface Props extends IconProps {
   difficulty: string;
 }
 
@@ -34,7 +34,7 @@ const difficultyGradient = (difficulty: string) => {
   }
 };
 
-const AchievementIcon = ({ difficulty, ...rest }: Props) => (
+const AchievementIcon: React.SFC<Props> = ({ difficulty, ...rest }: Props) => (
   <LinearGradient
     colors={difficultyGradient(difficulty)}
     start={{ x: 0, y: 1 }}
