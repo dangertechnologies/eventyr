@@ -25,24 +25,26 @@ import AchievementIcon, {
 } from "../AchievementIcon";
 
 interface Props extends AchievementIconProps {
-  open: boolean;
   selected?: string;
-  data: Query;
   onChange(name: string): any;
+}
+
+interface ComposedProps extends Props {
+  open: boolean;
+  data: Query;
   setOpen?(open: boolean): any;
 }
 
 const IconPicker = ({
   open,
   data,
-  selected,
   onChange,
   setOpen,
   ...iconProps
-}: Props) => (
+}: ComposedProps) => (
   <React.Fragment>
     <TouchableOpacity onPress={() => setOpen && setOpen(!open)}>
-      <AchievementIcon name={selected || "flag-variant"} {...iconProps} />
+      <AchievementIcon {...iconProps} name={iconProps.name || "flag-variant"} />
     </TouchableOpacity>
 
     {!open ? null : (
@@ -93,7 +95,7 @@ const IconPicker = ({
   </React.Fragment>
 );
 
-export default compose<Props, {}>(
+export default compose<ComposedProps, Props>(
   graphql(gql`
     query AllIcons {
       icons {

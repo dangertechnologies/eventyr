@@ -18,7 +18,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AchievementIcon from "./AchievementIcon";
 
-import { Achievement } from "../Types/graphqlTypes";
+import { Achievement } from "graphqlTypes";
 
 interface Props {
   achievement: Achievement | null;

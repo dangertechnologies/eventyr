@@ -1,6 +1,8 @@
 import { Dimensions } from "react-native";
 
 const theme: { [key: string]: number | string } = {
+  $screenWidth: Dimensions.get("window").width,
+  $screenHeight: Dimensions.get("window").height,
   $black: "rgba(0, 21, 20, 1)",
   $white: "rgba(251, 255, 254, 1)",
   $purple: "rgba(98, 42, 201, 1)",

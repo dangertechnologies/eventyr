@@ -5,7 +5,7 @@ import gql from "graphql-tag";
 import { ApolloQueryResult } from "apollo-client";
 import { Container, Content, Text, Header } from "native-base";
 
-import { Query } from "../../Types/graphqlTypes";
+import { Query } from "graphqlTypes";
 
 import AchievementCard from "../../Components/AchievementCard";
 

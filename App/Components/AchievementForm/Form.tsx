@@ -1,17 +1,18 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { Objective, Query } from "graphqlTypes";
+import { Objective, Query, Mode, Category, Type } from "graphqlTypes";
 import { compose, graphql } from "react-apollo";
 import { ApolloQueryResult } from "apollo-client";
 import { sum } from "lodash";
-import randomColor from "randomcolor";
+import { View as AnimatedView } from "react-native-animatable";
+import { BlurView } from "react-native-blur";
+
 // @ts-ignore
 import Select from "react-native-picker-select";
 
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 import gql from "graphql-tag";
-import { isEqual } from "apollo-utilities";
 import {
   Container,
   Form,
@@ -23,32 +24,25 @@ import {
   Body,
   Right,
   Left,
-  H3
+  H3,
+  Button,
+  Text,
+  Icon
 } from "native-base";
 import ActionButton from "react-native-action-button";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import withLocation, {
-  LocationContext
-} from "../../Providers/LocationProvider";
+import { Region } from "react-native-maps";
+
 import { Achievement, TypeEdge, ModeEdge, CategoryEdge } from "graphqlTypes";
-import IconPicker from "../../Components/AchievementForm/IconPicker";
-import ProtoObjectiveDialog from "../../Components/AchievementForm/ProtoObjectiveDialog";
+import IconPicker from "./IconPicker";
+import ObjectiveChip from "./ObjectiveChip";
+import colors from "./Colors";
 
-interface ProtoObjective
-  extends Omit<
-      Objective,
-      "achievements" | "createdAt" | "goal" | "goalType" | "hashIdentifier"
-    > {
-  color: string;
-  lat?: number;
-  lng?: number;
-}
+import ProtoObjectiveDialog, {
+  ProtoObjective,
+  EditableObjective
+} from "../../Components/AchievementForm/ProtoObjectiveDialog";
 
-declare type EditableObjective =
-  | ProtoObjective
-  | Objective & { color: string; lat?: number; lng?: number };
-
-interface ProtoAchievement
+export interface ProtoAchievement
   extends Omit<
       Achievement,
       | "id"
@@ -63,90 +57,30 @@ interface ProtoAchievement
   // This allows us to pass in existing objectives and show them on the map, when editing existing achivements
   objectives: Array<EditableObjective>;
 
-  type: string | null;
-  mode: string | null;
-  category: string | null;
+  type: Type | null;
+  mode: Mode | null;
+  category: Category | null;
 }
 
 export interface State {
-  achievement: ProtoAchievement | ProtoAchievement & Achievement;
-
-  expandedForm: boolean;
-  _objective: null | EditableObjective;
+  _objective: EditableObjective | null;
 }
 
 interface Props {
   data: Query & ApolloQueryResult<Query> & { error: string };
-  achievement: Achievement | undefined;
-  onChange(achievement: State["achievement"]): any;
+  expanded: boolean;
+  onMinimize(): any;
+  onExpand(): any;
+  achievement: Achievement | ProtoAchievement;
+  onChange<K extends keyof ProtoAchievement>(
+    field: K,
+    value: Achievement[K] | ProtoAchievement[K]
+  ): any;
+  coordinates: Region | null;
 }
 
-const getStyles = (expanded: boolean) =>
-  EStyleSheet.create({
-    formContainer: {
-      height: expanded ? "60%" : "30%",
-      width: "100%",
-      borderTopLeftRadius: 16,
-      borderTopRightRadius: 16,
-      paddingTop: "$spacing",
-      borderColor: "#CCCCCC",
-      borderTopWidth: StyleSheet.hairlineWidth,
-      borderLeftWidth: StyleSheet.hairlineWidth,
-      borderRightWidth: StyleSheet.hairlineWidth,
-      backgroundColor: "$colorPrimary",
-      position: "absolute",
-      bottom: 0
-    },
-
-    actionButtonIcon: {
-      fontSize: 22,
-      color: "#FFFFFF"
-    },
-
-    expansionContainer: {
-      width: "100%",
-      justifyContent: "center",
-      alignItems: "center",
-      height: "$spacing"
-    },
-
-    fabContainer: {
-      marginHorizontal: "$spacing"
-    },
-
-    fab: {
-      backgroundColor: EStyleSheet.value("$green"),
-      width: 120,
-      height: "$sizeParagraph * 2"
-    },
-
-    fabLabel: {
-      fontSize: "$sizeParagraph"
-    }
-  });
-
 class AchievementForm extends React.Component<Props, State> {
-  // @ts-ignore We know it returns an array when we pass count property
-  generatedColors: string[] = randomColor({ count: 100, luminosity: "bright" });
-
   state: State = {
-    achievement: {
-      name: "",
-      shortDescription: "",
-      longDescription: "",
-      icon: "binoculars",
-      basePoints: 10,
-      mode: null,
-      category: null,
-      type: null,
-      objectives: [],
-      expires: null,
-      isMultiPlayer: false,
-      isGlobal: false,
-      requestReview: false
-    },
-    expandedForm: true,
-
     // This contains a temporary objective, while
     // setting up the name and color of the objective.
     // When this exists, the modal is open. When the
@@ -155,86 +89,40 @@ class AchievementForm extends React.Component<Props, State> {
     _objective: null
   };
 
-  componentWillMount() {
-    const { achievement } = this.props;
-
-    if (achievement) {
-      this.setAchievement(achievement);
-    }
-  }
-
   componentWillReceiveProps(nextProps: Props) {
-    const { achievement } = nextProps;
-
-    if (
-      !isEqual(this.props.achievement, nextProps.achievement) &&
-      achievement
-    ) {
-      this.setAchievement(achievement);
+    if (this.form && nextProps.expanded !== this.props.expanded) {
+      this.form.transitionTo(
+        nextProps.expanded ? { height: 500 } : { height: 140 }
+      );
     }
   }
-
-  /**
-   * Makes an already existing achievement editable,
-   * by adding longitude, latitude and color to objectives,
-   * and replacing the type / category / mode fields with
-   * their IDs instead
-   */
-  setAchievement = (achievement: Achievement) =>
-    this.setState({
-      achievement: {
-        ...achievement,
-        objectives: !achievement.objectives
-          ? []
-          : achievement.objectives.map(
-              (objective: Objective, index: number) => ({
-                ...objective,
-                color: this.generatedColors[index]
-              })
-            ),
-        mode: achievement.mode.id,
-        category: achievement.category.id,
-        type: achievement.type.id
-      }
-    });
-
-  setField = (field: string, value: any) =>
-    this.setState(
-      {
-        achievement: {
-          ...this.state.achievement,
-          [field]: value
-        }
-      },
-      () => {
-        if (this.props.onChange) {
-          this.props.onChange(this.state.achievement);
-        }
-      }
-    );
 
   calculatePoints = (): number => {
-    const { achievement } = this.state;
+    const { achievement } = this.props;
     const category: CategoryEdge | undefined | null =
       achievement.category &&
       this.props.data.categories &&
       this.props.data.categories.edges
         ? this.props.data.categories.edges.find(({ node }: CategoryEdge) =>
-            Boolean(node && node.id === achievement.category)
+            Boolean(
+              node &&
+                achievement.category &&
+                node.id === achievement.category.id
+            )
           )
         : null;
 
     const mode: ModeEdge | undefined | null =
       achievement.mode && this.props.data.modes && this.props.data.modes.edges
         ? this.props.data.modes.edges.find(({ node }: ModeEdge) =>
-            Boolean(node && node.id === achievement.mode)
+            Boolean(node && achievement.mode && node.id === achievement.mode.id)
           )
         : null;
 
     const type: TypeEdge | undefined | null =
       achievement.type && this.props.data.types && this.props.data.types.edges
         ? this.props.data.types.edges.find(({ node }: TypeEdge) =>
-            Boolean(node && node.id === achievement.type)
+            Boolean(node && achievement.type && node.id === achievement.type.id)
           )
         : null;
 
@@ -255,143 +143,219 @@ class AchievementForm extends React.Component<Props, State> {
     );
   };
 
-  render() {
-    const styles = getStyles(this.state.expandedForm);
+  form: AnimatedView | null = null;
+  fab: ActionButton | null = null;
 
-    console.log({ state: this.state });
+  render() {
+    console.log({ name: "AchievementForm#render", props: this.props });
+
+    const {
+      achievement,
+      data,
+      onChange,
+      expanded,
+      onMinimize,
+      onExpand
+    } = this.props;
+
+    const modes: Array<Mode> =
+      data && data.modes && data.modes.edges
+        ? (data.modes.edges
+            .map(({ node }: ModeEdge) => (!node ? null : node))
+            .filter((node: Mode | null) => node !== null) as Array<Mode>)
+        : [];
+
+    const categories: Array<Category> =
+      data && data.categories && data.categories.edges
+        ? (data.categories.edges
+            .map(({ node }: CategoryEdge) => (!node ? null : node))
+            .filter((node: Category | null) => node !== null) as Array<
+            Category
+          >)
+        : [];
+
+    const objectives: Array<EditableObjective> = achievement.objectives;
+
     return (
       <View style={{ flex: 1 }} pointerEvents="box-none">
-        <Form style={styles.formContainer}>
-          <View style={styles.expansionContainer}>
-            <TouchableOpacity
-              onPress={() =>
-                this.setState({ expandedForm: !this.state.expandedForm })
-              }
-            >
-              <Icon
-                name={this.state.expandedForm ? "chevron-down" : "chevron-up"}
-                size={20}
-              />
-            </TouchableOpacity>
-          </View>
-          <Container>
-            <CardItem>
-              <Right style={{ flexGrow: 1, alignItems: "flex-end" }}>
-                <Select
-                  items={
-                    this.props.data &&
-                    this.props.data.modes &&
-                    this.props.data.modes.edges
-                      ? this.props.data.modes.edges
-                          .map(
-                            ({ node }: ModeEdge) =>
-                              !node
-                                ? null
-                                : {
-                                    label: node.name,
-                                    value: node.id
-                                  }
-                          )
-                          .filter((edge: any | null) => edge !== null)
-                      : []
-                  }
-                  style={{
-                    inputIOS: {
-                      width: 150,
-                      textAlign: "right"
-                    },
-                    viewContainer: {
-                      width: 150,
-                      flexDirection: "row",
-                      alignSelf: "flex-end"
-                    }
-                  }}
-                  hideIcon
-                  placeholder={{
-                    label: "Click to set Difficulty",
-                    value: null
-                  }}
-                  value={this.state.achievement.mode}
-                  onValueChange={(mode: string) =>
-                    this.setState({
-                      achievement: { ...this.state.achievement, mode }
-                    })
-                  }
-                />
-              </Right>
-            </CardItem>
-            <CardItem>
-              <Left style={{ flexGrow: 1 }}>
-                <IconPicker
-                  // @ts-ignore
-                  name={this.state.achievement.icon}
-                  size={40}
-                  difficulty={"Normal"}
-                  onChange={(name: string) => this.setField("icon", name)}
-                />
-                <Body>
-                  <Item>
-                    <Input placeholder="Title" />
-                  </Item>
-                  <Item style={{ borderBottomWidth: 0 }}>
+        <AnimatedView
+          style={styles.formContainer}
+          animation="slideInUp"
+          duration={1000}
+          ref={(instance: any) => {
+            this.form = instance as AnimatedView;
+          }}
+        >
+          <BlurView blurType="light" style={{ flex: 1 }}>
+            <Form style={[styles.transparent, styles.form]}>
+              <View style={styles.expansionContainer}>
+                <TouchableOpacity onPress={expanded ? onMinimize : onExpand}>
+                  <Icon
+                    name={expanded ? "chevron-down" : "chevron-up"}
+                    fontSize={20}
+                    type="MaterialCommunityIcons"
+                  />
+                </TouchableOpacity>
+              </View>
+              <Container style={styles.transparent}>
+                <CardItem
+                  style={[styles.transparent, styles.noVerticalPadding]}
+                >
+                  <Right style={{ flexGrow: 1, alignItems: "flex-end" }}>
                     <Select
-                      items={
-                        this.props.data &&
-                        this.props.data.categories &&
-                        this.props.data.categories.edges
-                          ? this.props.data.categories.edges
-                              .map(
-                                ({ node }: CategoryEdge) =>
-                                  !node
-                                    ? null
-                                    : {
-                                        label: node.title,
-                                        value: node.id
-                                      }
-                              )
-                              .filter((edge: any | null) => edge !== null)
-                          : []
-                      }
+                      items={modes.map((mode: Mode) => ({
+                        label: mode.name,
+                        value: mode.id
+                      }))}
                       style={{
-                        viewContainer: {
-                          marginTop: 2
-                        }
+                        inputIOS: styles.selectModeInput,
+                        viewContainer: styles.selectMode
                       }}
                       hideIcon
                       placeholder={{
-                        label: "Click to set Category",
+                        label: "Click to set Difficulty",
                         value: null
                       }}
-                      value={this.state.achievement.category}
-                      onValueChange={(category: string) =>
-                        this.setField("category", category)
+                      value={achievement.mode ? achievement.mode.id : null}
+                      onValueChange={(id: string) =>
+                        onChange("mode", modes.find(
+                          (m: Mode) => m.id === id
+                        ) as Mode)
                       }
                     />
-                  </Item>
-                </Body>
-              </Left>
-              <Right style={{ flex: 0.3 }}>
-                <H3>{this.calculatePoints()}</H3>
-              </Right>
-            </CardItem>
+                  </Right>
+                </CardItem>
+                <CardItem
+                  style={[styles.transparent, styles.noVerticalPadding]}
+                >
+                  <Left style={{ flexGrow: 1, paddingTop: 0 }}>
+                    <IconPicker
+                      name={achievement.icon}
+                      size={40}
+                      difficulty={"Normal"}
+                      onChange={(name: string) => onChange("icon", name)}
+                    />
+                    <Body>
+                      <Item>
+                        <Input
+                          placeholder="Title"
+                          onChangeText={(title: string) =>
+                            onChange("name", title)
+                          }
+                          value={achievement.name}
+                        />
+                      </Item>
+                      <Item style={{ borderBottomWidth: 0 }}>
+                        <Select
+                          items={categories.map((category: Category) => ({
+                            label: category.title,
+                            value: category.id
+                          }))}
+                          style={{
+                            viewContainer: styles.selectCategory
+                          }}
+                          hideIcon
+                          placeholder={{
+                            label: "Click to set Category",
+                            value: null
+                          }}
+                          value={
+                            achievement.category
+                              ? achievement.category.id
+                              : null
+                          }
+                          onValueChange={(id: string) =>
+                            onChange("category", categories.find(
+                              (c: Category) => c.id === id
+                            ) as Category)
+                          }
+                        />
+                      </Item>
+                    </Body>
+                  </Left>
+                  <Right style={{ flex: 0.3 }}>
+                    <H3>{this.calculatePoints()}</H3>
+                  </Right>
+                </CardItem>
 
-            <CardItem>
-              <Body>
-                <Item stackedLabel>
-                  <Label>Description</Label>
-                  <Textarea
-                    rowSpan={5}
-                    placeholder="Give other users a background story for your achievement"
+                <CardItem style={styles.transparent}>
+                  <Body>
+                    <Item stackedLabel>
+                      <Label style={styles.objectivesLabel}>Objectives</Label>
+                      <View style={styles.objectivesChips}>
+                        {!achievement.objectives
+                          ? null
+                          : objectives.map(
+                              (objective: EditableObjective, index) => (
+                                <ObjectiveChip
+                                  objective={objective}
+                                  color={colors[index]}
+                                />
+                              )
+                            )}
+
+                        <Button
+                          rounded
+                          small
+                          onPress={() =>
+                            this.fab &&
+                            // @ts-ignore
+                            this.fab.animateButton.apply(this.fab, this.fab)
+                          }
+                          iconLeft
+                          style={{ margin: 2 }}
+                        >
+                          <Icon
+                            name="plus"
+                            type="MaterialCommunityIcons"
+                            fontSize={20}
+                          />
+                          <Text>New</Text>
+                        </Button>
+                      </View>
+                    </Item>
+                  </Body>
+                </CardItem>
+
+                <CardItem style={styles.transparent}>
+                  <Body>
+                    <Item stackedLabel>
+                      <Label>Description</Label>
+                      <Textarea
+                        rowSpan={5}
+                        placeholder="Give other users a background story for your achievement"
+                        onChangeText={(title: string) =>
+                          onChange("longDescription", title)
+                        }
+                        value={achievement.longDescription || ""}
+                      />
+                    </Item>
+                  </Body>
+                </CardItem>
+
+                <CardItem style={[styles.transparent, styles.actions]}>
+                  <Icon
+                    name="ios-checkmark-circle-outline"
+                    type="Ionicons"
+                    style={{
+                      color: "#00AA00",
+                      fontSize: 100,
+                      width: 100
+                    }}
                   />
-                </Item>
-              </Body>
-            </CardItem>
-          </Container>
-        </Form>
+                </CardItem>
+              </Container>
+            </Form>
+          </BlurView>
+        </AnimatedView>
 
         <ActionButton
-          buttonColor={EStyleSheet.value("$green")}
-          verticalOrientation="up"
+          buttonColor="transparent"
+          renderIcon={() => null}
+          ref={(instance: any) => {
+            this.fab = instance;
+          }}
+          verticalOrientation="down"
           // @ts-ignore
           offsetY={this.state.expandedForm ? "50%" : "20%"}
         >
@@ -402,44 +366,116 @@ class AchievementForm extends React.Component<Props, State> {
               this.setState({
                 _objective: {
                   tagline: "",
+                  goalType: "Location",
+                  goal: {
+                    lat: this.props.coordinates
+                      ? this.props.coordinates.latitude
+                      : 0,
+                    lng: this.props.coordinates
+                      ? this.props.coordinates.longitude
+                      : 0
+                  },
                   basePoints: 0,
                   isPublic: false,
-                  requiredCount: 1,
-                  color: this.generatedColors[
-                    this.state.achievement.objectives.length
-                  ]
+                  requiredCount: 1
                 }
               })
             }
           >
-            <Icon name="flag-variant" style={styles.actionButtonIcon} />
+            <Icon
+              name="flag-variant"
+              type="MaterialCommunityIcons"
+              style={styles.actionButtonIcon}
+            />
           </ActionButton.Item>
           <ActionButton.Item
             buttonColor="#3498db"
             title="Action"
             onPress={() => {}}
           >
-            <Icon name="run" style={styles.actionButtonIcon} />
+            <Icon
+              name="run"
+              type="MaterialCommunityIcons"
+              style={styles.actionButtonIcon}
+            />
           </ActionButton.Item>
         </ActionButton>
 
         <ProtoObjectiveDialog
           objective={this.state._objective ? this.state._objective : undefined}
+          onClose={() => this.setState({ _objective: null })}
           onChange={(objective: EditableObjective) => {
             const listOfObjective: Array<EditableObjective> = [objective];
-            const existingObjectives: Array<EditableObjective> = this.state
+            const existingObjectives: Array<EditableObjective> = this.props
               .achievement.objectives;
 
-            this.setField(
-              "objectives",
-              existingObjectives.concat(listOfObjective)
-            );
+            onChange("objectives", existingObjectives.concat(listOfObjective));
+            this.setState({ _objective: null });
           }}
         />
       </View>
     );
   }
 }
+
+const styles = EStyleSheet.create({
+  transparent: { backgroundColor: "transparent" },
+  form: { flex: 1, paddingTop: "$spacing / 2" },
+  formContainer: {
+    height: 139,
+    width: "100%",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderColor: "#CCCCCC",
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderLeftWidth: StyleSheet.hairlineWidth,
+    borderRightWidth: StyleSheet.hairlineWidth,
+    position: "absolute",
+    bottom: 0
+  },
+
+  noVerticalPadding: { paddingTop: 0, paddingBottom: 0 },
+
+  actionButtonIcon: {
+    fontSize: 22,
+    color: "#FFFFFF"
+  },
+
+  expansionContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 20
+  },
+
+  selectCategory: {
+    marginTop: 2
+  },
+
+  selectMode: {
+    width: 150,
+    flexDirection: "row",
+    alignSelf: "flex-end"
+  },
+
+  selectModeInput: {
+    width: 150,
+    textAlign: "right"
+  },
+
+  objectivesLabel: { marginBottom: 10 },
+  objectivesChips: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+
+  actions: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  }
+});
 
 export default compose(
   graphql(
