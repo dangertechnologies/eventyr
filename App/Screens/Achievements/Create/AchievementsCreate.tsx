@@ -2,8 +2,9 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import Map, { Region, Marker } from "react-native-maps";
 import { Query } from "graphqlTypes";
-import { compose } from "react-apollo";
 import { ApolloQueryResult } from "apollo-client";
+import { compose, graphql } from "react-apollo";
+
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 // @ts-ignore
@@ -18,6 +19,7 @@ import withLocation, {
 import AchievementForm, {
   ProtoAchievement
 } from "../../../Components/AchievementForm/Form";
+import gql from "graphql-tag";
 
 interface Props {
   data: Query & ApolloQueryResult<Query> & { error: string };
@@ -37,7 +39,7 @@ class AchievementsCreate extends React.Component<Props, State> {
     achievement: {
       name: "",
       shortDescription: "",
-      longDescription: "",
+      fullDescription: "",
       icon: "binoculars",
       basePoints: 10,
       mode: null,
@@ -88,13 +90,15 @@ class AchievementsCreate extends React.Component<Props, State> {
           {this.state.achievement &&
             this.state.achievement.objectives.map(
               (objective, index) =>
-                objective.goal && objective.goal.lat && objective.goal.lng ? (
+                objective.kind === "LOCATION" &&
+                objective.lat &&
+                objective.lng ? (
                   <Marker
                     title={objective.tagline}
                     pinColor={objectiveColors[index % 100]}
                     coordinate={{
-                      latitude: objective.goal.lat,
-                      longitude: objective.goal.lng
+                      latitude: objective.lat,
+                      longitude: objective.lng
                     }}
                   />
                 ) : null
@@ -108,11 +112,10 @@ class AchievementsCreate extends React.Component<Props, State> {
           />
         </View>
         <AchievementForm
-          onChange={this.setField}
           onExpand={this.expandForm}
           onMinimize={this.minimizeForm}
           expanded={this.state.expandedForm}
-          achievement={this.state.achievement}
+          initialModel={this.state.achievement}
           coordinates={this.state.coordinates}
         />
       </View>
@@ -136,7 +139,49 @@ const styles = EStyleSheet.create({
   }
 });
 
-const Screen = compose(withLocation())(AchievementsCreate);
+const Screen = compose(
+  withLocation(),
+  graphql(gql`
+    mutation CreateAchievement(
+      $name: String!,
+      $description: String!,
+      $objectives: Objective[],
+      $icon: String!,
+      $categoryId: Int!,
+      $modeId: Int!,
+      $typeId: Int!
+    ) {
+      createAchievement(input: {name: $name, description: $description, icon: $icon, modeId: $modeId, categoryId: $categoryId, objectives: $objectives}) {
+    achievement {
+      name
+      shortDescription
+      fullDescription
+      author {
+        name
+      }
+      
+      isMultiPlayer
+      category{
+        title
+        icon
+      }
+      
+      points
+      
+      
+      objectives{
+        tagline
+        lat
+        lng
+        isPublic
+        kind
+      }
+    }
+    errors
+  }
+    }
+  `)
+)(AchievementsCreate);
 
 Screen.navigationOptions = {
   tabBarVisible: false,

@@ -17,9 +17,7 @@ const ObjectiveChip = ({ objective, color, ...rest }: Props) => (
   >
     <Icon
       name={
-        objective.goalType && objective.goalType === "Location"
-          ? "run"
-          : "flag-variant"
+        objective.kind && objective.kind === "LOCATION" ? "run" : "flag-variant"
       }
       type="MaterialCommunityIcons"
       color="#FFFFFF"

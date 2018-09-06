@@ -61,7 +61,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "test": "jest",
-    "ts:graphql": "curl 127.0.0.1:3000/graphql -o schema.json; ./node_modules/.bin/graphql-to-typescript schema.json App/Types/graphqlTypes.d.ts"
+    "ts:graphql": "curl 127.0.0.1:3000/graphql -o schema.json; ./node_modules/.bin/graphql-to-typescript schema.json graphqlTypes.d.ts"
   },
   "jest": {
     "preset": "react-native",

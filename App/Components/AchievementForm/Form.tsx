@@ -2,13 +2,19 @@ import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Objective, Query, Mode, Category, Type } from "graphqlTypes";
 import { compose, graphql } from "react-apollo";
+import { withProps } from "recompose";
 import { ApolloQueryResult } from "apollo-client";
-import { sum } from "lodash";
+import { sum, mapValues, values, concat, flatten } from "lodash";
 import { View as AnimatedView } from "react-native-animatable";
 import { BlurView } from "react-native-blur";
 
 // @ts-ignore
 import Select from "react-native-picker-select";
+
+import reformed, { ReformedProps } from "react-reformed";
+import validateSchema, {
+  ValidationProps
+} from "react-reformed/lib/validateSchema";
 
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
@@ -63,23 +69,23 @@ export interface ProtoAchievement
 }
 
 export interface State {
-  _objective: EditableObjective | null;
+  _objective: ProtoObjective | null;
 }
 
-interface Props {
+interface Props extends ReformedProps<Achievement | ProtoAchievement> {
   data: Query & ApolloQueryResult<Query> & { error: string };
   expanded: boolean;
   onMinimize(): any;
   onExpand(): any;
-  achievement: Achievement | ProtoAchievement;
-  onChange<K extends keyof ProtoAchievement>(
-    field: K,
-    value: Achievement[K] | ProtoAchievement[K]
-  ): any;
+
   coordinates: Region | null;
+  validationErrors: Array<string>;
 }
 
-class AchievementForm extends React.Component<Props, State> {
+class AchievementForm extends React.Component<
+  Props & ValidationProps<Achievement | ProtoAchievement>,
+  State
+> {
   state: State = {
     // This contains a temporary objective, while
     // setting up the name and color of the objective.
@@ -98,7 +104,7 @@ class AchievementForm extends React.Component<Props, State> {
   }
 
   calculatePoints = (): number => {
-    const { achievement } = this.props;
+    const { model: achievement } = this.props;
     const category: CategoryEdge | undefined | null =
       achievement.category &&
       this.props.data.categories &&
@@ -150,9 +156,9 @@ class AchievementForm extends React.Component<Props, State> {
     console.log({ name: "AchievementForm#render", props: this.props });
 
     const {
-      achievement,
+      model,
       data,
-      onChange,
+      setProperty,
       expanded,
       onMinimize,
       onExpand
@@ -174,7 +180,7 @@ class AchievementForm extends React.Component<Props, State> {
           >)
         : [];
 
-    const objectives: Array<EditableObjective> = achievement.objectives;
+    const objectives: Array<EditableObjective> = model.objectives;
 
     return (
       <View style={{ flex: 1 }} pointerEvents="box-none">
@@ -216,9 +222,9 @@ class AchievementForm extends React.Component<Props, State> {
                         label: "Click to set Difficulty",
                         value: null
                       }}
-                      value={achievement.mode ? achievement.mode.id : null}
+                      value={model.mode ? model.mode.id : null}
                       onValueChange={(id: string) =>
-                        onChange("mode", modes.find(
+                        setProperty("mode", modes.find(
                           (m: Mode) => m.id === id
                         ) as Mode)
                       }
@@ -230,19 +236,19 @@ class AchievementForm extends React.Component<Props, State> {
                 >
                   <Left style={{ flexGrow: 1, paddingTop: 0 }}>
                     <IconPicker
-                      name={achievement.icon}
+                      name={model.icon}
                       size={40}
                       difficulty={"Normal"}
-                      onChange={(name: string) => onChange("icon", name)}
+                      onChange={(name: string) => setProperty("icon", name)}
                     />
                     <Body>
                       <Item>
                         <Input
                           placeholder="Title"
                           onChangeText={(title: string) =>
-                            onChange("name", title)
+                            setProperty("name", title)
                           }
-                          value={achievement.name}
+                          value={model.name}
                         />
                       </Item>
                       <Item style={{ borderBottomWidth: 0 }}>
@@ -259,13 +265,9 @@ class AchievementForm extends React.Component<Props, State> {
                             label: "Click to set Category",
                             value: null
                           }}
-                          value={
-                            achievement.category
-                              ? achievement.category.id
-                              : null
-                          }
+                          value={model.category ? model.category.id : null}
                           onValueChange={(id: string) =>
-                            onChange("category", categories.find(
+                            setProperty("category", categories.find(
                               (c: Category) => c.id === id
                             ) as Category)
                           }
@@ -283,7 +285,7 @@ class AchievementForm extends React.Component<Props, State> {
                     <Item stackedLabel>
                       <Label style={styles.objectivesLabel}>Objectives</Label>
                       <View style={styles.objectivesChips}>
-                        {!achievement.objectives
+                        {!model.objectives
                           ? null
                           : objectives.map(
                               (objective: EditableObjective, index) => (
@@ -325,24 +327,29 @@ class AchievementForm extends React.Component<Props, State> {
                         rowSpan={5}
                         placeholder="Give other users a background story for your achievement"
                         onChangeText={(title: string) =>
-                          onChange("longDescription", title)
+                          setProperty("fullDescription", title)
                         }
-                        value={achievement.longDescription || ""}
+                        value={model.fullDescription || ""}
                       />
                     </Item>
                   </Body>
                 </CardItem>
 
                 <CardItem style={[styles.transparent, styles.actions]}>
-                  <Icon
-                    name="ios-checkmark-circle-outline"
-                    type="Ionicons"
-                    style={{
-                      color: "#00AA00",
-                      fontSize: 100,
-                      width: 100
-                    }}
-                  />
+                  {this.props.validationErrors &&
+                  this.props.validationErrors.length ? (
+                    <Text>{this.props.validationErrors[0]}</Text>
+                  ) : (
+                    <Icon
+                      name="ios-checkmark-circle-outline"
+                      type="Ionicons"
+                      style={{
+                        color: "#00AA00",
+                        fontSize: 100,
+                        width: 100
+                      }}
+                    />
+                  )}
                 </CardItem>
               </Container>
             </Form>
@@ -366,18 +373,19 @@ class AchievementForm extends React.Component<Props, State> {
               this.setState({
                 _objective: {
                   tagline: "",
-                  goalType: "Location",
-                  goal: {
-                    lat: this.props.coordinates
-                      ? this.props.coordinates.latitude
-                      : 0,
-                    lng: this.props.coordinates
-                      ? this.props.coordinates.longitude
-                      : 0
-                  },
+                  kind: "LOCATION",
+                  lat: this.props.coordinates
+                    ? this.props.coordinates.latitude
+                    : 0,
+                  lng: this.props.coordinates
+                    ? this.props.coordinates.longitude
+                    : 0,
                   basePoints: 0,
                   isPublic: false,
-                  requiredCount: 1
+                  requiredCount: 1,
+                  achievements: [],
+                  altitude: 0,
+                  country: null
                 }
               })
             }
@@ -406,10 +414,13 @@ class AchievementForm extends React.Component<Props, State> {
           onClose={() => this.setState({ _objective: null })}
           onChange={(objective: EditableObjective) => {
             const listOfObjective: Array<EditableObjective> = [objective];
-            const existingObjectives: Array<EditableObjective> = this.props
-              .achievement.objectives;
+            const existingObjectives: Array<EditableObjective> =
+              model.objectives;
 
-            onChange("objectives", existingObjectives.concat(listOfObjective));
+            setProperty(
+              "objectives",
+              existingObjectives.concat(listOfObjective)
+            );
             this.setState({ _objective: null });
           }}
         />
@@ -512,5 +523,68 @@ export default compose(
         }
       }
     `
-  )
+  ),
+  reformed<ProtoAchievement>(),
+  validateSchema<ProtoAchievement>({
+    name: {
+      type: "string",
+      test: (value: string, fail: Function) => {
+        if (!value) {
+          return fail("Your achievement needs a name, and an icon");
+        } else if (value.length < 4) {
+          return fail("The name must be longer than that");
+        } else if (value.length > 100) {
+          return fail("Keep the achievement name short and concise.");
+        }
+      }
+    },
+    icon: {
+      type: "string",
+      test: (value: string, fail: Function) => {
+        if (!value) {
+          return fail("Pick an icon by clicking the icon");
+        }
+      }
+    },
+    category: {
+      type: "object",
+      test: (value: Category, fail: Function) => {
+        if (!value || !value.id) {
+          return fail("Pick a category");
+        }
+      }
+    },
+    fullDescription: {
+      type: "string",
+      test: (value: string, fail: Function) => {
+        if (!value) {
+          return fail("Provide a description");
+        } else if (value.length < 50) {
+          return fail("Remember: Descriptions should be verbose");
+        }
+      }
+    },
+
+    mode: {
+      type: "object",
+      test: (value: Mode, fail: Function) => {
+        if (!value || !value.id) {
+          return fail("Select a Difficulty");
+        }
+      }
+    },
+    objectives: {
+      type: "object",
+      test: (value: EditableObjective[], fail: Function) => {
+        if (value.length < 1) {
+          return fail("Add some objectives to complete!");
+        }
+      }
+    }
+  }),
+  withProps(({ schema }: ValidationProps<ProtoAchievement>) => ({
+    validationErrors: flatten(
+      concat([], values(mapValues(schema.fields, ({ errors }) => errors || [])))
+    )
+  }))
 )(AchievementForm);

@@ -17,13 +17,10 @@ import Dialog from "../Dialog";
 export interface ProtoObjective
   extends Omit<
       Objective,
-      "achievements" | "createdAt" | "goal" | "goalType" | "hashIdentifier"
+      "achievements" | "createdAt" | "kind" | "hashIdentifier" | "altitude"
     > {
-  goalType: "Location" | "Action";
-  goal: {
-    lat?: number;
-    lng?: number;
-  };
+  kind: "LOCATION" | "ACTION";
+  altitude?: number | null;
 }
 
 export type EditableObjective = ProtoObjective | Objective;
@@ -101,8 +98,6 @@ const ProtoObjectiveDialog = (props: ComposedProps) => {
 
   const { isValid } = schema;
 
-  console.log({ schema, props });
-
   return (
     <Dialog
       open={Boolean(initialModel)}
@@ -169,8 +164,8 @@ export default compose<ComposedProps, Props>(
     initialModel: objective,
     model: objective
   })),
-  reformed(),
-  validateSchema({
+  reformed<ProtoObjective>(),
+  validateSchema<ProtoObjective>({
     tagline: {
       type: "string",
       required: true,
