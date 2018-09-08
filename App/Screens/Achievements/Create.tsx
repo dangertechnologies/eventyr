@@ -11,18 +11,18 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import objectiveColors from "../../../Components/AchievementForm/Colors";
-import { withUIHelpers, UIContext } from "../../../Providers/UIProvider";
+import objectiveColors from "../../Components/AchievementForm/Colors";
+import { withUIHelpers, UIContext } from "../../Providers/UIProvider";
 
 import withLocation, {
   LocationContext
-} from "../../../Providers/LocationProvider";
+} from "../../Providers/LocationProvider";
 
 import AchievementForm, {
   ProtoAchievement
-} from "../../../Components/AchievementForm/Form";
+} from "../../Components/AchievementForm/Form";
 
-import Drawer from "../../../Components/Drawer/Drawer";
+import Drawer from "../../Components/Drawer/Drawer";
 
 import gql from "graphql-tag";
 import { NavigationScreenProp, NavigationState } from "react-navigation";

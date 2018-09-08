@@ -177,6 +177,24 @@ type Objective {
   tagline: String!
 }
 
+# The connection type for Objective.
+type ObjectiveConnection {
+  # A list of edges.
+  edges: [ObjectiveEdge]
+
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+}
+
+# An edge in a connection.
+type ObjectiveEdge {
+  # A cursor for use in pagination.
+  cursor: String!
+
+  # The item at the end of the edge.
+  node: Objective
+}
+
 input ObjectiveInput {
   basePoints: Float!
   country: String
@@ -278,6 +296,20 @@ type Query {
     # Returns the last _n_ elements from the list.
     last: Int
   ): ModeConnection!
+  objectives(
+    # Returns the elements in the list that come after the specified cursor.
+    after: String
+
+    # Returns the elements in the list that come before the specified cursor.
+    before: String
+
+    # Returns the first _n_ elements from the list.
+    first: Int
+
+    # Returns the last _n_ elements from the list.
+    last: Int
+    near: [Float!]
+  ): ObjectiveConnection!
   regions(
     # Returns the elements in the list that come after the specified cursor.
     after: String

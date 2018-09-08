@@ -9,18 +9,18 @@ import { withProps } from "recompose";
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import objectiveColors from "../../../Components/AchievementForm/Colors";
+import objectiveColors from "../../Components/AchievementForm/Colors";
 
 import withLocation, {
   LocationContext
-} from "../../../Providers/LocationProvider";
+} from "../../Providers/LocationProvider";
 
-import DetailsView from "../../../Components/AchievementForm/DetailsView";
-import Drawer from "../../../Components/Drawer/Drawer";
+import DetailsView from "../../Components/AchievementForm/DetailsView";
+import Drawer from "../../Components/Drawer/Drawer";
 
 import gql from "graphql-tag";
 import { NavigationState, NavigationScreenProp } from "react-navigation";
-import calculateRegion from "../../../Helpers/Map";
+import calculateRegion from "../../Helpers/Map";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;

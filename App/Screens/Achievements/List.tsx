@@ -48,19 +48,35 @@ interface Props {
 
 class Achievements extends React.PureComponent<Props> {
   render() {
-    if (this.props.data.loading) {
-      return <Text>Loading</Text>;
-    }
-
     if (this.props.data.error) {
       return <Text>{this.props.data.error.toString()}</Text>;
     }
 
-    return (
+    const achievements = this.props.data.achievements;
+
+    const { loading } = this.props.data;
+
+    return loading ? (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <LottieView
+          source={require("../../Lottie/loading_hamster.json")}
+          loop
+          autoPlay
+          style={{ borderWidth: 1, borderRadius: 50, height: 100, width: 100 }}
+        />
+      </View>
+    ) : (
       <Container>
         <Content>
           <FlatList
-            data={this.props.data.achievements.edges}
+            data={achievements && achievements.edges ? achievements.edges : []}
+            refreshing={this.props.data.loading}
             keyExtractor={({ node }) => (node ? node.id : "N/A")}
             renderItem={({ item }) => (
               <AchievementCard

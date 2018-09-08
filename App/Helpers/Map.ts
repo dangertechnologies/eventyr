@@ -14,9 +14,9 @@ export const calculateRegion = (
   locations: Array<Location>,
   options: Options
 ): Region | undefined => {
-  const latPadding = options && options.latPadding ? options.latPadding : 0.1;
+  const latPadding = options && options.latPadding ? options.latPadding : 0.03;
   const longPadding =
-    options && options.longPadding ? options.longPadding : 0.1;
+    options && options.longPadding ? options.longPadding : 0.03;
   const mapLocations = locations.filter(({ lat, lng }) => lat && lng);
 
   // Only do calculations if there are locations

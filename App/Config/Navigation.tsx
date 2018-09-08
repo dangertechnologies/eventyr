@@ -11,9 +11,10 @@ import { compose } from "recompose";
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import AchievementsScreen from "../Screens/Achievements/Achievements";
-import AchievementsCreateScreen from "../Screens/Achievements/Create/AchievementsCreate";
-import AchievementDetailsScreen from "../Screens/Achievements/View/AchievementsView";
+import AchievementsScreen from "../Screens/Achievements/List";
+import AchievementsCreateScreen from "../Screens/Achievements/Create";
+import AchievementDetailsScreen from "../Screens/Achievements/Details";
+import NearbyMapScreen from "../Screens/Nearby/Map";
 
 import { withUser } from "../Providers/UserProvider";
 
@@ -51,10 +52,22 @@ AchievementsTab.navigationOptions = ({
   };
 };
 
+const NearbyTab = createStackNavigator({
+  NearbyMapScreen: {
+    screen: NearbyMapScreen
+  }
+});
+
+NearbyTab.navigationOptions = NearbyMapScreen.navigationOptions;
+
 const loggedInNavigation = createBottomTabNavigator(
   {
     AchievementsScreen: {
       screen: AchievementsTab
+    },
+
+    NearbyScreen: {
+      screen: NearbyTab
     }
   },
   // @ts-ignore
@@ -65,13 +78,14 @@ const loggedInNavigation = createBottomTabNavigator(
     swipeEnabled: true,
     lazy: true,
     paths: {
-      AchievementsScreen: "AchievementsScreen"
+      AchievementsScreen: "AchievementsScreen",
+      NearbyScreen: "NearbyScreen"
     },
 
     tabBarOptions: {
       showLabel: true
     },
-    order: ["AchievementsScreen"],
+    order: ["AchievementsScreen", "NearbyScreen"],
 
     navigationOptions: ({ navigation }) => ({
       headerMode: "float",
@@ -88,7 +102,7 @@ const loggedInNavigation = createBottomTabNavigator(
               <Icon name="trending-up" color={color as string} size={25} />
             );
           default:
-            return <Icon name="settings" color={color as string} size={25} />;
+            return <Icon name="map" color={color as string} size={25} />;
         }
       }
     })

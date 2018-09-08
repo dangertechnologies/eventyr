@@ -89,7 +89,7 @@ class UIProvider extends React.Component<Props, State> {
   lottie: LottieView | null = null;
 
   onOverlayFaded = () => {
-    if (this.state.notifications.length) {
+    if (this.state.notifications && this.state.notifications.length) {
       if (this.lottie) {
         this.lottie.play();
       }
@@ -120,6 +120,7 @@ class UIProvider extends React.Component<Props, State> {
 
   componentWillReceiveProps(_: Props, nextState: State) {
     if (
+      nextState.notifications &&
       nextState.notifications.length &&
       this.state.invisible &&
       this.overlay &&
