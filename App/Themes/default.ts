@@ -13,6 +13,9 @@ const theme: { [key: string]: number | string } = {
   $colorPrimary: "rgb(251, 255, 254)",
   $colorSecondary: "rgb(98, 42, 201)",
 
+  $borderRadius: 20,
+  $borderColor: "#CCCCCC",
+
   $spacing: 16,
   $spacingDouble: 32,
 

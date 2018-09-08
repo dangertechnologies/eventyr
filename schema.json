@@ -131,29 +131,6 @@ type CreatePayload {
   errors: [String!]!
 }
 
-type Icon {
-  id: ID!
-  name: String!
-}
-
-# The connection type for Icon.
-type IconConnection {
-  # A list of edges.
-  edges: [IconEdge]
-
-  # Information to aid in pagination.
-  pageInfo: PageInfo!
-}
-
-# An edge in a connection.
-type IconEdge {
-  # A cursor for use in pagination.
-  cursor: String!
-
-  # The item at the end of the edge.
-  node: Icon
-}
-
 type Mode {
   description: String!
   icon: String!
@@ -191,6 +168,7 @@ type Objective {
   country: Country
   createdAt: Int!
   hashIdentifier: String!
+  id: ID!
   isPublic: Boolean!
   kind: String!
   lat: Float
@@ -225,6 +203,7 @@ type PageInfo {
 }
 
 type Query {
+  achievement(id: String!): Achievement
   achievements(
     # Returns the elements in the list that come after the specified cursor.
     after: String
@@ -285,19 +264,7 @@ type Query {
     search: String
   ): CountryConnection!
   currentUser: User!
-  icons(
-    # Returns the elements in the list that come after the specified cursor.
-    after: String
-
-    # Returns the elements in the list that come before the specified cursor.
-    before: String
-
-    # Returns the first _n_ elements from the list.
-    first: Int
-
-    # Returns the last _n_ elements from the list.
-    last: Int
-  ): IconConnection!
+  icons: [String!]!
   modes(
     # Returns the elements in the list that come after the specified cursor.
     after: String

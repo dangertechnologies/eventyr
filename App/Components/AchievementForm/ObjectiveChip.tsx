@@ -5,14 +5,16 @@ import { EditableObjective } from "./ProtoObjectiveDialog";
 interface Props extends React.ClassAttributes<Button> {
   objective: EditableObjective;
   color?: string;
+  onPress?(): any;
 }
 
-const ObjectiveChip = ({ objective, color, ...rest }: Props) => (
+const ObjectiveChip = ({ objective, color, onPress, ...rest }: Props) => (
   <Button
     rounded
     small
     iconLeft
     style={!color ? {} : { backgroundColor: color, margin: 2 }}
+    onPress={onPress}
     {...rest}
   >
     <Icon

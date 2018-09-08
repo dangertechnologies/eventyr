@@ -2,7 +2,6 @@ import React from "react";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { IconProps } from "react-native-vector-icons/Icon";
-// @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 
 export interface Props extends IconProps {

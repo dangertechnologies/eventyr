@@ -11,7 +11,7 @@ import { BlurView } from "react-native-blur";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 
-import { Query, IconEdge } from "graphqlTypes";
+import { Query } from "graphqlTypes";
 import { compose, withState } from "recompose";
 import { BlackPortal } from "react-native-portal";
 import { H1 } from "native-base";
@@ -66,23 +66,21 @@ const IconPicker = ({
                   alignItems: "center",
                   justifyContent: "center"
                 }}
-                data={data.icons ? data.icons.edges : []}
-                keyExtractor={(item: IconEdge) =>
-                  item && item.node && item.node.name ? item.node.name : "N/A"
-                }
-                renderItem={({ item }: { item: IconEdge }) =>
-                  item && item.node && item.node.name ? (
+                data={data.icons ? data.icons : []}
+                keyExtractor={item => item || "N/A"}
+                renderItem={({ item }: { item: string }) =>
+                  item ? (
                     <TouchableOpacity
                       onPress={() => {
-                        onChange(item.node ? item.node.name : "flag-variant");
+                        onChange(item ? item : "flag-variant");
                         if (setOpen) {
                           setOpen(false);
                         }
                       }}
-                      key={item.node.name}
+                      key={item}
                       style={{ margin: EStyleSheet.value("$spacing / 2") }}
                     >
-                      <AchievementIcon {...iconProps} name={item.node.name} />
+                      <AchievementIcon {...iconProps} name={item} />
                     </TouchableOpacity>
                   ) : null
                 }
@@ -98,14 +96,7 @@ const IconPicker = ({
 export default compose<ComposedProps, Props>(
   graphql(gql`
     query AllIcons {
-      icons {
-        edges {
-          node {
-            id
-            name
-          }
-        }
-      }
+      icons
     }
   `),
   withState("open", "setOpen", false)

@@ -13,6 +13,7 @@ import EStyleSheet from "react-native-extended-stylesheet";
 
 import AchievementsScreen from "../Screens/Achievements/Achievements";
 import AchievementsCreateScreen from "../Screens/Achievements/Create/AchievementsCreate";
+import AchievementDetailsScreen from "../Screens/Achievements/View/AchievementsView";
 
 import { withUser } from "../Providers/UserProvider";
 
@@ -24,9 +25,13 @@ const AchievementsTab = createStackNavigator(
 
     CreateScreen: {
       screen: AchievementsCreateScreen
+    },
+
+    DetailsScreen: {
+      screen: AchievementDetailsScreen
     }
   },
-  { initialRouteName: "CreateScreen" }
+  { initialRouteName: "AchievementScreen" }
 );
 
 /**
@@ -40,17 +45,16 @@ AchievementsTab.navigationOptions = ({
   const { routeName } = routes[index];
 
   return {
-    tabBarVisible: routeName !== "CreateScreen"
+    tabBarVisible: ["CreateScreen", "DetailsScreen"].indexOf(routeName) === -1,
+    title: "Achievements",
+    tabBarLabel: "Achievements"
   };
 };
 
 const loggedInNavigation = createBottomTabNavigator(
   {
     AchievementsScreen: {
-      screen: AchievementsTab,
-      navigationOptions: {
-        title: AchievementsScreen.navigationOptions.title
-      }
+      screen: AchievementsTab
     }
   },
   // @ts-ignore
@@ -80,9 +84,11 @@ const loggedInNavigation = createBottomTabNavigator(
 
         switch (routeName) {
           case "AchievementsScreen":
-            return <Icon name="trending-up" color={color} size={25} />;
+            return (
+              <Icon name="trending-up" color={color as string} size={25} />
+            );
           default:
-            return <Icon name="settings" color={color} size={25} />;
+            return <Icon name="settings" color={color as string} size={25} />;
         }
       }
     })

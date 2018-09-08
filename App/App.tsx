@@ -12,6 +12,7 @@ import Auth0 from "./Providers/Auth0Provider";
 import CurrentUser from "./Providers/UserProvider";
 import Web from "./Providers/WebProvider";
 import Theme from "./Providers/ThemeProvider";
+import UIProvider from "./Providers/UIProvider";
 
 import Navigation from "./Config/Navigation";
 
@@ -31,8 +32,10 @@ const RootContainer = () => (
                       <StatusBar barStyle="light-content" hidden />
 
                       <PortalProvider>
-                        <Navigation />
-                        <WhitePortal name="outside" />
+                        <UIProvider.Provider>
+                          <Navigation />
+                          <WhitePortal name="outside" />
+                        </UIProvider.Provider>
                       </PortalProvider>
                     </View>
                   </Web.Provider>

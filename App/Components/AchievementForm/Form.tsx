@@ -39,6 +39,7 @@ import ActionButton from "react-native-action-button";
 import { Region } from "react-native-maps";
 
 import { Achievement, TypeEdge, ModeEdge, CategoryEdge } from "graphqlTypes";
+
 import IconPicker from "./IconPicker";
 import ObjectiveChip from "./ObjectiveChip";
 import colors from "./Colors";
@@ -74,9 +75,8 @@ export interface State {
 
 interface Props extends ReformedProps<Achievement | ProtoAchievement> {
   data: Query & ApolloQueryResult<Query> & { error: string };
-  expanded: boolean;
-  onMinimize(): any;
-  onExpand(): any;
+
+  onSubmit(model: Achievement | ProtoAchievement): any;
 
   coordinates: Region | null;
   validationErrors: Array<string>;
@@ -94,14 +94,6 @@ class AchievementForm extends React.Component<
     // objectives array instead.
     _objective: null
   };
-
-  componentWillReceiveProps(nextProps: Props) {
-    if (this.form && nextProps.expanded !== this.props.expanded) {
-      this.form.transitionTo(
-        nextProps.expanded ? { height: 500 } : { height: 140 }
-      );
-    }
-  }
 
   calculatePoints = (): number => {
     const { model: achievement } = this.props;
@@ -149,20 +141,12 @@ class AchievementForm extends React.Component<
     );
   };
 
-  form: AnimatedView | null = null;
   fab: ActionButton | null = null;
 
   render() {
     console.log({ name: "AchievementForm#render", props: this.props });
 
-    const {
-      model,
-      data,
-      setProperty,
-      expanded,
-      onMinimize,
-      onExpand
-    } = this.props;
+    const { model, data, setProperty } = this.props;
 
     const modes: Array<Mode> =
       data && data.modes && data.modes.edges
@@ -183,178 +167,147 @@ class AchievementForm extends React.Component<
     const objectives: Array<EditableObjective> = model.objectives;
 
     return (
-      <View style={{ flex: 1 }} pointerEvents="box-none">
-        <AnimatedView
-          style={styles.formContainer}
-          animation="slideInUp"
-          duration={1000}
-          ref={(instance: any) => {
-            this.form = instance as AnimatedView;
-          }}
-        >
-          <BlurView blurType="light" style={{ flex: 1 }}>
-            <Form style={[styles.transparent, styles.form]}>
-              <View style={styles.expansionContainer}>
-                <TouchableOpacity onPress={expanded ? onMinimize : onExpand}>
-                  <Icon
-                    name={expanded ? "chevron-down" : "chevron-up"}
-                    fontSize={20}
-                    type="MaterialCommunityIcons"
-                  />
-                </TouchableOpacity>
-              </View>
-              <Container style={styles.transparent}>
-                <CardItem
-                  style={[styles.transparent, styles.noVerticalPadding]}
-                >
-                  <Right style={{ flexGrow: 1, alignItems: "flex-end" }}>
-                    <Select
-                      items={modes.map((mode: Mode) => ({
-                        label: mode.name,
-                        value: mode.id
-                      }))}
-                      style={{
-                        inputIOS: styles.selectModeInput,
-                        viewContainer: styles.selectMode
-                      }}
-                      hideIcon
-                      placeholder={{
-                        label: "Click to set Difficulty",
-                        value: null
-                      }}
-                      value={model.mode ? model.mode.id : null}
-                      onValueChange={(id: string) =>
-                        setProperty("mode", modes.find(
-                          (m: Mode) => m.id === id
-                        ) as Mode)
-                      }
-                    />
-                  </Right>
-                </CardItem>
-                <CardItem
-                  style={[styles.transparent, styles.noVerticalPadding]}
-                >
-                  <Left style={{ flexGrow: 1, paddingTop: 0 }}>
-                    <IconPicker
-                      name={model.icon}
-                      size={40}
-                      difficulty={"Normal"}
-                      onChange={(name: string) => setProperty("icon", name)}
-                    />
-                    <Body>
-                      <Item>
-                        <Input
-                          placeholder="Title"
-                          onChangeText={(title: string) =>
-                            setProperty("name", title)
-                          }
-                          value={model.name}
-                        />
-                      </Item>
-                      <Item style={{ borderBottomWidth: 0 }}>
-                        <Select
-                          items={categories.map((category: Category) => ({
-                            label: category.title,
-                            value: category.id
-                          }))}
-                          style={{
-                            viewContainer: styles.selectCategory
-                          }}
-                          hideIcon
-                          placeholder={{
-                            label: "Click to set Category",
-                            value: null
-                          }}
-                          value={model.category ? model.category.id : null}
-                          onValueChange={(id: string) =>
-                            setProperty("category", categories.find(
-                              (c: Category) => c.id === id
-                            ) as Category)
-                          }
-                        />
-                      </Item>
-                    </Body>
-                  </Left>
-                  <Right style={{ flex: 0.3 }}>
-                    <H3>{this.calculatePoints()}</H3>
-                  </Right>
-                </CardItem>
+      <React.Fragment>
+        <CardItem style={[styles.transparent, styles.noVerticalPadding]}>
+          <Right style={{ flexGrow: 1, alignItems: "flex-end" }}>
+            <Select
+              items={modes.map((mode: Mode) => ({
+                label: mode.name,
+                value: mode.id
+              }))}
+              style={{
+                inputIOS: styles.selectModeInput,
+                viewContainer: styles.selectMode
+              }}
+              hideIcon
+              placeholder={{
+                label: "Click to set Difficulty",
+                value: null
+              }}
+              value={model.mode ? model.mode.id : null}
+              onValueChange={(id: string) =>
+                setProperty("mode", modes.find(
+                  (m: Mode) => m.id === id
+                ) as Mode)
+              }
+            />
+          </Right>
+        </CardItem>
+        <CardItem style={[styles.transparent, styles.noVerticalPadding]}>
+          <Left style={{ flexGrow: 1, paddingTop: 0 }}>
+            <IconPicker
+              name={model.icon}
+              size={40}
+              difficulty={"Normal"}
+              onChange={(name: string) => setProperty("icon", name)}
+            />
+            <Body>
+              <Item>
+                <Input
+                  placeholder="Title"
+                  onChangeText={(title: string) => setProperty("name", title)}
+                  value={model.name}
+                />
+              </Item>
+              <Item style={{ borderBottomWidth: 0 }}>
+                <Select
+                  items={categories.map((category: Category) => ({
+                    label: category.title,
+                    value: category.id
+                  }))}
+                  style={{
+                    viewContainer: styles.selectCategory
+                  }}
+                  hideIcon
+                  placeholder={{
+                    label: "Click to set Category",
+                    value: null
+                  }}
+                  value={model.category ? model.category.id : null}
+                  onValueChange={(id: string) =>
+                    setProperty("category", categories.find(
+                      (c: Category) => c.id === id
+                    ) as Category)
+                  }
+                />
+              </Item>
+            </Body>
+          </Left>
+          <Right style={{ flex: 0.3 }}>
+            <H3>{this.calculatePoints()}</H3>
+          </Right>
+        </CardItem>
 
-                <CardItem style={styles.transparent}>
-                  <Body>
-                    <Item stackedLabel>
-                      <Label style={styles.objectivesLabel}>Objectives</Label>
-                      <View style={styles.objectivesChips}>
-                        {!model.objectives
-                          ? null
-                          : objectives.map(
-                              (objective: EditableObjective, index) => (
-                                <ObjectiveChip
-                                  objective={objective}
-                                  color={colors[index]}
-                                />
-                              )
-                            )}
-
-                        <Button
-                          rounded
-                          small
-                          onPress={() =>
-                            this.fab &&
-                            // @ts-ignore
-                            this.fab.animateButton.apply(this.fab, this.fab)
-                          }
-                          iconLeft
-                          style={{ margin: 2 }}
-                        >
-                          <Icon
-                            name="plus"
-                            type="MaterialCommunityIcons"
-                            fontSize={20}
-                          />
-                          <Text>New</Text>
-                        </Button>
-                      </View>
-                    </Item>
-                  </Body>
-                </CardItem>
-
-                <CardItem style={styles.transparent}>
-                  <Body>
-                    <Item stackedLabel>
-                      <Label>Description</Label>
-                      <Textarea
-                        rowSpan={5}
-                        placeholder="Give other users a background story for your achievement"
-                        onChangeText={(title: string) =>
-                          setProperty("fullDescription", title)
-                        }
-                        value={model.fullDescription || ""}
+        <CardItem style={styles.transparent}>
+          <Body>
+            <Item stackedLabel>
+              <Label style={styles.objectivesLabel}>Objectives</Label>
+              <View style={styles.objectivesChips}>
+                {!model.objectives
+                  ? null
+                  : objectives.map((objective: EditableObjective, index) => (
+                      <ObjectiveChip
+                        objective={objective}
+                        color={colors[index]}
                       />
-                    </Item>
-                  </Body>
-                </CardItem>
+                    ))}
 
-                <CardItem style={[styles.transparent, styles.actions]}>
-                  {this.props.validationErrors &&
-                  this.props.validationErrors.length ? (
-                    <Text>{this.props.validationErrors[0]}</Text>
-                  ) : (
-                    <Icon
-                      name="ios-checkmark-circle-outline"
-                      type="Ionicons"
-                      style={{
-                        color: "#00AA00",
-                        fontSize: 100,
-                        width: 100
-                      }}
-                    />
-                  )}
-                </CardItem>
-              </Container>
-            </Form>
-          </BlurView>
-        </AnimatedView>
+                <Button
+                  rounded
+                  small
+                  onPress={() =>
+                    this.fab &&
+                    // @ts-ignore
+                    this.fab.animateButton.apply(this.fab, this.fab)
+                  }
+                  iconLeft
+                  style={{ margin: 2 }}
+                >
+                  <Icon
+                    name="plus"
+                    type="MaterialCommunityIcons"
+                    fontSize={20}
+                  />
+                  <Text>New</Text>
+                </Button>
+              </View>
+            </Item>
+          </Body>
+        </CardItem>
+
+        <CardItem style={styles.transparent}>
+          <Body>
+            <Item stackedLabel>
+              <Label>Description</Label>
+              <Textarea
+                rowSpan={5}
+                placeholder="Give other users a background story for your achievement"
+                onChangeText={(title: string) =>
+                  setProperty("fullDescription", title)
+                }
+                value={model.fullDescription || ""}
+              />
+            </Item>
+          </Body>
+        </CardItem>
+
+        <CardItem style={[styles.transparent, styles.actions]}>
+          {this.props.validationErrors && this.props.validationErrors.length ? (
+            <Text>{this.props.validationErrors[0]}</Text>
+          ) : (
+            <TouchableOpacity onPress={() => this.props.onSubmit(model)}>
+              <Icon
+                name="ios-checkmark-circle-outline"
+                type="Ionicons"
+                style={{
+                  color: "#00AA00",
+                  fontSize: 100,
+                  width: 100
+                }}
+              />
+            </TouchableOpacity>
+          )}
+        </CardItem>
 
         <ActionButton
           buttonColor="transparent"
@@ -372,6 +325,7 @@ class AchievementForm extends React.Component<
             onPress={() =>
               this.setState({
                 _objective: {
+                  id: "",
                   tagline: "",
                   kind: "LOCATION",
                   lat: this.props.coordinates
@@ -396,11 +350,7 @@ class AchievementForm extends React.Component<
               style={styles.actionButtonIcon}
             />
           </ActionButton.Item>
-          <ActionButton.Item
-            buttonColor="#3498db"
-            title="Action"
-            onPress={() => {}}
-          >
+          <ActionButton.Item buttonColor="#3498db" title="Action">
             <Icon
               name="run"
               type="MaterialCommunityIcons"
@@ -424,39 +374,19 @@ class AchievementForm extends React.Component<
             this.setState({ _objective: null });
           }}
         />
-      </View>
+      </React.Fragment>
     );
   }
 }
 
 const styles = EStyleSheet.create({
   transparent: { backgroundColor: "transparent" },
-  form: { flex: 1, paddingTop: "$spacing / 2" },
-  formContainer: {
-    height: 139,
-    width: "100%",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    borderColor: "#CCCCCC",
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    borderRightWidth: StyleSheet.hairlineWidth,
-    position: "absolute",
-    bottom: 0
-  },
 
   noVerticalPadding: { paddingTop: 0, paddingBottom: 0 },
 
   actionButtonIcon: {
     fontSize: 22,
     color: "#FFFFFF"
-  },
-
-  expansionContainer: {
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 20
   },
 
   selectCategory: {

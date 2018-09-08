@@ -96,6 +96,7 @@
     "graphql-tag": "^2.9.2",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.10",
+    "lottie-react-native": "^2.5.8",
     "native-base": "^2.8.0",
     "prop-types": "^15.6.2",
     "randomcolor": "^0.5.3",
