@@ -91,13 +91,10 @@ class DetailsView extends React.PureComponent<Props> {
           </Right>
         </CardItem>
 
-        <ScrollView
-          style={styles.scrolledContentContainer}
-          contentContainerStyle={styles.scrolledContent}
-        >
+        <View style={styles.scrolledContentContainer}>
           <CardItem style={styles.transparent}>
             <Body>
-              <Item stackedLabel>
+              <Item stackedLabel underline={false}>
                 <Label style={styles.objectivesLabel}>Objectives</Label>
                 <View style={styles.objectivesChips}>
                   {!achievement.objectives
@@ -120,7 +117,7 @@ class DetailsView extends React.PureComponent<Props> {
 
           <CardItem style={styles.transparent}>
             <Body>
-              <Item stackedLabel>
+              <Item stackedLabel underline={false}>
                 <Label>Description</Label>
                 <Text numberOfLines={10}>
                   {achievement.fullDescription || ""}
@@ -128,7 +125,7 @@ class DetailsView extends React.PureComponent<Props> {
               </Item>
             </Body>
           </CardItem>
-        </ScrollView>
+        </View>
       </React.Fragment>
     );
   }
@@ -159,10 +156,6 @@ const styles = EStyleSheet.create({
 
   scrolledContentContainer: {
     flexGrow: 1
-  },
-
-  scrolledContent: {
-    flex: 1
   }
 });
 

@@ -245,9 +245,7 @@ export const withUIHelpers = <P extends object>(
     render() {
       const props = this.props || {};
       return (
-        <Consumer>
-          {context => <Component {...props} {...this.props} ui={context} />}
-        </Consumer>
+        <Consumer>{context => <Component {...props} ui={context} />}</Consumer>
       );
     }
   };

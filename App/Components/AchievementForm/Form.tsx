@@ -1,27 +1,18 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Objective, Query, Mode, Category, Type } from "graphqlTypes";
-import { compose, graphql } from "react-apollo";
-import { withProps } from "recompose";
+import { graphql } from "react-apollo";
+import { compose, withProps } from "recompose";
+import { sum, mapValues, values, concat, flatten, isEqual } from "lodash";
 import { ApolloQueryResult } from "apollo-client";
-import { sum, mapValues, values, concat, flatten } from "lodash";
-import { View as AnimatedView } from "react-native-animatable";
-import { BlurView } from "react-native-blur";
 
 // @ts-ignore
 import Select from "react-native-picker-select";
-
-import reformed, { ReformedProps } from "react-reformed";
-import validateSchema, {
-  ValidationProps
-} from "react-reformed/lib/validateSchema";
 
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 import gql from "graphql-tag";
 import {
-  Container,
-  Form,
   Input,
   Textarea,
   Label,
@@ -43,49 +34,27 @@ import { Achievement, TypeEdge, ModeEdge, CategoryEdge } from "graphqlTypes";
 import IconPicker from "./IconPicker";
 import ObjectiveChip from "./ObjectiveChip";
 import colors from "./Colors";
-
-import ProtoObjectiveDialog, {
-  ProtoObjective,
-  EditableObjective
-} from "../../Components/AchievementForm/ProtoObjectiveDialog";
-
-export interface ProtoAchievement
-  extends Omit<
-      Achievement,
-      | "id"
-      | "objectives"
-      | "author"
-      | "type"
-      | "mode"
-      | "category"
-      | "hasParents"
-      | "points"
-    > {
-  // This allows us to pass in existing objectives and show them on the map, when editing existing achivements
-  objectives: Array<EditableObjective>;
-
-  type: Type | null;
-  mode: Mode | null;
-  category: Category | null;
-}
+import ProtoObjectiveDialog from "./ProtoObjectiveDialog";
+import { ProtoObjective, EditableObjective, ProtoAchievement } from "./types";
 
 export interface State {
   _objective: ProtoObjective | null;
 }
 
-interface Props extends ReformedProps<Achievement | ProtoAchievement> {
-  data: Query & ApolloQueryResult<Query> & { error: string };
-
-  onSubmit(model: Achievement | ProtoAchievement): any;
-
+interface Props {
+  achievement: Achievement | ProtoAchievement;
+  onSubmit(achievement: Achievement | ProtoAchievement): any;
+  onClickObjective(achievement: EditableObjective): any;
+  onChange(field: keyof Achievement, value: any): any;
   coordinates: Region | null;
   validationErrors: Array<string>;
 }
 
-class AchievementForm extends React.Component<
-  Props & ValidationProps<Achievement | ProtoAchievement>,
-  State
-> {
+interface ComposedProps extends Props {
+  data: Query & ApolloQueryResult<Query> & { error: string };
+}
+
+class AchievementForm extends React.Component<ComposedProps, State> {
   state: State = {
     // This contains a temporary objective, while
     // setting up the name and color of the objective.
@@ -95,8 +64,8 @@ class AchievementForm extends React.Component<
     _objective: null
   };
 
-  calculatePoints = (): number => {
-    const { model: achievement } = this.props;
+  private calculatePoints = (): number => {
+    const { achievement } = this.props;
     const category: CategoryEdge | undefined | null =
       achievement.category &&
       this.props.data.categories &&
@@ -146,7 +115,7 @@ class AchievementForm extends React.Component<
   render() {
     console.log({ name: "AchievementForm#render", props: this.props });
 
-    const { model, data, setProperty } = this.props;
+    const { achievement, data, onChange } = this.props;
 
     const modes: Array<Mode> =
       data && data.modes && data.modes.edges
@@ -164,7 +133,7 @@ class AchievementForm extends React.Component<
           >)
         : [];
 
-    const objectives: Array<EditableObjective> = model.objectives;
+    const objectives: Array<EditableObjective> = achievement.objectives;
 
     return (
       <React.Fragment>
@@ -184,11 +153,9 @@ class AchievementForm extends React.Component<
                 label: "Click to set Difficulty",
                 value: null
               }}
-              value={model.mode ? model.mode.id : null}
+              value={achievement.mode ? achievement.mode.id : null}
               onValueChange={(id: string) =>
-                setProperty("mode", modes.find(
-                  (m: Mode) => m.id === id
-                ) as Mode)
+                onChange("mode", modes.find((m: Mode) => m.id === id) as Mode)
               }
             />
           </Right>
@@ -196,17 +163,17 @@ class AchievementForm extends React.Component<
         <CardItem style={[styles.transparent, styles.noVerticalPadding]}>
           <Left style={{ flexGrow: 1, paddingTop: 0 }}>
             <IconPicker
-              name={model.icon}
+              name={achievement.icon}
               size={40}
               difficulty={"Normal"}
-              onChange={(name: string) => setProperty("icon", name)}
+              onChange={(name: string) => onChange("icon", name)}
             />
             <Body>
               <Item>
                 <Input
                   placeholder="Title"
-                  onChangeText={(title: string) => setProperty("name", title)}
-                  value={model.name}
+                  onChangeText={(title: string) => onChange("name", title)}
+                  value={achievement.name}
                 />
               </Item>
               <Item style={{ borderBottomWidth: 0 }}>
@@ -223,9 +190,9 @@ class AchievementForm extends React.Component<
                     label: "Click to set Category",
                     value: null
                   }}
-                  value={model.category ? model.category.id : null}
+                  value={achievement.category ? achievement.category.id : null}
                   onValueChange={(id: string) =>
-                    setProperty("category", categories.find(
+                    onChange("category", categories.find(
                       (c: Category) => c.id === id
                     ) as Category)
                   }
@@ -243,12 +210,22 @@ class AchievementForm extends React.Component<
             <Item stackedLabel>
               <Label style={styles.objectivesLabel}>Objectives</Label>
               <View style={styles.objectivesChips}>
-                {!model.objectives
+                {!achievement.objectives
                   ? null
                   : objectives.map((objective: EditableObjective, index) => (
                       <ObjectiveChip
                         objective={objective}
                         color={colors[index]}
+                        onPress={() =>
+                          this.props.onClickObjective &&
+                          this.props.onClickObjective(objective)
+                        }
+                        onLongPress={() =>
+                          onChange(
+                            "objectives",
+                            objectives.filter(o => !isEqual(o, objective))
+                          )
+                        }
                       />
                     ))}
 
@@ -280,12 +257,12 @@ class AchievementForm extends React.Component<
             <Item stackedLabel>
               <Label>Description</Label>
               <Textarea
-                rowSpan={5}
+                rowSpan={3}
                 placeholder="Give other users a background story for your achievement"
                 onChangeText={(title: string) =>
-                  setProperty("fullDescription", title)
+                  onChange("fullDescription", title)
                 }
-                value={model.fullDescription || ""}
+                value={achievement.fullDescription || ""}
               />
             </Item>
           </Body>
@@ -295,7 +272,7 @@ class AchievementForm extends React.Component<
           {this.props.validationErrors && this.props.validationErrors.length ? (
             <Text>{this.props.validationErrors[0]}</Text>
           ) : (
-            <TouchableOpacity onPress={() => this.props.onSubmit(model)}>
+            <TouchableOpacity onPress={() => this.props.onSubmit(achievement)}>
               <Icon
                 name="ios-checkmark-circle-outline"
                 type="Ionicons"
@@ -365,12 +342,9 @@ class AchievementForm extends React.Component<
           onChange={(objective: EditableObjective) => {
             const listOfObjective: Array<EditableObjective> = [objective];
             const existingObjectives: Array<EditableObjective> =
-              model.objectives;
+              achievement.objectives;
 
-            setProperty(
-              "objectives",
-              existingObjectives.concat(listOfObjective)
-            );
+            onChange("objectives", existingObjectives.concat(listOfObjective));
             this.setState({ _objective: null });
           }}
         />
@@ -418,7 +392,7 @@ const styles = EStyleSheet.create({
   }
 });
 
-export default compose(
+const Form: React.ComponentClass<Props> = compose<ComposedProps, Props>(
   graphql(
     gql`
       query {
@@ -453,68 +427,7 @@ export default compose(
         }
       }
     `
-  ),
-  reformed<ProtoAchievement>(),
-  validateSchema<ProtoAchievement>({
-    name: {
-      type: "string",
-      test: (value: string, fail: Function) => {
-        if (!value) {
-          return fail("Your achievement needs a name, and an icon");
-        } else if (value.length < 4) {
-          return fail("The name must be longer than that");
-        } else if (value.length > 100) {
-          return fail("Keep the achievement name short and concise.");
-        }
-      }
-    },
-    icon: {
-      type: "string",
-      test: (value: string, fail: Function) => {
-        if (!value) {
-          return fail("Pick an icon by clicking the icon");
-        }
-      }
-    },
-    category: {
-      type: "object",
-      test: (value: Category, fail: Function) => {
-        if (!value || !value.id) {
-          return fail("Pick a category");
-        }
-      }
-    },
-    fullDescription: {
-      type: "string",
-      test: (value: string, fail: Function) => {
-        if (!value) {
-          return fail("Provide a description");
-        } else if (value.length < 50) {
-          return fail("Remember: Descriptions should be verbose");
-        }
-      }
-    },
-
-    mode: {
-      type: "object",
-      test: (value: Mode, fail: Function) => {
-        if (!value || !value.id) {
-          return fail("Select a Difficulty");
-        }
-      }
-    },
-    objectives: {
-      type: "object",
-      test: (value: EditableObjective[], fail: Function) => {
-        if (value.length < 1) {
-          return fail("Add some objectives to complete!");
-        }
-      }
-    }
-  }),
-  withProps(({ schema }: ValidationProps<ProtoAchievement>) => ({
-    validationErrors: flatten(
-      concat([], values(mapValues(schema.fields, ({ errors }) => errors || [])))
-    )
-  }))
+  )
 )(AchievementForm);
+
+export default Form;

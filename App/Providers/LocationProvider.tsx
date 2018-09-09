@@ -3,15 +3,17 @@ import { GeolocationReturnType, GeolocationError } from "react-native";
 
 declare var navigator: any;
 export interface LocationContext {
-  lat: number;
-  lng: number;
+  latitude: number;
+  longitude: number;
+  latitudeDelta?: number;
+  longitudeDelta?: number;
   timestamp: number;
   alt: number | null;
 }
 
 const DEFAULT_CONTEXT: LocationContext = {
-  lat: 59.9169,
-  lng: 10.7276,
+  latitude: 59.9169,
+  longitude: 10.7276,
   alt: 0,
   timestamp: new Date().getTime()
 };
@@ -38,8 +40,10 @@ const withLocation = (options: LocationOptions = { watch: false }) => <
         navigator.geolocation.watchPosition(
           (position: GeolocationReturnType) =>
             this.setState({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              latitudeDelta: 0.03,
+              longitudeDelta: 0.03,
               alt: position.coords.altitude,
               timestamp: position.timestamp
             }),
@@ -54,8 +58,10 @@ const withLocation = (options: LocationOptions = { watch: false }) => <
         navigator.geolocation.getCurrentPosition(
           (position: GeolocationReturnType) =>
             this.setState({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              latitudeDelta: 0.03,
+              longitudeDelta: 0.03,
               alt: position.coords.altitude,
               timestamp: position.timestamp
             }),

@@ -3,17 +3,24 @@ import {
   createStackNavigator,
   createSwitchNavigator,
   createBottomTabNavigator,
+  createMaterialTopTabNavigator,
   TabScene,
-  NavigationScreenConfig
+  NavigationScreenConfig,
+  NavigationScreenProp,
+  NavigationState
 } from "react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { compose } from "recompose";
+import { TouchableOpacity } from "react-native";
+import LottieView from "lottie-react-native";
+
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 
 import AchievementsScreen from "../Screens/Achievements/List";
-import AchievementsCreateScreen from "../Screens/Achievements/Create";
+import AchievementCreateScreen from "../Screens/Achievements/Create";
 import AchievementDetailsScreen from "../Screens/Achievements/Details";
+import AchievementEditScreen from "../Screens/Achievements/Edit";
 import NearbyMapScreen from "../Screens/Nearby/Map";
 
 import { withUser } from "../Providers/UserProvider";
@@ -21,11 +28,46 @@ import { withUser } from "../Providers/UserProvider";
 const AchievementsTab = createStackNavigator(
   {
     AchievementScreen: {
-      screen: AchievementsScreen
+      screen: createMaterialTopTabNavigator(
+        {
+          All: AchievementsScreen.All,
+          Tracked: AchievementsScreen.Tracked,
+          Personal: AchievementsScreen.Personal
+        },
+        // @ts-ignore
+        {
+          swipeEnabled: false,
+          navigationOptions: () => ({
+            tabBarOptions: {
+              style: { backgroundColor: EStyleSheet.value("$colorSecondary") }
+            }
+          })
+        }
+      ),
+      navigationOptions: ({
+        navigation
+      }: {
+        navigation: NavigationScreenProp<NavigationState>;
+      }) => ({
+        title: "Achievements",
+        headerRight: (
+          <TouchableOpacity onPress={() => navigation.navigate("CreateScreen")}>
+            <LottieView
+              source={require("../Lottie/add.json")}
+              autoPlay
+              loop
+              style={{ height: 30, width: 30, marginRight: 16 }}
+            />
+          </TouchableOpacity>
+        )
+      })
+    },
+    CreateScreen: {
+      screen: AchievementCreateScreen
     },
 
-    CreateScreen: {
-      screen: AchievementsCreateScreen
+    EditScreen: {
+      screen: AchievementEditScreen
     },
 
     DetailsScreen: {
@@ -44,6 +86,8 @@ AchievementsTab.navigationOptions = ({
 }: NavigationScreenConfig<any>) => {
   const { routes, index } = navigation.state;
   const { routeName } = routes[index];
+
+  console.log({ currentTab: routes[index] });
 
   return {
     tabBarVisible: ["CreateScreen", "DetailsScreen"].indexOf(routeName) === -1,
@@ -112,7 +156,7 @@ const loggedInNavigation = createBottomTabNavigator(
 const LoggedOutNavigation = createStackNavigator(
   {
     // In case navigation is cached, point everything to LoginScreen
-    AchievementsScreen: { screen: AchievementsScreen }
+    AchievementsScreen: { screen: AchievementsTab }
   },
   {
     initialRouteName: "AchievementsScreen"

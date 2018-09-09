@@ -37,8 +37,8 @@ declare module "react-reformed" {
   }
 
   // Props you want the resulting component to take (besides the props of the wrapped component)
-  interface ExternalProps<TModel> {
-    intialModel: TModel;
+  export interface ExternalProps<TModel> {
+    initialModel: TModel;
   }
 
   interface BindInputFuncResult<TModel> {

@@ -1,37 +1,37 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import Map, { Region } from "react-native-maps";
-import { Query, Category, Mode, Objective } from "graphqlTypes";
+import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
+import Map, { Region, Marker } from "react-native-maps";
+import { Query, Category, Mode } from "graphqlTypes";
 import { ApolloQueryResult } from "apollo-client";
-import { compose, graphql, MutateProps } from "react-apollo";
+import { graphql, MutateProps } from "react-apollo";
 import { omit, pick } from "lodash";
+import { compose, withProps, defaultProps, withStateHandlers } from "recompose";
 
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import gql from "graphql-tag";
 import { NavigationScreenProp, NavigationState } from "react-navigation";
-import { withStateHandlers, defaultProps } from "recompose";
-import { Icon } from "native-base";
 
 import EStyleSheet from "react-native-extended-stylesheet";
+
 import reformed, { ReformedProps, ExternalProps } from "react-reformed";
 import { ValidationProps } from "react-reformed/lib/validateSchema";
 
 import objectiveColors from "../../Components/AchievementForm/Colors";
 import { withUIHelpers, UIContext } from "../../Providers/UIProvider";
 
-import withLocation, {
-  LocationContext
-} from "../../Providers/LocationProvider";
-
 import AchievementForm from "../../Components/AchievementForm/Form";
 import validateAchievement from "../../Components/AchievementForm/Validate";
+
+import { Achievement, Objective } from "graphqlTypes";
 import {
   EditableObjective,
   ProtoAchievement
 } from "../../Components/AchievementForm/types";
 import MapMarker from "../../Components/MapMarker";
 import Drawer from "../../Components/Drawer/Drawer";
-
-import { Achievement } from "graphqlTypes";
+import withLocation, {
+  LocationContext
+} from "../../Providers/LocationProvider";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -40,8 +40,8 @@ interface Props {
 type ComposedProps = Props &
   MutateProps &
   ReformedProps<Achievement | ProtoAchievement> &
-  ValidationProps<Achievement | ProtoAchievement> &
-  ExternalProps<Achievement | ProtoAchievement> & {
+  ExternalProps<Achievement | ProtoAchievement> &
+  ValidationProps<Achievement | ProtoAchievement> & {
     data: Query & ApolloQueryResult<Query> & { error: string };
     validationErrors: Array<string>;
     ui: UIContext;
@@ -51,17 +51,31 @@ type ComposedProps = Props &
   };
 
 interface State {
-  achievement: ProtoAchievement;
+  coordinates: Region | null;
 }
 
 const CROSSHAIR_SIZE = 20;
 
-class AchievementsCreate extends React.Component<ComposedProps, State> {
+class AchievementsEdit extends React.Component<ComposedProps, State> {
+  state: State = {
+    coordinates: null
+  };
+
   componentDidMount() {
     this.props.setCoordinates();
+
+    if (this.map) {
+      this.map.fitToElements(true);
+    }
   }
 
-  createAchievement = (model: ProtoAchievement) => {
+  componentWillReceiveProps() {
+    if (this.map) {
+      this.map.fitToElements(true);
+    }
+  }
+
+  updateAchievement = (model: ProtoAchievement) => {
     console.log({ model });
 
     const { objectives } = model;
@@ -69,7 +83,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
     const category = model.category as Category;
 
     const protoAchievement = {
-      ...omit(model, ["id", "category", "mode"]),
+      ...omit(model, ["category", "mode", "type"]),
       categoryId: parseInt(category && category.id ? category.id : "0", 10),
       modeId: parseInt(mode.id, 10),
       description: model.fullDescription,
@@ -96,7 +110,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
       })
       .then(({ data }) => {
         console.log({ data });
-        const { errors, achievement } = data.createAchievement;
+        const { errors, achievement } = data.editAchievement;
 
         // TODO: Handle errors here by showing an error notification
         this.props.ui.notifySuccess("Saved").then(() =>
@@ -110,20 +124,20 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
   map: Map | null = null;
 
   render() {
-    console.log({ name: "AchievementsCreate#render", state: this.state });
-    const { data } = this.props;
-    const model = this.props.model as ProtoAchievement;
+    console.log({ name: "AchievementsEdit#render", state: this.state });
 
-    const currentObjectives: Array<EditableObjective | Objective> =
-      model.objectives || [];
-
+    const { data, initialModel } = this.props;
+    const model =
+      (this.props.model as Achievement) ||
+      (this.props.data.achievement as Achievement);
+    const currentObjectives = model.objectives || [];
     const nearbyObjectives =
       data.objectives && data.objectives.edges
         ? data.objectives.edges.filter(
             ({ node }) =>
               node &&
               !currentObjectives.some(
-                (o: any) => node.id && o.id && o.id === node.id
+                (o: EditableObjective | Objective) => o.id === node.id
               )
           )
         : [];
@@ -135,12 +149,9 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
           ref={(map: any) => {
             this.map = map;
           }}
-          initialRegion={{
-            ...pick(this.props.location, ["latitude", "longitude"]),
-            latitudeDelta: 0.03,
-            longitudeDelta: 0.03
-          }}
-          onRegionChangeComplete={this.props.setCoordinates}
+          onRegionChangeComplete={(region: Region) =>
+            this.setState({ coordinates: region })
+          }
         >
           {/* Show existing objectives and allow user to add existing 
                objectives to the achievement */}
@@ -149,10 +160,10 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
               ({ node }) =>
                 node && (
                   <MapMarker
-                    key={node.id}
                     objective={node}
                     calloutIcon="plus"
                     color="#333333"
+                    key={node.id}
                     onCalloutPress={() => {
                       this.props.setProperty(
                         "objectives",
@@ -183,27 +194,30 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
           <Icon
             style={styles.crosshair}
             name="crosshairs"
-            type="MaterialCommunityIcons"
+            size={CROSSHAIR_SIZE}
           />
         </View>
 
         <Drawer maxHeight={500} initiallyExpanded>
-          <AchievementForm
-            onChange={this.props.setProperty}
-            validationErrors={this.props.validationErrors}
-            achievement={this.props.model}
-            coordinates={this.props.coordinates}
-            onSubmit={this.createAchievement}
-            onClickObjective={(objective: EditableObjective) =>
-              objective.lat &&
-              objective.lng &&
-              this.map &&
-              this.map.animateToCoordinate({
-                latitude: objective.lat,
-                longitude: objective.lng
-              })
-            }
-          />
+          {model &&
+            initialModel && (
+              <AchievementForm
+                achievement={model}
+                onChange={this.props.setProperty}
+                validationErrors={this.props.validationErrors}
+                coordinates={this.state.coordinates}
+                onSubmit={this.updateAchievement}
+                onClickObjective={(objective: EditableObjective) =>
+                  objective.lat &&
+                  objective.lng &&
+                  this.map &&
+                  this.map.animateToCoordinate({
+                    latitude: objective.lat,
+                    longitude: objective.lng
+                  })
+                }
+              />
+            )}
         </Drawer>
       </View>
     );
@@ -222,16 +236,58 @@ const styles = EStyleSheet.create({
     justifyContent: "center"
   },
   crosshair: {
-    color: "$colorSecondary",
-    fontSize: 20
+    color: "$colorSecondary"
   }
 });
 
-const Screen = compose(
-  withLocation(),
+const Screen = compose<ComposedProps, Props>(
+  withProps(({ navigation }: Props) => ({
+    id: navigation.getParam("id", "12")
+  })),
+  graphql(
+    gql`
+      query AchievementEditDetails($id: String!) {
+        achievement(id: $id) {
+          id
+          name
+          shortDescription
+          fullDescription
+          basePoints
+          points
+          icon
+          objectives {
+            id
+            tagline
+            kind
+            lat
+            lng
+            basePoints
+          }
 
+          category {
+            id
+            title
+            points
+          }
+
+          mode {
+            id
+            name
+            multiplier
+          }
+
+          type {
+            id
+            name
+            points
+          }
+        }
+      }
+    `
+  ),
   graphql(gql`
-    mutation CreateAchievement(
+    mutation EditAchievement(
+      $id: String!
       $name: String!
       $description: String!
       $objectives: [ObjectiveInput!]!
@@ -239,8 +295,9 @@ const Screen = compose(
       $categoryId: Int!
       $modeId: Int!
     ) {
-      createAchievement(
+      editAchievement(
         input: {
+          id: $id
           name: $name
           description: $description
           icon: $icon
@@ -281,7 +338,30 @@ const Screen = compose(
       }
     }
   `),
-  withUIHelpers,
+
+  withLocation(),
+  defaultProps({
+    initialModel: {
+      name: "",
+      shortDescription: "",
+      fullDescription: "",
+      icon: "binoculars",
+      basePoints: 10,
+      mode: null,
+      category: null,
+      type: null,
+      objectives: [],
+      expires: null,
+      isMultiPlayer: false,
+      isGlobal: false,
+      requestReview: false
+    }
+  }),
+  withProps(
+    ({ data }: ComposedProps) =>
+      data && data.achievement ? { initialModel: data.achievement } : {}
+  ),
+  reformed<Achievement>(),
   withStateHandlers(
     {
       coordinates: null
@@ -319,32 +399,16 @@ const Screen = compose(
       })
     }
   ),
-  defaultProps({
-    initialModel: {
-      name: "",
-      shortDescription: "",
-      fullDescription: "",
-      icon: "binoculars",
-      basePoints: 10,
-      mode: null,
-      category: null,
-      type: null,
-      objectives: [],
-      expires: null,
-      isMultiPlayer: false,
-      isGlobal: false,
-      requestReview: false
-    }
-  }),
-  reformed<ProtoAchievement>(),
+  withUIHelpers,
   validateAchievement
-)(AchievementsCreate);
+)(AchievementsEdit);
 
+// @ts-ignore
 Screen.navigationOptions = {
   tabBarVisible: false,
   headerMode: "float",
   headerTransparent: true,
-  title: "New Achievement",
+  title: "Edit Achievement",
   headerStyle: {
     backgroundColor: "transparent",
     borderBottomWidth: 0

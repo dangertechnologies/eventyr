@@ -20,7 +20,6 @@ import Drawer from "../../Components/Drawer/Drawer";
 
 import gql from "graphql-tag";
 import { NavigationState, NavigationScreenProp } from "react-navigation";
-import calculateRegion from "../../Helpers/Map";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -41,55 +40,17 @@ class AchievementsView extends React.PureComponent<Props, State> {
     coordinates: null
   };
 
+  map: Map | null = null;
+
   componentDidMount() {
-    const { data } = this.props;
-
-    if (
-      data.achievement &&
-      data.achievement.objectives &&
-      data.achievement.objectives.length
-    ) {
-      const boundingBox = calculateRegion(
-        data.achievement.objectives.filter(o => o.lat && o.lng),
-        {}
-      );
-
-      this.setState({
-        coordinates: boundingBox
-          ? boundingBox
-          : {
-              latitude: this.props.location.lat,
-              longitude: this.props.location.lng,
-              latitudeDelta: 0.15,
-              longitudeDelta: 0.15
-            }
-      });
+    if (this.map) {
+      this.map.fitToElements(true);
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    const { data } = nextProps;
-
-    if (
-      data.achievement &&
-      data.achievement.objectives &&
-      data.achievement.objectives.length
-    ) {
-      const boundingBox = calculateRegion(
-        data.achievement.objectives.filter(o => o.lat && o.lng),
-        {}
-      );
-
-      this.setState({
-        coordinates: boundingBox
-          ? boundingBox
-          : {
-              latitude: this.props.location.lat,
-              longitude: this.props.location.lng,
-              latitudeDelta: 0.15,
-              longitudeDelta: 0.15
-            }
-      });
+  componentWillReceiveProps() {
+    if (this.map) {
+      this.map.fitToElements(true);
     }
   }
 
@@ -104,6 +65,9 @@ class AchievementsView extends React.PureComponent<Props, State> {
     return (
       <View style={{ flex: 1 }}>
         <Map
+          ref={map => {
+            this.map = map;
+          }}
           style={StyleSheet.absoluteFill}
           initialRegion={this.state.coordinates || undefined}
           region={this.state.coordinates || undefined}

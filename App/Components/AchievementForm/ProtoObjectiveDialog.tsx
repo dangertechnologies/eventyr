@@ -1,29 +1,16 @@
 import React from "react";
-import { isEqual } from "lodash";
 import { Input, Form, Item, Label, Button, Text } from "native-base";
-import { Objective } from "graphqlTypes";
 
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 import { compose, mapProps } from "recompose";
 
-// @ts-ignore
 import reformed from "react-reformed";
-// @ts-ignore
 import validateSchema from "react-reformed/lib/validateSchema";
 
 import Dialog from "../Dialog";
 
-export interface ProtoObjective
-  extends Omit<
-      Objective,
-      "achievements" | "createdAt" | "kind" | "hashIdentifier" | "altitude"
-    > {
-  kind: "LOCATION" | "ACTION";
-  altitude?: number | null;
-}
-
-export type EditableObjective = ProtoObjective | Objective;
+import { EditableObjective, ProtoObjective } from "./types";
 
 interface Props {
   objective?: EditableObjective;
