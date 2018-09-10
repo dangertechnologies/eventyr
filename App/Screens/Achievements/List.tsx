@@ -7,7 +7,7 @@ import { withUIHelpers } from "App/Providers/UIProvider";
 import { View, FlatList, Alert } from "react-native";
 import { Container, Content, Text } from "native-base";
 import LottieView from "lottie-react-native";
-import AchievementCard from "App/Components/AchievementCard";
+import AchievementCard from "App/Components/Cards/Achievement";
 
 /** UTILS */
 import { withProps, compose } from "recompose";

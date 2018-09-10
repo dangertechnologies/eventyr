@@ -45,7 +45,7 @@ type Props = {
   cache: CacheContext;
   oneSignal: OneSignalContext;
   auth0: Auth0Context;
-  children: Node;
+  children: React.ReactNode;
   data: ApolloQueryResult<any>;
 };
 
@@ -100,7 +100,7 @@ class UserProvider extends React.Component<Props, State> {
     const { cache } = this.props;
 
     const contextValue: UserContext = {
-      ...(get(this.props.data, "user") || LOGGED_OUT_USER),
+      ...(get(this.props.data, "currentUser") || LOGGED_OUT_USER),
       credentials: cache.credentials,
       logout: cache.clear,
       refreshCredentials: this.refreshCredentials,

@@ -22,6 +22,7 @@ import AchievementCreateScreen from "../Screens/Achievements/Create";
 import AchievementDetailsScreen from "../Screens/Achievements/Details";
 import AchievementEditScreen from "../Screens/Achievements/Edit";
 import NearbyMapScreen from "../Screens/Nearby/Map";
+import ProfileScreen from "../Screens/Dashboard/Profile";
 
 import { withUser } from "../Providers/UserProvider";
 
@@ -112,24 +113,29 @@ const loggedInNavigation = createBottomTabNavigator(
 
     NearbyScreen: {
       screen: NearbyTab
+    },
+
+    ProfileScreen: {
+      screen: ProfileScreen
     }
   },
   // @ts-ignore
   {
     // Default config for all screens
     tabBarPosition: "bottom",
-    initialRouteName: "AchievementsScreen",
+    initialRouteName: "ProfileScreen",
     swipeEnabled: true,
     lazy: true,
     paths: {
       AchievementsScreen: "AchievementsScreen",
-      NearbyScreen: "NearbyScreen"
+      NearbyScreen: "NearbyScreen",
+      ProfileScreen: "ProfileScreen"
     },
 
     tabBarOptions: {
       showLabel: true
     },
-    order: ["AchievementsScreen", "NearbyScreen"],
+    order: ["AchievementsScreen", "NearbyScreen", "ProfileScreen"],
 
     navigationOptions: ({ navigation }) => ({
       headerMode: "float",
