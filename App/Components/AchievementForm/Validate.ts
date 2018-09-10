@@ -3,9 +3,9 @@ import { mapValues, values, concat, flatten } from "lodash";
 import validateSchema, {
   ValidationProps
 } from "react-reformed/lib/validateSchema";
-import { Category, Mode, Achievement } from "graphqlTypes";
+import { Category, Mode, Achievement } from "App/Types/GraphQL";
 
-import { EditableObjective, ProtoAchievement } from "./types";
+import { EditableObjective, ProtoAchievement } from "App/Types/Prototypes";
 
 export default compose(
   validateSchema<ProtoAchievement | Achievement>({

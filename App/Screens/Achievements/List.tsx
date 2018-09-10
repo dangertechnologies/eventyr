@@ -1,61 +1,69 @@
 import React from "react";
-import { View, FlatList, TouchableOpacity } from "react-native";
-import { graphql } from "react-apollo";
-import gql from "graphql-tag";
-import { ApolloQueryResult } from "apollo-client";
+
+/** PROVIDERS **/
+import { withUIHelpers } from "App/Providers/UIProvider";
+
+/** COMPONENTS **/
+import { View, FlatList, Alert } from "react-native";
 import { Container, Content, Text } from "native-base";
-
-import { Query } from "graphqlTypes";
-
-import { NavigationScreenProp, NavigationState } from "react-navigation";
 import LottieView from "lottie-react-native";
-import EStyleSheet from "react-native-extended-stylesheet";
+import AchievementCard from "App/Components/AchievementCard";
+
+/** UTILS */
 import { withProps, compose } from "recompose";
 
-import AchievementCard from "../../Components/AchievementCard";
+/** GRAPHQL **/
+import { graphql } from "react-apollo";
 
-const ACHIEVEMENTS_QUERY = gql`
-  query AchievementsList($kind: String!) {
-    achievements(kind: $kind) {
-      edges {
-        node {
-          id
-          name
-          points
-          icon
+/** STYLES **/
+import EStyleSheet from "react-native-extended-stylesheet";
 
-          author {
-            id
-            name
-          }
+/** TYPES **/
+import gql from "graphql-tag";
+import { NavigationScreenProp, NavigationState } from "react-navigation";
+import { Query, Achievement } from "App/Types/GraphQL";
+import { ApolloQueryResult } from "apollo-client";
+import { MutateProps } from "react-apollo";
+import { UIContext } from "App/Providers/UIProvider";
+import QUERY_ACHIEVEMENTS from "App/GraphQL/Achievements/List";
+import MUTATE_DELETE_ACHIEVEMENT, {
+  updateQueries
+} from "App/GraphQL/Achievements/Delete";
 
-          category {
-            id
-            title
-            icon
-          }
-          mode {
-            id
-            name
-          }
-          type {
-            id
-            name
-            icon
-          }
-        }
-      }
-    }
-  }
-`;
-
-interface Props {
+interface Props extends MutateProps {
   data: Query & ApolloQueryResult<Query> & { error: string };
   navigation: NavigationScreenProp<NavigationState>;
   kind: "all" | "personal" | "tracked";
+  ui: UIContext;
 }
 
 class Achievements extends React.PureComponent<Props> {
+  deleteAchievement = (achievement: Achievement) => {
+    this.props
+      .mutate({
+        variables: { id: achievement.id },
+        // @ts-ignore
+        updateQueries
+      })
+      .then(() =>
+        this.props.ui
+          .closeNotification()
+          .then(() => this.props.ui.notifySuccess("Done"))
+      );
+  };
+
+  confirmDelete = (achievement: Achievement) =>
+    Alert.alert(`Delete ${achievement.name}`, "Are you sure?", [
+      {
+        text: "Cancel",
+        onPress: () => null
+      },
+      {
+        text: "Yes",
+        onPress: () => this.deleteAchievement(achievement)
+      }
+    ]);
+
   render() {
     if (this.props.data.error) {
       return <Text>{this.props.data.error.toString()}</Text>;
@@ -94,6 +102,7 @@ class Achievements extends React.PureComponent<Props> {
                     id: item.node.id
                   })
                 }
+                onDelete={() => item.node && this.confirmDelete(item.node)}
                 onPress={() =>
                   item.node &&
                   this.props.navigation.navigate("DetailsScreen", {
@@ -123,11 +132,27 @@ const ListWithDefaultProps = (
 ): React.ComponentType<Props> => {
   const ListScreen: React.ComponentType<Props> = compose<Props, Props>(
     withProps(defaultProps),
-    graphql(ACHIEVEMENTS_QUERY, {
-      options: ({ kind }: Props) => ({
-        variables: { kind }
-      })
-    })
+    graphql(
+      gql`
+        ${QUERY_ACHIEVEMENTS}
+      `,
+      {
+        options: ({ kind }: Props) => ({
+          variables: { kind }
+        })
+      }
+    ),
+    graphql(
+      gql`
+        ${MUTATE_DELETE_ACHIEVEMENT}
+      `,
+      {
+        options: ({ kind }: Props) => ({
+          variables: { kind }
+        })
+      }
+    ),
+    withUIHelpers
   )(Achievements);
 
   // @ts-ignore

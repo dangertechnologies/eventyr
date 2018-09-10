@@ -1,13 +1,9 @@
 import React from "react";
-import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { Objective } from "graphqlTypes";
-import { View as AnimatedView } from "react-native-animatable";
-import { BlurView } from "react-native-blur";
 
-import EStyleSheet from "react-native-extended-stylesheet";
+/** COMPONENTS  **/
+import { View } from "react-native";
+import { View as AnimatedView } from "react-native-animatable";
 import {
-  Container,
-  Form,
   Label,
   Item,
   CardItem,
@@ -16,16 +12,18 @@ import {
   Left,
   H3,
   H2,
-  Text,
-  Icon
+  Text
 } from "native-base";
-
-import { Achievement } from "graphqlTypes";
 import LottieView from "lottie-react-native";
+import ObjectiveChip from "App/Components/AchievementForm/ObjectiveChip";
+import AchievementIcon from "App/Components/AchievementIcon";
 
-import ObjectiveChip from "./ObjectiveChip";
-import colors from "./Colors";
-import AchievementIcon from "../AchievementIcon";
+/** TYPES **/
+import { Achievement, Objective } from "App/Types/GraphQL";
+
+/** STYLES **/
+import EStyleSheet from "react-native-extended-stylesheet";
+import colors from "App/Components/AchievementForm/Colors";
 
 interface Props {
   achievement?: Achievement;

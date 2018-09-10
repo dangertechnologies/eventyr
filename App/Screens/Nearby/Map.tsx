@@ -1,24 +1,30 @@
 import React from "react";
-import { View, StyleSheet, FlatList, NativeSyntheticEvent } from "react-native";
-import Map, { Region, Marker } from "react-native-maps";
-import { Query, Achievement, Objective } from "graphqlTypes";
-import { ApolloQueryResult } from "apollo-client";
+
+/** PROVIDERS **/
+import withLocation from "App/Providers/LocationProvider";
+
+/** COMPONENTS **/
+import { View, StyleSheet, FlatList } from "react-native";
+import Map from "react-native-maps";
+import { Button, Icon, Text } from "native-base";
+import MapMarker from "App/Components/MapMarker";
+import DetailsView from "App/Components/AchievementForm/DetailsView";
+import Drawer from "App/Components/Drawer";
+
+/** UTILS **/
 import { compose, graphql } from "react-apollo";
+import objectiveColors from "App/Components/AchievementForm/Colors";
+
+/** TYPES **/
+import { LocationContext } from "App/Providers/LocationProvider";
+import { ApolloQueryResult } from "apollo-client";
+import { Query, Achievement, Objective } from "App/Types/GraphQL";
+import { Region } from "react-native-maps";
+import { NavigationState, NavigationScreenProp } from "react-navigation";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import gql from "graphql-tag";
-import { NavigationState, NavigationScreenProp } from "react-navigation";
-import { Button, Icon, Text } from "native-base";
-
-import objectiveColors from "../../Components/AchievementForm/Colors";
-
-import withLocation, {
-  LocationContext
-} from "../../Providers/LocationProvider";
-
-import DetailsView from "../../Components/AchievementForm/DetailsView";
-import Drawer from "../../Components/Drawer/Drawer";
+import QUERY_NEARBY_ACHIEVEMENTS from "../../GraphQL/Achievements/AchievementsNearby";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -103,15 +109,11 @@ class AchievementsView extends React.PureComponent<Props, State> {
             visibleObjectives.map(
               (node, index) =>
                 node.kind === "LOCATION" && node.lat && node.lng ? (
-                  <Marker
-                    title={node.tagline}
+                  <MapMarker
                     key={node.id}
-                    pinColor={objectiveColors[index % 100]}
-                    onPress={() => !achievement && this.onSelect(node)}
-                    coordinate={{
-                      latitude: node.lat,
-                      longitude: node.lng
-                    }}
+                    objective={node}
+                    color={objectiveColors[index % 100]}
+                    calloutIcon="plus"
                   />
                 ) : null
             )}
@@ -178,57 +180,9 @@ const styles = EStyleSheet.create({
 
 const Screen = compose(
   withLocation(),
-  graphql(
-    gql`
-      query ObjectivesNearby($lat: Float!, $lng: Float!) {
-        objectives(near: [$lat, $lng]) {
-          edges {
-            node {
-              tagline
-              lat
-              lng
-              kind
-
-              achievements {
-                id
-                name
-                shortDescription
-                fullDescription
-                points
-                icon
-                objectives {
-                  id
-                  tagline
-                  kind
-                  lat
-                  lng
-                  basePoints
-                }
-
-                category {
-                  id
-                  title
-                }
-
-                mode {
-                  id
-                  name
-                }
-
-                type {
-                  id
-                  name
-                }
-              }
-            }
-          }
-        }
-      }
-    `,
-    {
-      options: ({ location }: Props) => ({ variables: location })
-    }
-  )
+  graphql(QUERY_NEARBY_ACHIEVEMENTS, {
+    options: ({ location }: Props) => ({ variables: location })
+  })
 )(AchievementsView);
 
 Screen.navigationOptions = {

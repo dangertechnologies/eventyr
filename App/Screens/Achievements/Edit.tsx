@@ -1,37 +1,51 @@
 import React from "react";
-import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
-import Map, { Region, Marker } from "react-native-maps";
-import { Query, Category, Mode } from "graphqlTypes";
-import { ApolloQueryResult } from "apollo-client";
-import { graphql, MutateProps } from "react-apollo";
-import { omit, pick } from "lodash";
-import { compose, withProps, defaultProps, withStateHandlers } from "recompose";
 
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import gql from "graphql-tag";
-import { NavigationScreenProp, NavigationState } from "react-navigation";
+/** PROVIDERS */
+import { withUIHelpers } from "App/Providers/UIProvider";
+import withLocation from "App/Providers/LocationProvider";
 
+/** COMPONENTS **/
+import { View, StyleSheet } from "react-native";
+import Map from "react-native-maps";
+import { Icon } from "native-base";
+import Drawer from "App/Components/Drawer";
+import MapMarker from "App/Components/MapMarker";
+import AchievementForm from "App/Components/AchievementForm";
+
+/** UTILS */
+import reformed from "react-reformed";
+import { compose, withStateHandlers, defaultProps, withProps } from "recompose";
+import { omit, pick, isEqual } from "lodash";
+import validateAchievement from "App/Components/AchievementForm/Validate";
+
+/** GRAPHQL **/
+import { graphql } from "react-apollo";
+
+/** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
+import objectiveColors from "App/Components/AchievementForm/Colors";
 
-import reformed, { ReformedProps, ExternalProps } from "react-reformed";
-import { ValidationProps } from "react-reformed/lib/validateSchema";
-
-import objectiveColors from "../../Components/AchievementForm/Colors";
-import { withUIHelpers, UIContext } from "../../Providers/UIProvider";
-
-import AchievementForm from "../../Components/AchievementForm/Form";
-import validateAchievement from "../../Components/AchievementForm/Validate";
-
-import { Achievement, Objective } from "graphqlTypes";
+/** TYPES **/
+import { NavigationScreenProp, NavigationState } from "react-navigation";
 import {
-  EditableObjective,
-  ProtoAchievement
-} from "../../Components/AchievementForm/types";
-import MapMarker from "../../Components/MapMarker";
-import Drawer from "../../Components/Drawer/Drawer";
-import withLocation, {
-  LocationContext
-} from "../../Providers/LocationProvider";
+  Query,
+  Category,
+  Mode,
+  Objective,
+  Achievement
+} from "App/Types/GraphQL";
+import { EditableObjective, ProtoAchievement } from "App/Types/Prototypes";
+import { ApolloQueryResult } from "apollo-client";
+import { Region } from "react-native-maps";
+import { MutateProps } from "react-apollo";
+import { ReformedProps, ExternalProps } from "react-reformed";
+import { ValidationProps } from "react-reformed/lib/validateSchema";
+import { LocationContext } from "App/Providers/LocationProvider";
+import { UIContext } from "App/Providers/UIProvider";
+
+import MUTATION_UPDATE_ACHIEVEMENT from "../../GraphQL/Achievements/Update";
+import QUERY_ACHIEVEMENT_DETAILS from "../../GraphQL/Achievements/Details";
+import QUERY_OBJECTIVES_NEARBY from "../../GraphQL/Achievements/ObjectivesNearby";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -69,9 +83,13 @@ class AchievementsEdit extends React.Component<ComposedProps, State> {
     }
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps: ComposedProps) {
     if (this.map) {
       this.map.fitToElements(true);
+    }
+
+    if (!isEqual(nextProps.initialModel, this.props.initialModel)) {
+      this.props.setModel(nextProps.initialModel);
     }
   }
 
@@ -192,9 +210,9 @@ class AchievementsEdit extends React.Component<ComposedProps, State> {
         </Map>
         <View pointerEvents="none" style={styles.crosshairContainer}>
           <Icon
-            style={styles.crosshair}
             name="crosshairs"
-            size={CROSSHAIR_SIZE}
+            type="MaterialCommunityIcons"
+            style={{ fontSize: CROSSHAIR_SIZE }}
           />
         </View>
 
@@ -244,100 +262,8 @@ const Screen = compose<ComposedProps, Props>(
   withProps(({ navigation }: Props) => ({
     id: navigation.getParam("id", "12")
   })),
-  graphql(
-    gql`
-      query AchievementEditDetails($id: String!) {
-        achievement(id: $id) {
-          id
-          name
-          shortDescription
-          fullDescription
-          basePoints
-          points
-          icon
-          objectives {
-            id
-            tagline
-            kind
-            lat
-            lng
-            basePoints
-          }
-
-          category {
-            id
-            title
-            points
-          }
-
-          mode {
-            id
-            name
-            multiplier
-          }
-
-          type {
-            id
-            name
-            points
-          }
-        }
-      }
-    `
-  ),
-  graphql(gql`
-    mutation EditAchievement(
-      $id: String!
-      $name: String!
-      $description: String!
-      $objectives: [ObjectiveInput!]!
-      $icon: String!
-      $categoryId: Int!
-      $modeId: Int!
-    ) {
-      editAchievement(
-        input: {
-          id: $id
-          name: $name
-          description: $description
-          icon: $icon
-          modeId: $modeId
-          categoryId: $categoryId
-          objectives: $objectives
-        }
-      ) {
-        achievement {
-          id
-          name
-          shortDescription
-          fullDescription
-          author {
-            id
-            name
-          }
-
-          isMultiPlayer
-          category {
-            id
-            title
-            icon
-          }
-
-          points
-
-          objectives {
-            id
-            tagline
-            lat
-            lng
-            isPublic
-            kind
-          }
-        }
-        errors
-      }
-    }
-  `),
+  graphql(QUERY_ACHIEVEMENT_DETAILS),
+  graphql(MUTATION_UPDATE_ACHIEVEMENT),
 
   withLocation(),
   defaultProps({
@@ -375,30 +301,11 @@ const Screen = compose<ComposedProps, Props>(
       })
     }
   ),
-  graphql(
-    gql`
-      query NearbyObjectives($latitude: Float!, $longitude: Float!) {
-        objectives(near: [$latitude, $longitude]) {
-          edges {
-            node {
-              id
-              tagline
-              basePoints
-              requiredCount
-              lat
-              lng
-              kind
-            }
-          }
-        }
-      }
-    `,
-    {
-      options: ({ coordinates, location }: ComposedProps) => ({
-        variables: coordinates || location
-      })
-    }
-  ),
+  graphql(QUERY_OBJECTIVES_NEARBY, {
+    options: ({ coordinates, location }: ComposedProps) => ({
+      variables: coordinates || location
+    })
+  }),
   withUIHelpers,
   validateAchievement
 )(AchievementsEdit);

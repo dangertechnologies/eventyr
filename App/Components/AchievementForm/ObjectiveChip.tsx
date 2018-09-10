@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Text, Icon } from "native-base";
-import { EditableObjective } from "./types";
+import { EditableObjective } from "App/Types/Prototypes";
 
 interface Props extends React.ClassAttributes<Button> {
   objective: EditableObjective;

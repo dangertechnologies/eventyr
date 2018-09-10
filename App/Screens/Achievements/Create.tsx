@@ -1,37 +1,49 @@
 import React from "react";
+
+/** PROVIDERS */
+import { withUIHelpers } from "App/Providers/UIProvider";
+import withLocation from "App/Providers/LocationProvider";
+
+/** COMPONENTS **/
 import { View, StyleSheet } from "react-native";
-import Map, { Region } from "react-native-maps";
-import { Query, Category, Mode, Objective } from "graphqlTypes";
-import { ApolloQueryResult } from "apollo-client";
-import { compose, graphql, MutateProps } from "react-apollo";
-import { omit, pick } from "lodash";
-
-import gql from "graphql-tag";
-import { NavigationScreenProp, NavigationState } from "react-navigation";
-import { withStateHandlers, defaultProps } from "recompose";
+import Map from "react-native-maps";
 import { Icon } from "native-base";
+import Drawer from "App/Components/Drawer";
+import MapMarker from "App/Components/MapMarker";
+import AchievementForm from "App/Components/AchievementForm";
 
+/** UTILS */
+import reformed from "react-reformed";
+import { withStateHandlers, defaultProps } from "recompose";
+import { omit, pick } from "lodash";
+import { compose, graphql } from "react-apollo";
+import validateAchievement from "App/Components/AchievementForm/Validate";
+
+/** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
-import reformed, { ReformedProps, ExternalProps } from "react-reformed";
-import { ValidationProps } from "react-reformed/lib/validateSchema";
+import objectiveColors from "App/Components/AchievementForm/Colors";
 
-import objectiveColors from "../../Components/AchievementForm/Colors";
-import { withUIHelpers, UIContext } from "../../Providers/UIProvider";
-
-import withLocation, {
-  LocationContext
-} from "../../Providers/LocationProvider";
-
-import AchievementForm from "../../Components/AchievementForm/Form";
-import validateAchievement from "../../Components/AchievementForm/Validate";
+/** TYPES **/
+import { NavigationScreenProp, NavigationState } from "react-navigation";
 import {
-  EditableObjective,
-  ProtoAchievement
-} from "../../Components/AchievementForm/types";
-import MapMarker from "../../Components/MapMarker";
-import Drawer from "../../Components/Drawer/Drawer";
+  Query,
+  Category,
+  Mode,
+  Objective,
+  Achievement
+} from "App/Types/GraphQL";
+import { EditableObjective, ProtoAchievement } from "App/Types/Prototypes";
+import { ApolloQueryResult } from "apollo-client";
+import { Region } from "react-native-maps";
+import { MutateProps } from "react-apollo";
+import { ReformedProps, ExternalProps } from "react-reformed";
+import { ValidationProps } from "react-reformed/lib/validateSchema";
+import { LocationContext } from "App/Providers/LocationProvider";
+import { UIContext } from "App/Providers/UIProvider";
 
-import { Achievement } from "graphqlTypes";
+/** GRAPHQL **/
+import MUTATION_CREATE_ACHIEVEMENT from "../../GraphQL/Achievements/Create";
+import QUERY_NEARBY_OBJECTIVES from "../../GraphQL/Achievements/ObjectivesNearby";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -230,57 +242,7 @@ const styles = EStyleSheet.create({
 const Screen = compose(
   withLocation(),
 
-  graphql(gql`
-    mutation CreateAchievement(
-      $name: String!
-      $description: String!
-      $objectives: [ObjectiveInput!]!
-      $icon: String!
-      $categoryId: Int!
-      $modeId: Int!
-    ) {
-      createAchievement(
-        input: {
-          name: $name
-          description: $description
-          icon: $icon
-          modeId: $modeId
-          categoryId: $categoryId
-          objectives: $objectives
-        }
-      ) {
-        achievement {
-          id
-          name
-          shortDescription
-          fullDescription
-          author {
-            id
-            name
-          }
-
-          isMultiPlayer
-          category {
-            id
-            title
-            icon
-          }
-
-          points
-
-          objectives {
-            id
-            tagline
-            lat
-            lng
-            isPublic
-            kind
-          }
-        }
-        errors
-      }
-    }
-  `),
+  graphql(MUTATION_CREATE_ACHIEVEMENT),
   withUIHelpers,
   withStateHandlers(
     {
@@ -295,30 +257,11 @@ const Screen = compose(
       })
     }
   ),
-  graphql(
-    gql`
-      query NearbyObjectives($latitude: Float!, $longitude: Float!) {
-        objectives(near: [$latitude, $longitude]) {
-          edges {
-            node {
-              id
-              tagline
-              basePoints
-              requiredCount
-              lat
-              lng
-              kind
-            }
-          }
-        }
-      }
-    `,
-    {
-      options: ({ coordinates, location }: ComposedProps) => ({
-        variables: coordinates || location
-      })
-    }
-  ),
+  graphql(QUERY_NEARBY_OBJECTIVES, {
+    options: ({ coordinates, location }: ComposedProps) => ({
+      variables: coordinates || location
+    })
+  }),
   defaultProps({
     initialModel: {
       name: "",

@@ -1,17 +1,7 @@
 import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { Objective, Query, Mode, Category, Type } from "graphqlTypes";
-import { graphql } from "react-apollo";
-import { compose, withProps } from "recompose";
-import { sum, mapValues, values, concat, flatten, isEqual } from "lodash";
-import { ApolloQueryResult } from "apollo-client";
 
-// @ts-ignore
-import Select from "react-native-picker-select";
-
-// @ts-ignore
-import EStyleSheet from "react-native-extended-stylesheet";
-import gql from "graphql-tag";
+/** COMPONENTS **/
+import { View, TouchableOpacity } from "react-native";
 import {
   Input,
   Textarea,
@@ -26,16 +16,43 @@ import {
   Text,
   Icon
 } from "native-base";
+// @ts-ignore
+import Select from "react-native-picker-select";
 import ActionButton from "react-native-action-button";
-import { Region } from "react-native-maps";
-
-import { Achievement, TypeEdge, ModeEdge, CategoryEdge } from "graphqlTypes";
-
 import IconPicker from "./IconPicker";
 import ObjectiveChip from "./ObjectiveChip";
 import colors from "./Colors";
 import ProtoObjectiveDialog from "./ProtoObjectiveDialog";
-import { ProtoObjective, EditableObjective, ProtoAchievement } from "./types";
+
+/** UTILS **/
+import { graphql } from "react-apollo";
+import { compose } from "recompose";
+import { sum, isEqual } from "lodash";
+
+/** STYLES **/
+import EStyleSheet from "react-native-extended-stylesheet";
+
+/** TYPES **/
+import { ApolloQueryResult } from "apollo-client";
+import { Region } from "react-native-maps";
+import {
+  Achievement,
+  TypeEdge,
+  ModeEdge,
+  CategoryEdge,
+  Objective,
+  Query,
+  Mode,
+  Category
+} from "App/Types/GraphQL";
+import {
+  ProtoObjective,
+  EditableObjective,
+  ProtoAchievement
+} from "App/Types/Prototypes";
+
+/** GRAPHQL **/
+import QUERY_TAXONOMY from "../../GraphQL/Taxonomy";
 
 export interface State {
   _objective: ProtoObjective | null;
@@ -393,41 +410,7 @@ const styles = EStyleSheet.create({
 });
 
 const Form: React.ComponentClass<Props> = compose<ComposedProps, Props>(
-  graphql(
-    gql`
-      query {
-        categories {
-          edges {
-            node {
-              id
-              title
-              points
-            }
-          }
-        }
-
-        types {
-          edges {
-            node {
-              id
-              name
-              points
-            }
-          }
-        }
-
-        modes {
-          edges {
-            node {
-              id
-              name
-              multiplier
-            }
-          }
-        }
-      }
-    `
-  )
+  graphql(QUERY_TAXONOMY)
 )(AchievementForm);
 
 export default Form;

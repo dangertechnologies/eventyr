@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import Map, { Region, Marker } from "react-native-maps";
-import { Query, Achievement } from "graphqlTypes";
+import { Query, Achievement } from "App/Types/GraphQL";
 import { ApolloQueryResult } from "apollo-client";
 import { compose, graphql } from "react-apollo";
 import { withProps } from "recompose";
@@ -11,15 +11,14 @@ import EStyleSheet from "react-native-extended-stylesheet";
 
 import objectiveColors from "../../Components/AchievementForm/Colors";
 
-import withLocation, {
-  LocationContext
-} from "../../Providers/LocationProvider";
+import withLocation, { LocationContext } from "App/Providers/LocationProvider";
 
-import DetailsView from "../../Components/AchievementForm/DetailsView";
-import Drawer from "../../Components/Drawer/Drawer";
+import DetailsView from "App/Components/AchievementForm/DetailsView";
+import Drawer from "App/Components/Drawer";
 
-import gql from "graphql-tag";
 import { NavigationState, NavigationScreenProp } from "react-navigation";
+
+import QUERY_ACHIEVEMENT_DETAILS from "../../GraphQL/Achievements/Details";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -137,43 +136,7 @@ const Screen = compose(
   withProps(({ navigation }: Props) => ({
     id: navigation.getParam("id", "12")
   })),
-  graphql(
-    gql`
-      query AchievementView($id: String!) {
-        achievement(id: $id) {
-          id
-          name
-          shortDescription
-          fullDescription
-          points
-          icon
-          objectives {
-            id
-            tagline
-            kind
-            lat
-            lng
-            basePoints
-          }
-
-          category {
-            id
-            title
-          }
-
-          mode {
-            id
-            name
-          }
-
-          type {
-            id
-            name
-          }
-        }
-      }
-    `
-  ),
+  graphql(QUERY_ACHIEVEMENT_DETAILS),
   withLocation()
 )(AchievementsView);
 

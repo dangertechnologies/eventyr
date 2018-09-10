@@ -4,7 +4,7 @@ import { View as AnimatedView } from "react-native-animatable";
 import { BlurView } from "react-native-blur";
 
 import EStyleSheet from "react-native-extended-stylesheet";
-import { Container, Icon } from "native-base";
+import { Icon } from "native-base";
 import { BlackPortal } from "react-native-portal";
 
 interface Props {

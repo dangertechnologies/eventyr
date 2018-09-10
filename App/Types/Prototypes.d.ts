@@ -1,4 +1,4 @@
-import { Category, Type, Mode, Achievement, Objective } from "graphqlTypes";
+import { Category, Type, Mode, Achievement, Objective } from "./GraphQL";
 
 export interface ProtoObjective
   extends Omit<

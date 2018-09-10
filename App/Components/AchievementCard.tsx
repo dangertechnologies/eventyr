@@ -1,4 +1,10 @@
 import React from "react";
+
+/** PROVIDERS **/
+import { withUser } from "App/Providers/UserProvider";
+
+/** COMPONENTS **/
+import { TouchableOpacity } from "react-native";
 import {
   Card,
   CardItem,
@@ -7,21 +13,22 @@ import {
   Left,
   H3,
   Text,
-  Button,
-  Icon
+  Button
 } from "native-base";
-
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Achievement } from "graphqlTypes";
-import { TouchableOpacity } from "react-native";
-import { compose } from "recompose";
-
 // @ts-ignore
 import Swipeable from "react-native-swipeable";
-import EStyleSheet from "react-native-extended-stylesheet";
+import AchievementIcon from "App/Components/AchievementIcon";
 
-import { withUser, UserContext } from "../Providers/UserProvider";
-import AchievementIcon from "./AchievementIcon";
+/** UTILS **/
+import { compose } from "recompose";
+
+/** TYPES **/
+import { Achievement } from "App/Types/GraphQL";
+import { UserContext } from "App/Providers/UserProvider";
+
+/** STYLES **/
+import EStyleSheet from "react-native-extended-stylesheet";
 
 interface Props {
   achievement: Achievement | null;

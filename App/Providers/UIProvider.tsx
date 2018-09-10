@@ -60,6 +60,8 @@ export interface UIContext {
   notifySuccess(text: string): any;
   notifyError(text: string): any;
   notify(notification: Notification): any;
+  closeNotification(): any;
+  notifyLoading(options: { onClose?(): any }): any;
 }
 
 interface Props {
@@ -74,7 +76,9 @@ interface State {
 const DEFAULT_CONTEXT: UIContext = {
   notifySuccess: (text: string) => text,
   notifyError: (text: string) => text,
-  notify: (notification: Notification) => null
+  notify: (notification: Notification) => null,
+  closeNotification: () => null,
+  notifyLoading: () => null
 };
 
 const { Provider, Consumer } = React.createContext(DEFAULT_CONTEXT);
@@ -96,27 +100,37 @@ class UIProvider extends React.Component<Props, State> {
       // Now fade the view out, pop the state, and
       // remove the ref
 
-      if (this.overlay) {
-        const duration: number = this.state.notifications[0].duration || 1200;
+      if (this.overlay && this.state.notifications.length) {
+        const duration: number | undefined = this.state.notifications[0]
+          .duration;
 
-        setTimeout(() => {
-          if (this.overlay && this.overlay.fadeOut) {
-            const onClose = this.state.notifications[0].onClose;
+        console.log({ duration, notifications: this.state.notifications });
 
-            this.overlay.fadeOut().then(() =>
-              this.setState(
-                {
-                  notifications: tail(this.state.notifications),
-                  invisible: true
-                },
-                () => onClose && onClose()
-              )
-            );
-          }
-        }, duration);
+        if (duration !== -1) {
+          setTimeout(this.closeNotification, duration || 1200);
+        }
       }
     }
   };
+
+  closeNotification = () =>
+    new Promise(resolve => {
+      if (this.overlay && this.overlay.fadeOut) {
+        const notification = this.state.notifications[0];
+
+        console.log({ notification });
+
+        this.overlay.fadeOut().then(() =>
+          this.setState(
+            {
+              notifications: tail(this.state.notifications),
+              invisible: true
+            },
+            resolve
+          )
+        );
+      }
+    });
 
   componentWillReceiveProps(_: Props, nextState: State) {
     if (
@@ -147,6 +161,14 @@ class UIProvider extends React.Component<Props, State> {
           notifications: this.state.notifications.concat([notification])
         });
 
+  notifyLoading = ({ onClose }: { onClose?(): any }) =>
+    this.notify({
+      message: "Hang on...",
+      lottie: require("../Lottie/hamster.json"),
+      duration: -1,
+      onClose
+    });
+
   notifySuccess = (text: string) =>
     new Promise(resolve =>
       this.notify({
@@ -168,7 +190,9 @@ class UIProvider extends React.Component<Props, State> {
     const contextValue: UIContext = {
       notify: this.notify,
       notifySuccess: this.notifySuccess,
-      notifyError: this.notifyError
+      notifyError: this.notifyError,
+      closeNotification: this.closeNotification,
+      notifyLoading: this.notifyLoading
     };
 
     const isVisible: boolean = Boolean(this.state.notifications.length);
@@ -204,13 +228,13 @@ class UIProvider extends React.Component<Props, State> {
                       ref={(lottie: any) => {
                         this.lottie = lottie;
                       }}
+                      loop={this.state.notifications[0].duration === -1}
                       // @ts-ignore We know this exists. isLottie says so.
                       source={this.state.notifications[0].lottie}
                       style={{
                         width: 100,
                         height: 100
                       }}
-                      loop={false}
                     />
                   )}
 

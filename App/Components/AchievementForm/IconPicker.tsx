@@ -1,28 +1,31 @@
 import React from "react";
+
+/** COMPONENTS **/
 import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { BlurView } from "react-native-blur";
-
-import { graphql } from "react-apollo";
-import gql from "graphql-tag";
-
-import { Query } from "graphqlTypes";
-import { compose, withState } from "recompose";
 import { BlackPortal } from "react-native-portal";
 import { H1 } from "native-base";
 import { View } from "react-native-animatable";
+import AchievementIcon from "App/Components/AchievementIcon";
 
-// @ts-ignore
+/** UTILS **/
+import { graphql } from "react-apollo";
+
+/** TYPES **/
+import { Query } from "App/Types/GraphQL";
+import { compose, withState } from "recompose";
+import { Props as AchievementIconProps } from "App/Components/AchievementIcon";
+
+/** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import AchievementIcon, {
-  Props as AchievementIconProps
-} from "../AchievementIcon";
+/** GRAPHQL **/
+import QUERY_ICONS from "../../GraphQL/Icons";
 
 interface Props extends AchievementIconProps {
   selected?: string;
@@ -94,10 +97,6 @@ const IconPicker = ({
 );
 
 export default compose<ComposedProps, Props>(
-  graphql(gql`
-    query AllIcons {
-      icons
-    }
-  `),
+  graphql(QUERY_ICONS),
   withState("open", "setOpen", false)
 )(IconPicker);

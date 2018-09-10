@@ -1,16 +1,19 @@
 import React from "react";
+
+/** COMPONENTS **/
 import { Input, Form, Item, Label, Button, Text } from "native-base";
+import Dialog from "App/Components/Dialog";
 
-// @ts-ignore
-import EStyleSheet from "react-native-extended-stylesheet";
-import { compose, mapProps } from "recompose";
-
+/** UTILS **/
 import reformed from "react-reformed";
+import { compose, mapProps } from "recompose";
 import validateSchema from "react-reformed/lib/validateSchema";
 
-import Dialog from "../Dialog";
+/** STYLES **/
+import EStyleSheet from "react-native-extended-stylesheet";
 
-import { EditableObjective, ProtoObjective } from "./types";
+/** TYPES **/
+import { EditableObjective, ProtoObjective } from "App/Types/Prototypes";
 
 interface Props {
   objective?: EditableObjective;

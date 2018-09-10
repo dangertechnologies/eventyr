@@ -1,11 +1,11 @@
 import React from "react";
-import { Objective } from "graphqlTypes";
+import { Objective } from "App/Types/GraphQL";
 import { Callout, Marker } from "react-native-maps";
 
 import { Button, Icon, Text } from "native-base";
 
 import EStyleSheet from "react-native-extended-stylesheet";
-import { EditableObjective } from "./AchievementForm/types";
+import { EditableObjective } from "App/Types/Prototypes";
 
 interface Props {
   objective: Objective | EditableObjective;
