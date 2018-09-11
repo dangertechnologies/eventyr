@@ -8,6 +8,8 @@ export default gql`
       email
       points
       personalPoints
+      unlockedCount
+      coopPoints
 
       country {
         id
@@ -17,38 +19,6 @@ export default gql`
       role {
         id
         name
-      }
-
-      unlocked {
-        edges {
-          node {
-            id
-            points
-            coop
-            coopBonus
-            createdAt
-
-            achievement {
-              id
-              name
-              icon
-
-              category {
-                title
-                icon
-              }
-
-              mode {
-                name
-              }
-
-              type {
-                name
-                icon
-              }
-            }
-          }
-        }
       }
     }
   }

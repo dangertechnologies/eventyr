@@ -22,7 +22,7 @@ import AchievementCreateScreen from "../Screens/Achievements/Create";
 import AchievementDetailsScreen from "../Screens/Achievements/Details";
 import AchievementEditScreen from "../Screens/Achievements/Edit";
 import NearbyMapScreen from "../Screens/Nearby/Map";
-import ProfileScreen from "../Screens/Dashboard/Profile";
+import ProfileScreen from "../Screens/Profile/Profile";
 
 import { withUser } from "../Providers/UserProvider";
 

@@ -48,7 +48,9 @@ const AchievementCard = ({
   !achievement ? null : (
     <Card>
       <Swipeable
-        swipeable={achievement.author.id === `${currentUser.id}`}
+        swipeable={
+          achievement.author && achievement.author.id === `${currentUser.id}`
+        }
         rightButtons={[
           <Button
             style={styles.editButton}

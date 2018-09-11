@@ -116,6 +116,7 @@
     "react-native-fs": "^2.11.15",
     "react-native-linear-gradient": "^2.4.2",
     "react-native-maps": "^0.21.0",
+    "react-native-material-tabs": "^3.6.2",
     "react-native-modal": "^6.5.0",
     "react-native-onesignal": "^3.2.6",
     "react-native-picker-select": "^4.2.0",
