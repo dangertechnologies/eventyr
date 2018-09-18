@@ -15,13 +15,15 @@ import {
   Text,
   Button
 } from "native-base";
-import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import KindIcon from "App/Components/KindIcon";
+
 // @ts-ignore
 import Swipeable from "react-native-swipeable";
 import AchievementIcon from "App/Components/AchievementIcon";
 
 /** UTILS **/
 import { compose } from "recompose";
+import { capitalize } from "lodash";
 
 /** TYPES **/
 import { Achievement } from "App/Types/GraphQL";
@@ -69,15 +71,15 @@ const AchievementCard = ({
         <TouchableOpacity onPress={() => onPress && onPress()}>
           <CardItem>
             <Left style={{ flexDirection: "row" }}>
-              <MaterialIcon name={achievement.type.icon} />
+              <KindIcon kind={achievement.kind} />
               <Text note style={{ fontSize: 12 }}>
-                {achievement.type.name}
+                {capitalize(achievement.kind)}
               </Text>
             </Left>
 
             <Right style={{ alignItems: "flex-end" }}>
               <Text note style={{ fontSize: 12 }}>
-                {achievement.mode.name}
+                {capitalize(achievement.mode)}
               </Text>
             </Right>
           </CardItem>
@@ -86,7 +88,7 @@ const AchievementCard = ({
               <AchievementIcon
                 name={achievement.icon}
                 size={40}
-                difficulty={achievement.mode.name}
+                difficulty={achievement.mode}
               />
               <Body>
                 <Text>{achievement.name}</Text>

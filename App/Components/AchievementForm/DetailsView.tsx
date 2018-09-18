@@ -21,6 +21,8 @@ import AchievementIcon from "App/Components/AchievementIcon";
 /** TYPES **/
 import { Achievement, Objective } from "App/Types/GraphQL";
 
+import { capitalize } from "lodash";
+
 /** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
 import colors from "App/Components/AchievementForm/Colors";
@@ -63,7 +65,7 @@ class DetailsView extends React.PureComponent<Props> {
       <React.Fragment>
         <CardItem style={[styles.transparent, styles.noVerticalPadding]}>
           <Right style={{ flexGrow: 1, alignItems: "flex-end" }}>
-            <Text note>{achievement.mode.name}</Text>
+            <Text note>{capitalize(achievement.mode)}</Text>
           </Right>
         </CardItem>
         <CardItem style={[styles.transparent, styles.noVerticalPadding]}>

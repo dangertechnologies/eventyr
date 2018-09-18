@@ -27,6 +27,7 @@ const MapCallout: React.ComponentType<Props> = ({
         latitude: objective.lat,
         longitude: objective.lng
       }}
+      tracksViewChanges={false}
     >
       <Callout tooltip>
         <Button

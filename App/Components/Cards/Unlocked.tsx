@@ -15,13 +15,14 @@ import {
   Text,
   Button
 } from "native-base";
-import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import KindIcon from "App/Components/KindIcon";
 // @ts-ignore
 import Swipeable from "react-native-swipeable";
 import AchievementIcon from "App/Components/AchievementIcon";
 
 /** UTILS **/
 import { compose } from "recompose";
+import { capitalize } from "lodash";
 
 /** TYPES **/
 import { Unlocked, Achievement } from "App/Types/GraphQL";
@@ -62,15 +63,15 @@ const AchievementCard = ({
       <TouchableOpacity onPress={() => onPress && onPress()}>
         <CardItem>
           <Left style={{ flexDirection: "row" }}>
-            <MaterialIcon name={unlocked.achievement.type.icon} />
+            <KindIcon kind={unlocked.achievement.kind} />
             <Text note style={{ fontSize: 12 }}>
-              {unlocked.achievement.type.name}
+              {capitalize(unlocked.achievement.kind)}
             </Text>
           </Left>
 
           <Right style={{ alignItems: "flex-end" }}>
             <Text note style={{ fontSize: 12 }}>
-              {unlocked.achievement.mode.name}
+              {capitalize(unlocked.achievement.mode)}
             </Text>
           </Right>
         </CardItem>
@@ -79,7 +80,7 @@ const AchievementCard = ({
             <AchievementIcon
               name={unlocked.achievement.icon}
               size={40}
-              difficulty={unlocked.achievement.mode.name}
+              difficulty={unlocked.achievement.mode}
             />
             <Body>
               <Text>{unlocked.achievement.name}</Text>

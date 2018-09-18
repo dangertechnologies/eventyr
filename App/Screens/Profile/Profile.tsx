@@ -95,6 +95,7 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
           </Container>
         </Animated.ScrollView>
         <AnimatedView
+          // @ts-ignore
           style={{
             position: "absolute",
             top: this.props.headerHeight,

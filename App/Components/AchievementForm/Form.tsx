@@ -19,6 +19,7 @@ import {
 // @ts-ignore
 import Select from "react-native-picker-select";
 import ActionButton from "react-native-action-button";
+
 import IconPicker from "./IconPicker";
 import ObjectiveChip from "./ObjectiveChip";
 import colors from "./Colors";
@@ -27,7 +28,8 @@ import ProtoObjectiveDialog from "./ProtoObjectiveDialog";
 /** UTILS **/
 import { graphql } from "react-apollo";
 import { compose } from "recompose";
-import { sum, isEqual } from "lodash";
+import { sum, isEqual, capitalize } from "lodash";
+import { kindPoints, modeMultiplier } from "App/Helpers/Points";
 
 /** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
@@ -37,8 +39,6 @@ import { ApolloQueryResult } from "apollo-client";
 import { Region } from "react-native-maps";
 import {
   Achievement,
-  TypeEdge,
-  ModeEdge,
   CategoryEdge,
   Objective,
   Query,
@@ -96,20 +96,6 @@ class AchievementForm extends React.Component<ComposedProps, State> {
           )
         : null;
 
-    const mode: ModeEdge | undefined | null =
-      achievement.mode && this.props.data.modes && this.props.data.modes.edges
-        ? this.props.data.modes.edges.find(({ node }: ModeEdge) =>
-            Boolean(node && achievement.mode && node.id === achievement.mode.id)
-          )
-        : null;
-
-    const type: TypeEdge | undefined | null =
-      achievement.type && this.props.data.types && this.props.data.types.edges
-        ? this.props.data.types.edges.find(({ node }: TypeEdge) =>
-            Boolean(node && achievement.type && node.id === achievement.type.id)
-          )
-        : null;
-
     const {
       objectives
     }: { objectives: Array<Objective | ProtoObjective> } = achievement;
@@ -122,8 +108,8 @@ class AchievementForm extends React.Component<ComposedProps, State> {
       (achievement.basePoints +
         objectivePoints +
         (category && category.node ? category.node.points : 0) +
-        (type && type.node ? type.node.points : 0)) *
-      (mode && mode.node ? mode.node.multiplier : 1)
+        kindPoints(achievement.kind)) *
+      modeMultiplier(achievement.mode)
     );
   };
 
@@ -134,12 +120,7 @@ class AchievementForm extends React.Component<ComposedProps, State> {
 
     const { achievement, data, onChange } = this.props;
 
-    const modes: Array<Mode> =
-      data && data.modes && data.modes.edges
-        ? (data.modes.edges
-            .map(({ node }: ModeEdge) => (!node ? null : node))
-            .filter((node: Mode | null) => node !== null) as Array<Mode>)
-        : [];
+    const modes: Array<Mode> = data && data.modes ? data.modes : [];
 
     const categories: Array<Category> =
       data && data.categories && data.categories.edges
@@ -158,8 +139,8 @@ class AchievementForm extends React.Component<ComposedProps, State> {
           <Right style={{ flexGrow: 1, alignItems: "flex-end" }}>
             <Select
               items={modes.map((mode: Mode) => ({
-                label: mode.name,
-                value: mode.id
+                label: capitalize(mode),
+                value: mode.toUpperCase()
               }))}
               style={{
                 inputIOS: styles.selectModeInput,
@@ -170,10 +151,8 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                 label: "Click to set Difficulty",
                 value: null
               }}
-              value={achievement.mode ? achievement.mode.id : null}
-              onValueChange={(id: string) =>
-                onChange("mode", modes.find((m: Mode) => m.id === id) as Mode)
-              }
+              value={achievement.mode}
+              onValueChange={(mode: Mode) => onChange("mode", mode)}
             />
           </Right>
         </CardItem>

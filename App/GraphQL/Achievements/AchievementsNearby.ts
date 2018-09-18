@@ -32,15 +32,8 @@ export default gql`
               title
             }
 
-            mode {
-              id
-              name
-            }
-
-            type {
-              id
-              name
-            }
+            mode
+            kind
           }
         }
       }
