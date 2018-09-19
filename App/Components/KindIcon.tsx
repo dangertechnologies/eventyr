@@ -11,7 +11,7 @@ interface Props extends Omit<IconProps, "name"> {
 const KindIcon = ({ kind, ...rest }: Props) => {
   let iconName = "flag-variant";
 
-  switch (kind.toLowerCase()) {
+  switch ((kind || "").toLowerCase()) {
     case "action":
       iconName = "run-fast";
       break;

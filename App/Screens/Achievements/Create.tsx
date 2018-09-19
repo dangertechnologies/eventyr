@@ -199,7 +199,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
           />
         </View>
 
-        <Drawer maxHeight={500} initiallyExpanded>
+        <Drawer maxHeight={550} initiallyExpanded>
           <AchievementForm
             onChange={this.props.setProperty}
             validationErrors={this.props.validationErrors}

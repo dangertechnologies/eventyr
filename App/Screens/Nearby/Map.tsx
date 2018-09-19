@@ -100,7 +100,7 @@ class AchievementsView extends React.PureComponent<Props, State> {
           style={StyleSheet.absoluteFill}
           initialRegion={this.state.coordinates || undefined}
           // region={this.state.coordinates || undefined}
-          // onPress={this.onMapPress}
+          onPress={this.onMapPress}
           // onRegionChangeComplete={this.onRegionChange}
         >
           {visibleObjectives &&
@@ -111,6 +111,7 @@ class AchievementsView extends React.PureComponent<Props, State> {
                     key={node.id}
                     objective={node}
                     color={objectiveColors[index % 100]}
+                    onPress={() => this.onSelect(node)}
                     calloutIcon="plus"
                   />
                 ) : null

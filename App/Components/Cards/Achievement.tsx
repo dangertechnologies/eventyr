@@ -23,7 +23,7 @@ import AchievementIcon from "App/Components/AchievementIcon";
 
 /** UTILS **/
 import { compose } from "recompose";
-import { capitalize } from "lodash";
+import { capitalize, isEqual } from "lodash";
 
 /** TYPES **/
 import { Achievement } from "App/Types/GraphQL";
@@ -46,27 +46,35 @@ const AchievementCard = ({
   onPress,
   onEdit,
   onDelete
-}: Props & { currentUser: UserContext }) =>
-  !achievement ? null : (
+}: Props & { currentUser: UserContext }) => {
+  if (!achievement) {
+    return null;
+  }
+
+  const canEdit =
+    achievement.author && isEqual(achievement.author.id, `${currentUser.id}`);
+  return (
     <Card>
       <Swipeable
-        swipeable={
-          achievement.author && achievement.author.id === `${currentUser.id}`
+        swipeable={canEdit}
+        rightButtons={
+          !canEdit
+            ? undefined
+            : [
+                <Button
+                  style={styles.editButton}
+                  onPress={() => onEdit && onEdit(achievement)}
+                >
+                  <Text style={{ textAlign: "center" }}>Edit</Text>
+                </Button>,
+                <Button
+                  style={styles.deleteButton}
+                  onPress={() => onDelete && onDelete(achievement)}
+                >
+                  <Text style={{ textAlign: "center" }}>Delete</Text>
+                </Button>
+              ]
         }
-        rightButtons={[
-          <Button
-            style={styles.editButton}
-            onPress={() => onEdit && onEdit(achievement)}
-          >
-            <Text style={{ textAlign: "center" }}>Edit</Text>
-          </Button>,
-          <Button
-            style={styles.deleteButton}
-            onPress={() => onDelete && onDelete(achievement)}
-          >
-            <Text style={{ textAlign: "center" }}>Delete</Text>
-          </Button>
-        ]}
       >
         <TouchableOpacity onPress={() => onPress && onPress()}>
           <CardItem>
@@ -105,7 +113,7 @@ const AchievementCard = ({
       </Swipeable>
     </Card>
   );
-
+};
 const styles = EStyleSheet.create({
   editButton: {
     width: "100%",

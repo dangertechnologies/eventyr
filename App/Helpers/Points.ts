@@ -29,7 +29,7 @@ export const modeMultiplier = (mode: Mode | null) => {
 };
 
 export const kindPoints = (kind: Kind) => {
-  switch (kind.toLowerCase()) {
+  switch ((kind || "").toLowerCase()) {
     case "action":
       return 25;
     case "discovery":

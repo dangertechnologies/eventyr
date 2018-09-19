@@ -8,7 +8,7 @@ declare module "react-native-extended-stylesheet" {
 
   interface Styles {
     [key: string]: {
-      [key: string]: number | string;
+      [key: string]: number | string | Array<Object> | Object;
     };
   }
 
