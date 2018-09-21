@@ -28,7 +28,6 @@
 		086082CDCFBD2B3989D898979ED9DA00 /* GMUSimpleClusterAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = A32FE1FEB044EBFD94BB27AD3E83D1C0 /* GMUSimpleClusterAlgorithm.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
 		08F733A0EEC963B7690A44E40B64B518 /* AIRGoogleMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 772CB754A6000B09451C5CD2160C3071 /* AIRGoogleMap.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		090B763D2AD4FE33CB7DE6B18FA8DE82 /* RNSVGLinearGradientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CBC37BE5A9AE61F1A457BD1129AEAAD0 /* RNSVGLinearGradientManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		094B835899BA4AFB7779265D37A05833 /* Yoga.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 907C2A80E508E77DD152B5431383134E /* Yoga.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		09C3039F2FB24BA7A03DB3FD07E794AB /* LOTRoundedRectAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = CCCF80F513A85F85640DA2715EDC8D71 /* LOTRoundedRectAnimator.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		0A5A5250385975D573B78E60818D847F /* LRNContainerView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E21BF0E662BD701E89D95FC9DEFD6A /* LRNContainerView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0B04E3606C8066200E3C4677DE6DF25A /* OIDResponseTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF93B4F97B340CD99115BC5520B79E0 /* OIDResponseTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -90,18 +89,15 @@
 		28DBD43D9E0E4036CCCE4B42DC7301E4 /* LOTMask.h in Headers */ = {isa = PBXBuildFile; fileRef = D1E8B21377AED7E45B853A4A84E218A5 /* LOTMask.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		299DA629D7AA667797B0562D6F97D2F9 /* AIRMapPolylineRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 122712A97B662463F022C168EBA1FC22 /* AIRMapPolylineRenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2A08306F2E08E54E1C56895A4D9E8254 /* OIDURLSessionProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 338953BFA34770748796CE5C1563B245 /* OIDURLSessionProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2A48F1163A0AB5D155E9BAFD7E74A541 /* YGNodePrint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A6253883F3EDA5C46EC2FA4B806C0C3 /* YGNodePrint.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		2A90406AA21A755099E0012F2960D25C /* LOTStrokeRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 396E53F5FD1F5411D21CE1547824D5C7 /* LOTStrokeRenderer.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		2D1583BECD580BD5EF4F482BA762AF03 /* LOTPolystarAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = E89D8A2C27B1ABCB44638FFE523E371C /* LOTPolystarAnimator.m */; };
 		2D605F46B216DCB69251801F12F753C4 /* AIRMapOverlayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B7D7539669E8796DFBC9056F481A9392 /* AIRMapOverlayManager.m */; };
 		2D8E71A69B71B71C009EE92F2C5025FE /* OIDTokenResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = ED4D8089D25678A9326F0B3AD8C3D613 /* OIDTokenResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2E5ADD806778581490B2C58E8477F430 /* YGNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 3978BA89B979B7622738E17E30CB67DF /* YGNode.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		2E763923A16551DBE80F417C881D269E /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = FD7F494F7E2C97C8ABE6549C4FFF5AE4 /* utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2E95E64C6D3A526EA7128D102FB624E4 /* RNSVGNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 3427BA377BCBAC7ED761BDB38DD1E9AA /* RNSVGNode.m */; };
 		2EBC2D771F4DC1177B6E92C01A2C502E /* RNSVGText.m in Sources */ = {isa = PBXBuildFile; fileRef = D62FD4B2171B0CDFD157CB95AA541F4D /* RNSVGText.m */; };
 		2F6DE2CA84A16A5C3F5BB921FD495DB1 /* LOTSizeInterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2F4C8290614513555F7F46EBD369A0B6 /* LOTSizeInterpolator.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		2F7B8CEE953564353432B2DBF6DF3C5A /* AIRGMSPolygon.m in Sources */ = {isa = PBXBuildFile; fileRef = 1606C326D5D8D16C0F26D797F29563C0 /* AIRGMSPolygon.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
-		2F8BC622786E148A20CAE2309840A8BC /* YGConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 14777EBF13A2F39530BE6DE59CF57D7B /* YGConfig.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		2FD8382BA3FC3F4B9215BC324A8A7E6B /* AIRMapPolygonManager.h in Headers */ = {isa = PBXBuildFile; fileRef = F4975176B10BF465972B5AC8E8AAF0B4 /* AIRMapPolygonManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2FE1C466443416EAFAE4EE61585F4E1B /* RNSVGPercentageConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = E49CF2AAA31412DAC9F2E20AB167B95D /* RNSVGPercentageConverter.m */; };
 		303002E3A37C750EE70645D114328EDD /* RNSVGPainterBrush.m in Sources */ = {isa = PBXBuildFile; fileRef = A06D353710A61A98D816E656273F9C35 /* RNSVGPainterBrush.m */; };
@@ -141,7 +137,6 @@
 		4519DDA06E8EB1E03A5B9EDB1F139C14 /* LOTShapeTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D699CC29045FD5FFB94871533972606 /* LOTShapeTransform.m */; };
 		454F9197AC43997B23DC6871667C00AD /* LOTShapeStroke.h in Headers */ = {isa = PBXBuildFile; fileRef = 7211C8B6520A90E9BC9F4451688E3DD3 /* LOTShapeStroke.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		456E07E0D1D90BF7EEF48E5EE49C374B /* GMUGeometryContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D88D0EF645231787C61E8C4BC17A18F /* GMUGeometryContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		45C62F73F9AB61C2B832DD767E7E9F24 /* YGStyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E0EEA2B1EA3D5DA341FAF855DEC44CD /* YGStyle.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		45FE48F77E7705C0A9031B0FD8DD1D19 /* AppAuth-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7775B730A582C9CD1CD6ACC48B5A0A8A /* AppAuth-dummy.m */; };
 		461502709592351B7288D8CC3A915E1C /* LRNAnimationViewManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E8E4FFEEB1AB6779835EDED4A75C22A /* LRNAnimationViewManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		46889560323947B43F482C9548B37D98 /* GQTPointQuadTree.m in Sources */ = {isa = PBXBuildFile; fileRef = B29A27BFAA4086F18276BB2718C41DF9 /* GQTPointQuadTree.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
@@ -154,7 +149,6 @@
 		4B82A4B84D98AA200455573B68F2ACEA /* AIRGoogleMapUrlTile.h in Headers */ = {isa = PBXBuildFile; fileRef = 6390DB7DE1AEDC7FAE5B29A3AB610037 /* AIRGoogleMapUrlTile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4B8BB5294999C80D60EAE8BBB9095827 /* OIDAuthorizationResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C69A539DBA274F53836D4600952DD38 /* OIDAuthorizationResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C22AF314BB24FD2D22C91FCA50A31EC /* RNSVGSolidColorBrush.m in Sources */ = {isa = PBXBuildFile; fileRef = CB57B57A799E6003FB77767BF21E19AB /* RNSVGSolidColorBrush.m */; };
-		4CC63A029629F99C46BB06F9899DDB0C /* YGLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 97AD8B27FD7E5CF54205D0F02479AFB2 /* YGLayout.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		4D3F20C01FBEB4FF0EFABAB8A43D5135 /* OIDClientMetadataParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 3829399E2E7B25B2A9E0B8B2D2065B92 /* OIDClientMetadataParameters.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4F29745261F794C053A1E9D0E6F887BA /* LOTValueCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2829FC92A26560EE15491F55FFE2F3 /* LOTValueCallback.m */; };
 		4F915BDDE25E345727EC6A403256BAF7 /* RNSVGContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 884050636477A4DE66EF666F44C8C61E /* RNSVGContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -173,7 +167,6 @@
 		583BABB0112AA0A97F1D10F53782B1F9 /* RNSVGTextPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A9267C87F630D5A82961F15AB3ECE40 /* RNSVGTextPath.m */; };
 		5905AC8EA7A2397E9F96C195C8B9A16B /* OIDAuthState+IOS.h in Headers */ = {isa = PBXBuildFile; fileRef = B72A3991DF9C9604612B7D5B40854526 /* OIDAuthState+IOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		59D53FAC1D353B367965C6BAB8137C67 /* AIRGoogleMapCircleManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0EDBDA7CA524F24C5E9E09C6358F435D /* AIRGoogleMapCircleManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		59FAF4FD4D32410DD53E03D5887651F7 /* YGEnums.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A91D7D70752EBD487224186F901C1CBE /* YGEnums.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		5ADD9E304D1A77FF4C7CDBC5D3194617 /* LOTLayerContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 425F3402AF05EB243404BD39927F17B3 /* LOTLayerContainer.m */; };
 		5B6700F572617585AFCDC4D14D890C55 /* AIRGoogleMapPolyline.h in Headers */ = {isa = PBXBuildFile; fileRef = 958ADB3174FE843000FCB7C3509A8623 /* AIRGoogleMapPolyline.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BB35B28EF409C23C24D135F66EF663F /* RNSVG-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D779FD9FE5B90EE50028CFB76045896A /* RNSVG-dummy.m */; };
@@ -182,7 +175,6 @@
 		5D721664A741B4337924E82C8E39C1FC /* strtod.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A34E28EAC35D3B96123E3818D09AC93 /* strtod.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5DA3F1923FDA4AC0F93A729DD745CC77 /* RNSVGRenderableManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E268A0FD1E6DFA50F58FADD0BB51BA29 /* RNSVGRenderableManager.m */; };
 		5DEC6AFB7F912E783A927927A890749E /* GMUGridBasedClusterAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C97BB0840BAE15FED021500C97048F1 /* GMUGridBasedClusterAlgorithm.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
-		5DFCE6C084830D34A519D5EBB7000AA4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E925D3D9F8CD9BF07050DCFF2A6CF2B /* Foundation.framework */; };
 		5F01EB077DFF8EEF4870B21A4F007263 /* LOTAnimatorNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 0726EE395A1D8D233A0BBB47EF17407E /* LOTAnimatorNode.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		5FF21CF7C419819D963AD834278CBB88 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E925D3D9F8CD9BF07050DCFF2A6CF2B /* Foundation.framework */; };
 		603EC11776A43387439278F79BFBB796 /* LOTFillRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8775B2217A87ABC079756B87BAC1128D /* LOTFillRenderer.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -218,8 +210,6 @@
 		6B7F2147ABEFDAE4F74B6448E8A00EE2 /* AIRMapCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = 05AEFC07C7C164B611B1E56AB8DC207D /* AIRMapCircle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6BBC0865569CCA39DF8842A0ECBB0FD2 /* RNSVGVBMOS.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C3B02C43F059F7C53C113C3A1812A1 /* RNSVGVBMOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C1549A95BF8636215522F4BCD835D06 /* AIRGoogleMapManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E78E8E6B761903FE20E0EC0CF8FCD47D /* AIRGoogleMapManager.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
-		6C55B1AE6574EF74B5172830ED3C281E /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = F03E97F43D4ED966CF36360E2430E86B /* Utils.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		6DBCD60BBA7C46C113BF78B5FC8329E8 /* YGStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4617BF4805CA342A46573C3582C99F /* YGStyle.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		6E05FB11E3055F8EB0F0DE8E27C6432D /* RNSVGUseManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E519AE9CE69AF778FD17B4656826234 /* RNSVGUseManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E4F0151AAF11C81A7BD0B458DD3FABA /* LOTPolygonAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = AAC19D4CF05B83FAB90CDA44545D038F /* LOTPolygonAnimator.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		6F3785F5ABB2ABC0ADBAD4DDD263CEB7 /* LOTShapePath.m in Sources */ = {isa = PBXBuildFile; fileRef = A8C16DE274E8BCCC90E4FC1A042F042C /* LOTShapePath.m */; };
@@ -234,10 +224,8 @@
 		739A24DBFCF75DF5C9B447AA3C8A12AB /* RNSVGUse.m in Sources */ = {isa = PBXBuildFile; fileRef = EAF2B6729DFE87F7199AE23E3FAAA1D2 /* RNSVGUse.m */; };
 		740F602CE3D7E7391328BEA02F0D376A /* AIRMapPolygon.m in Sources */ = {isa = PBXBuildFile; fileRef = BAE58BD54F7CF39F63366E9CAF433C93 /* AIRMapPolygon.m */; };
 		74C36B43C8A0BDC69B7834E316A93B28 /* GMUPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = D36BA315D7A81435F06B3825F640373F /* GMUPlacemark.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
-		74D6AE2B00EC0169149F78C5398738ED /* yoga-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = CFC53ACEBB0AAA5DE700A64F24964C69 /* yoga-dummy.m */; };
 		75044EF3DE7836A3454CF36DA57335B5 /* BlurEffectWithAmount.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CC180425D0D3FAF662B73B1AB66FF53 /* BlurEffectWithAmount.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		759E3D5D4FEF072A830C486DDCC5A4C0 /* AIRMapSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E41DED9B3BAA430A8C4C37F434C72B0 /* AIRMapSnapshot.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		75DE9FD768476B90385121069131D86D /* YGFloatOptional.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09D547B8166CA31D4D7B6166925BF0C0 /* YGFloatOptional.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		7618669F01CF9B0AB345619473FDAFC3 /* raw_logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B64F485B86BDAE7FF1DC196CF5CBF82 /* raw_logging.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		768FFB974E092666FD2487259D20F72D /* LRNAnimationViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E76DB9EDC6815EA1D6779786668319 /* LRNAnimationViewManager.m */; };
 		7723236EFA224871C354533D1A74FBBC /* LOTKeypath.m in Sources */ = {isa = PBXBuildFile; fileRef = EC2BDC752D23CCBD810A622E4DA9A013 /* LOTKeypath.m */; };
@@ -256,7 +244,6 @@
 		7FE2977C96A40D17BC99BA9EA615542E /* dynamic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 196BF4E7B8D629B308CE800F6917A8E1 /* dynamic.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
 		803C3E673C30AA9A2805DE9B4CCD9C6B /* LOTCompositionContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = E7E6572FD470AFB318BD75346A1D210C /* LOTCompositionContainer.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		806B684D047F8760352159D6AE66D558 /* LOTHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = D10C4E67E19F64697ABF677683E95D1F /* LOTHelpers.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		80C5C3B7D8E59BFFCD36C44987406560 /* YGFloatOptional.h in Headers */ = {isa = PBXBuildFile; fileRef = 10343DF359A4DCD1005D1375AA16F8EC /* YGFloatOptional.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		810894531435BCD7EE8F6ADD67C67789 /* UIColor.h in Headers */ = {isa = PBXBuildFile; fileRef = C7F89DF7D0C7FF34E8EB58041B99A384 /* UIColor.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		817C4B2FED909C5E2919000FFF72B670 /* AIRMapUrlTileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AF3F617741C96552B0CDBACD5E8D4 /* AIRMapUrlTileManager.m */; };
 		823C204F7F088AE76EF670CA78B6497B /* GMUGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = F93E8482DA0696258775375A3F6254C5 /* GMUGradient.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
@@ -309,16 +296,13 @@
 		9490137C1EFD1B4FB5F69CF5051A6261 /* LOTShapePath.h in Headers */ = {isa = PBXBuildFile; fileRef = F21E3E9769EFE95EAC7858E982352073 /* LOTShapePath.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		95412836B45782421B8A61F39C3F8FD1 /* LOTShapeRectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = DD6C190EA1FC92346424AFBD4B28C21B /* LOTShapeRectangle.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		95C267917BB8313101A48AB9387E0988 /* OIDRegistrationResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = CA52712798A508E4BF91C4FBD5616985 /* OIDRegistrationResponse.m */; };
-		964EA0B544E655B8EBE587E1B839256F /* YGNodePrint.h in Headers */ = {isa = PBXBuildFile; fileRef = D72AD9483FC5D05AB4B544D060F571A1 /* YGNodePrint.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		967397718E247EAB0E71E19033A36466 /* UIColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D5FA4A00D16A171F6E7AD380CA175F /* UIColor.m */; };
 		968706A7F6F4FF5217ABBAFA9C8922A1 /* OIDExternalUserAgentRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C4027983DFDDDFE50E07914D6330325 /* OIDExternalUserAgentRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		96D2F6F9E68B04225EF6FA7D83B6076C /* YGEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = FFDB447A65BC91C53C472CBF51613E10 /* YGEnums.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		97F44008E8DB46A744CA0B3517862108 /* AIRGoogleMapMarkerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 38DB20B147CFFF641C45ADE4CEA62547 /* AIRGoogleMapMarkerManager.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
 		98D0C29D2EFC7D8F79AC9506960D215B /* AIRGoogleMapOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 540DA9E2E01E642254D13C3FBB5B2451 /* AIRGoogleMapOverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		99D67544853B04EBB97919F09DB4847D /* RNSVGTextPathManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2AFE4B94016F4708619DEC9622CD6C /* RNSVGTextPathManager.m */; };
 		9A2A5B11384272F987FE67663C8BE5B9 /* OIDError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C7118BF7A7CF65F29F6FB887239099A /* OIDError.m */; };
 		9A4486CA6A19DDF744C418B9E2635EC8 /* BitsFunctexcept.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AD228AFCEE7BCA9C3E75BD6C8D449814 /* BitsFunctexcept.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
-		9A6D22C4316038E2FD2984E41D04097D /* YGNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 374C575E8ECB70625F1EE3C80206FC6B /* YGNode.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		9A9372348F576317BB4120C77708763A /* RNSVGTextPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BEFCD967C40EFBFD7393F25699F39DA /* RNSVGTextPath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9C209925A478A2109FD9BADCFA72AEB3 /* LOTTrimPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = A369AF592E08D8B398EEFC0AB12B7DD1 /* LOTTrimPathNode.m */; };
 		9CB870CB6657C825FC8C63227FBBE0F1 /* AIRGoogleMapPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6DAAA93824E34D1A6C2F2FD81DFDDC /* AIRGoogleMapPolyline.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
@@ -347,7 +331,6 @@
 		A62EB54C5C395CEFA018E68ED38032B4 /* AIRGMSPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 273E34BC8C5B8C8AA02102C3B582EB2C /* AIRGMSPolyline.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
 		A643B7C05729A6116546A03CF4A5D2B2 /* LOTBlockCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = BD0756E38886B6A6AE0F43438C5F0089 /* LOTBlockCallback.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6C7FD0112C6C64BB5FB879D5EAAEC8A /* OIDExternalUserAgentIOSCustomBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3683D180AA06CF189579E770547660 /* OIDExternalUserAgentIOSCustomBrowser.m */; };
-		A724E717A60BDE1B9AFF6019599C9F10 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AFA8F404698AB514F1097EAF8C5E158 /* Utils.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		A7293A41BB21FBB7839FE4BB893DA702 /* RNSVGNode.h in Headers */ = {isa = PBXBuildFile; fileRef = F294A85D96FD392435917273E82F4E47 /* RNSVGNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A73CC4202433AF2AC1377DB300625722 /* LOTShapeStar.h in Headers */ = {isa = PBXBuildFile; fileRef = D9A28C0CFB709BBF1749D7CD1CFEB3F5 /* LOTShapeStar.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		A8BD16B6F19CF0A6457390728C140D08 /* LOTAnimatorNode.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCDB17B998E6DA7EB82513D7CC45E81 /* LOTAnimatorNode.m */; };
@@ -452,10 +435,8 @@
 		CF0100AB367F193D055562780957F9D8 /* AIRMapPolygonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DEDE8F83B84E8AE9900B9389EE2752A /* AIRMapPolygonManager.m */; };
 		CF83AB97BB5EFF77D5909494FD5F1139 /* LOTAnimationView_Compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B43C503ECB1E348F5EA8B7BD51B3026 /* LOTAnimationView_Compat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D02BC4F194CE7927A28F914799847DA6 /* RNSVGBrush.m in Sources */ = {isa = PBXBuildFile; fileRef = F45ED074279B0F266507BAC492649756 /* RNSVGBrush.m */; };
-		D082A7AFF3BE254533868CDFB111A925 /* Yoga-internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F45EF82DB8527C0AB4BDFC1CD2D43EE /* Yoga-internal.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		D2BF777CFEC6469F97AB95ADE94FFAE1 /* GMUGridBasedClusterAlgorithm.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D7C44581888690CEC8D2CECB3A4F28D /* GMUGridBasedClusterAlgorithm.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D378CB3AC66E60C816CE96048985EC40 /* RNSVGRectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7B7A6793D9C8D56D9399385135E978D /* RNSVGRectManager.m */; };
-		D40EB3AAA5F7E68C64892DBA029D307D /* Yoga.h in Headers */ = {isa = PBXBuildFile; fileRef = 72CFC90EBD5B0395B93E30A796667A7E /* Yoga.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D480C3AD30755ACFC68629BF4761D4FD /* GMUClusterIconGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = F143366E661913469D4FB8B315B132E4 /* GMUClusterIconGenerator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4923F880F076E9AC9D789BC271DD31D /* Bits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D6F4EAE9F59FD5FA74FD0AB41A67A8 /* Bits.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
 		D52FFBE2B1A9B2D7CD9692552C53B501 /* LOTMaskContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = C0CD5EEF17D21604F850FFEFEAB9AF05 /* LOTMaskContainer.m */; };
@@ -485,7 +466,6 @@
 		DDD87043D4755016A92C47BCDD5F34E1 /* GMUWrappingDictionaryKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 64DBA6BC7B6B72CDC289AE2FC780AFCD /* GMUWrappingDictionaryKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE6AA2DB4E802C00AC8F2373FD6430E0 /* OIDAuthorizationService+IOS.m in Sources */ = {isa = PBXBuildFile; fileRef = CB38AFE810DAE12FB58827FB70160FD4 /* OIDAuthorizationService+IOS.m */; };
 		DE7D00E00D1B3431D5E9449508F06A11 /* LOTValueCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC56C3C67EFD97456E9B987B87577F3 /* LOTValueCallback.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DEDAC306DE8A7F1FCF923ACA17AE5715 /* YGConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D35FCAE0D17E6F427FBC3F901C673443 /* YGConfig.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		DF036F9EC710EF4088120630D07F72C7 /* AIRGoogleMapMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 27694C5292F850A4B84029468D86C0E5 /* AIRGoogleMapMarker.m */; settings = {COMPILER_FLAGS = "-fno-modules"; }; };
 		DF46297931B28B7A0CAF35BC613401CE /* OIDErrorUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 919C4C2E092906D0570D22E2259397CA /* OIDErrorUtilities.m */; };
 		DF7AF0C7B9C9B3D8A788D638C3EADB53 /* LOTPathAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F14F54BD456316954CCB9C96DE335FD /* LOTPathAnimator.m */; };
@@ -514,7 +494,6 @@
 		EABFD8CDDE2C77B469B0C76EA4F81402 /* LOTPointInterpolator.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB240B743E41F48896C3FF9C16DA15D /* LOTPointInterpolator.m */; };
 		EADC808CD5A41F7F0A4D79C5D3B0F7D7 /* LOTCacheProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A881FD0F1D81833927CA4BA203DBEB5 /* LOTCacheProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EB119EBF4CF3DA20986824E7044C22E0 /* RNSVGCGFloatArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C4E9D450AFE67303EDBEDCEBF5CC298 /* RNSVGCGFloatArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EBAF5306B15E644CECADAE1216D7C2BD /* YGLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4BEEFEF93022FA4F95BD6027780BDA00 /* YGLayout.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
 		EBDCD70E03CFC00D34E865AA1542D4CB /* AIRMapUrlTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 12C8781A8D26370E460C8890488653DB /* AIRMapUrlTile.m */; };
 		EBDD4057BAE3E61512631A92DB65605E /* bignum.cc in Sources */ = {isa = PBXBuildFile; fileRef = EC5F5CB97D5720620952DDF40846321C /* bignum.cc */; };
 		EC3E2CEAD16538D6693520F11ADBD8DC /* LOTNumberInterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 899C2F68013F04D4B6D60329A4051950 /* LOTNumberInterpolator.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -537,7 +516,6 @@
 		F430194395276D151129C50D6B4BAA10 /* json.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5AF4FCC1DC5328A3CDC769715354C87 /* json.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1"; }; };
 		F4437CDE4483D5086DCA2B8CD9B4F7AE /* LOTShapeGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = CF3C733190FD84476B6DD92E10EBC246 /* LOTShapeGroup.m */; };
 		F49B605DA17407F650B1411B64BB72CB /* LOTTrimPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 252202364F619F413A9980E5D329102B /* LOTTrimPathNode.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		F4D058F1FE44F69554A907FC1F32F527 /* YGMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E1EFEC7462A22B6D49EC3B6D0C76F2D /* YGMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F4F64464047EBF78DABF801DE8E1C5E5 /* RNSVGRenderableManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 25E65DBDAECE45F0080FFCBEA0D7E178 /* RNSVGRenderableManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F62D3B8881D55247C78E0BFBED997C1A /* RNSVGGroupManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F7ED063F85EF091E5547ECC07A7D0BD /* RNSVGGroupManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F671D3911DA52339CE937A479B970D58 /* LOTShapeRepeater.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E94E770F1D713A8F174532CBB02676 /* LOTShapeRepeater.m */; };
@@ -568,7 +546,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 287BE396B481C6E3CD2CB9CDC2E8EE87;
+			remoteGlobalIDString = 22F766248D6B5905B402CF6C;
 			remoteInfo = yoga;
 		};
 		334BE5A90A9EBCA327502CDD1DB91331 /* PBXContainerItemProxy */ = {
@@ -596,7 +574,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8F8C2987160F8351D8777CC0;
+			remoteGlobalIDString = 9044C10E4FF9A48AC7863A65;
 			remoteInfo = React;
 		};
 		45C2B53B29679B19EE73F588B1BB5C5A /* PBXContainerItemProxy */ = {
@@ -610,21 +588,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8F8C2987160F8351D8777CC0;
+			remoteGlobalIDString = 9044C10E4FF9A48AC7863A65;
 			remoteInfo = React;
 		};
 		57DFBE84228BF56573B61165157AEE65 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8F8C2987160F8351D8777CC0;
+			remoteGlobalIDString = 9044C10E4FF9A48AC7863A65;
 			remoteInfo = React;
 		};
 		67418EA602E60B1F20ADCED3C7F70161 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8F8C2987160F8351D8777CC0;
+			remoteGlobalIDString = 9044C10E4FF9A48AC7863A65;
 			remoteInfo = React;
 		};
 		6F7E30A5F1D1B099F92776222A48BD3C /* PBXContainerItemProxy */ = {
@@ -666,14 +644,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8F8C2987160F8351D8777CC0;
+			remoteGlobalIDString = 9044C10E4FF9A48AC7863A65;
 			remoteInfo = React;
 		};
 		AFFB7E1519113858E35B4BA58CA1D94B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8F8C2987160F8351D8777CC0;
+			remoteGlobalIDString = 9044C10E4FF9A48AC7863A65;
 			remoteInfo = React;
 		};
 		B0EBCF69CD9E615063ABD830B516B601 /* PBXContainerItemProxy */ = {
@@ -1869,14 +1847,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A9B75E31D47F98B596F73FA48AFA2E8 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		595A0E794D2B7818EB92D30DF482032F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5DFCE6C084830D34A519D5EBB7000AA4 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4133,24 +4103,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		58E2C34DEA5F0694634FD17F4736C3D6 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6C55B1AE6574EF74B5172830ED3C281E /* Utils.h in Headers */,
-				2F8BC622786E148A20CAE2309840A8BC /* YGConfig.h in Headers */,
-				96D2F6F9E68B04225EF6FA7D83B6076C /* YGEnums.h in Headers */,
-				80C5C3B7D8E59BFFCD36C44987406560 /* YGFloatOptional.h in Headers */,
-				4CC63A029629F99C46BB06F9899DDB0C /* YGLayout.h in Headers */,
-				F4D058F1FE44F69554A907FC1F32F527 /* YGMacros.h in Headers */,
-				2E5ADD806778581490B2C58E8477F430 /* YGNode.h in Headers */,
-				964EA0B544E655B8EBE587E1B839256F /* YGNodePrint.h in Headers */,
-				6DBCD60BBA7C46C113BF78B5FC8329E8 /* YGStyle.h in Headers */,
-				D082A7AFF3BE254533868CDFB111A925 /* Yoga-internal.h in Headers */,
-				D40EB3AAA5F7E68C64892DBA029D307D /* Yoga.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		89645C5F4061D162680D134E86CC6C68 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -4383,23 +4335,6 @@
 			name = "lottie-ios";
 			productName = "lottie-ios";
 			productReference = BC3EB0C0B1B65661C54F0B7CF15F968A /* liblottie-ios.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		287BE396B481C6E3CD2CB9CDC2E8EE87 /* yoga */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DBA03F98D1CCF25678850E5CEEB6B178 /* Build configuration list for PBXNativeTarget "yoga" */;
-			buildPhases = (
-				C6A7AC471597F2908DD4FED2DD68ED8C /* Sources */,
-				595A0E794D2B7818EB92D30DF482032F /* Frameworks */,
-				58E2C34DEA5F0694634FD17F4736C3D6 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = yoga;
-			productName = yoga;
-			productReference = 3EA7C3900AED25A7EBF906397A6618D2 /* libyoga.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		3551D4B430A29AD9B4CF4533DDC844F1 /* react-native-blur */ = {
@@ -4642,7 +4577,6 @@
 				90CE6A796E5BEF73A648B1B05F1A69E7 /* react-native-google-maps */,
 				E1E65D74616FCFB41B0D0303BF9040E5 /* react-native-maps */,
 				FD76FBE4D08DAD44E2D0A53FD468E3DB /* RNSVG */,
-				287BE396B481C6E3CD2CB9CDC2E8EE87 /* yoga */,
 			);
 		};
 /* End PBXProject section */
@@ -4923,23 +4857,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C6A7AC471597F2908DD4FED2DD68ED8C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A724E717A60BDE1B9AFF6019599C9F10 /* Utils.cpp in Sources */,
-				DEDAC306DE8A7F1FCF923ACA17AE5715 /* YGConfig.cpp in Sources */,
-				59FAF4FD4D32410DD53E03D5887651F7 /* YGEnums.cpp in Sources */,
-				75DE9FD768476B90385121069131D86D /* YGFloatOptional.cpp in Sources */,
-				EBAF5306B15E644CECADAE1216D7C2BD /* YGLayout.cpp in Sources */,
-				9A6D22C4316038E2FD2984E41D04097D /* YGNode.cpp in Sources */,
-				2A48F1163A0AB5D155E9BAFD7E74A541 /* YGNodePrint.cpp in Sources */,
-				45C62F73F9AB61C2B832DD767E7E9F24 /* YGStyle.cpp in Sources */,
-				74D6AE2B00EC0169149F78C5398738ED /* yoga-dummy.m in Sources */,
-				094B835899BA4AFB7779265D37A05833 /* Yoga.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CDA90EDC4ED4390EC303D185481EAA14 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5011,7 +4928,6 @@
 		134CD25D545632CBD7F725E4375D6A73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = yoga;
-			target = 287BE396B481C6E3CD2CB9CDC2E8EE87 /* yoga */;
 			targetProxy = 3281FDAAF2CA7A996800A322CEF34FF9 /* PBXContainerItemProxy */;
 		};
 		224B98234C8D3A7DEA4FA768A0EF1EB2 /* PBXTargetDependency */ = {
@@ -5217,28 +5133,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
-		};
-		0B04DC438146DBEFCC7C9A1813E83912 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = ECF78D6138C874BAB66B044A38E3F6D2 /* yoga.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/yoga/yoga-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
 		};
 		0CDFE21B78257FDE1CFBF1119A610ED9 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -5552,27 +5446,6 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
-		};
-		88053EDF0DD54710B8C1521B5A371571 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = ECF78D6138C874BAB66B044A38E3F6D2 /* yoga.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/yoga/yoga-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
 		};
 		914FDA5C5C0C86DBB9E98666BE187DB1 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -5913,15 +5786,6 @@
 			buildConfigurations = (
 				222951FE1D0107A7305F37956A5F7C3E /* Debug */,
 				E1658F4B147D012875D82C0B8934F123 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DBA03F98D1CCF25678850E5CEEB6B178 /* Build configuration list for PBXNativeTarget "yoga" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				88053EDF0DD54710B8C1521B5A371571 /* Debug */,
-				0B04DC438146DBEFCC7C9A1813E83912 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
