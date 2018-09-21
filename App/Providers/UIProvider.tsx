@@ -103,11 +103,16 @@ class UIProvider extends React.Component<Props, State> {
       if (this.overlay && this.state.notifications.length) {
         const duration: number | undefined = this.state.notifications[0]
           .duration;
+        const onClose = this.state.notifications[0].onClose;
 
         console.log({ duration, notifications: this.state.notifications });
 
         if (duration !== -1) {
-          setTimeout(this.closeNotification, duration || 1200);
+          setTimeout(
+            () =>
+              this.closeNotification().then(() => (onClose ? onClose() : null)),
+            duration || 1200
+          );
         }
       }
     }

@@ -216,7 +216,7 @@ class AchievementsEdit extends React.Component<ComposedProps, State> {
           />
         </View>
 
-        <Drawer maxHeight={500} initiallyExpanded>
+        <Drawer snapTo={[500, "70%"]} initialSnapIndex={0}>
           {model &&
             initialModel && (
               <AchievementForm

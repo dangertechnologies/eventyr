@@ -6,7 +6,7 @@ import Dialog from "App/Components/Dialog";
 
 /** UTILS **/
 import reformed from "react-reformed";
-import { compose, mapProps } from "recompose";
+import { compose, withProps } from "recompose";
 import validateSchema from "react-reformed/lib/validateSchema";
 
 /** STYLES **/
@@ -78,6 +78,7 @@ const styles = EStyleSheet.create({
 const ProtoObjectiveDialog = (props: ComposedProps) => {
   const {
     initialModel,
+    objective,
     model,
     onChange,
     setProperty,
@@ -89,11 +90,7 @@ const ProtoObjectiveDialog = (props: ComposedProps) => {
   const { isValid } = schema;
 
   return (
-    <Dialog
-      open={Boolean(initialModel)}
-      onClose={onClose}
-      title="New objective"
-    >
+    <Dialog open={Boolean(objective)} onClose={onClose} title="New objective">
       <Form style={styles.formContainer}>
         <Item
           fixedLabel
@@ -149,7 +146,7 @@ const ProtoObjectiveDialog = (props: ComposedProps) => {
 };
 
 export default compose<ComposedProps, Props>(
-  mapProps(({ objective, ...rest }: Props) => ({
+  withProps(({ objective, ...rest }: Props) => ({
     ...rest,
     initialModel: objective,
     model: objective

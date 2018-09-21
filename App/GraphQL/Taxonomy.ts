@@ -12,24 +12,8 @@ export default gql`
       }
     }
 
-    types {
-      edges {
-        node {
-          id
-          name
-          points
-        }
-      }
-    }
+    kinds
 
-    modes {
-      edges {
-        node {
-          id
-          name
-          multiplier
-        }
-      }
-    }
+    modes
   }
 `;

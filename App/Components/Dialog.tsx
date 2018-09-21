@@ -23,10 +23,16 @@ interface Props {
 
 const Dialog = ({ open, title, onClose, children }: Props) =>
   !open ? null : (
-    <BlackPortal name="outside">
+    <BlackPortal name="dialog">
       <View animation="fadeIn" style={StyleSheet.absoluteFill}>
         <BlurView blurType="light" style={StyleSheet.absoluteFill}>
           <SafeAreaView style={styles.outer}>
+            <View style={styles.container}>
+              <View style={styles.content}>
+                {!title ? null : <H1 style={styles.title}>{title}</H1>}
+                {children}
+              </View>
+            </View>
             {!onClose ? null : (
               <TouchableWithoutFeedback style={styles.close} onPress={onClose}>
                 <Icon
@@ -37,12 +43,6 @@ const Dialog = ({ open, title, onClose, children }: Props) =>
                 />
               </TouchableWithoutFeedback>
             )}
-            <View style={styles.container}>
-              <View style={styles.content}>
-                {!title ? null : <H1 style={styles.title}>{title}</H1>}
-                {children}
-              </View>
-            </View>
           </SafeAreaView>
         </BlurView>
       </View>
@@ -77,7 +77,8 @@ const styles = EStyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
-    margin: "$spacingDouble"
+    margin: "$spacingDouble",
+    zIndex: 1000
   },
 
   title: {

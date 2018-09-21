@@ -17,7 +17,7 @@ import { BlackPortal } from "react-native-portal";
 
 interface Props {
   children: React.ReactNode;
-  snapTo: Array<string> | Array<number>;
+  snapTo: Array<string | number>;
   initialSnapIndex: number;
   avoidKeyboard: boolean;
   backgroundColor?: string;

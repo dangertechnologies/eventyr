@@ -49,9 +49,9 @@ export default compose(
     },
 
     mode: {
-      type: "object",
+      type: "string",
       test: (value: Mode, fail: Function) => {
-        if (!value || !value.id) {
+        if (!value) {
           return fail("Select a Difficulty");
         }
       }

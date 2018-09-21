@@ -5,7 +5,7 @@ export default gql`
     $name: String!
     $description: String!
     $objectives: [ObjectiveInput!]!
-    $icon: String!
+    $icon: Icon!
     $categoryId: Int!
     $mode: Mode!
   ) {
@@ -14,7 +14,7 @@ export default gql`
         name: $name
         description: $description
         icon: $icon
-        modeId: $modeId
+        mode: $mode
         categoryId: $categoryId
         objectives: $objectives
       }
