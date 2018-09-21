@@ -141,9 +141,6 @@ const ListWithDefaultProps = (
     withUIHelpers
   )(Achievements);
 
-  // @ts-ignore
-  console.log(ListScreen);
-
   return ListScreen;
 };
 

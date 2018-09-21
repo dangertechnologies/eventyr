@@ -76,8 +76,7 @@ class UserProvider extends React.Component<Props, State> {
 
     console.log({
       provider: "User",
-      value: contextValue,
-      props: this.props
+      value: contextValue
     });
     return <Provider value={contextValue}>{this.props.children}</Provider>;
   }
