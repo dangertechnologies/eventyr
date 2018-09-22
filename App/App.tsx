@@ -29,6 +29,7 @@ const RootContainer = () => (
                   <UIProvider.Provider>
                     <Navigation />
                     <WhitePortal name="outside" />
+                    <WhitePortal name="dialog" />
                   </UIProvider.Provider>
                 </PortalProvider>
               </View>

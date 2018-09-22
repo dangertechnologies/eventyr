@@ -84,6 +84,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
       ...omit(model, ["id", "category", "mode"]),
       categoryId: parseInt(category && category.id ? category.id : "0", 10),
       mode,
+      icon: model.icon.replace("-", "_"),
       description: model.fullDescription,
       objectives: objectives.map(o => ({
         ...pick(o, [
@@ -109,6 +110,8 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
       .then(({ data }) => {
         console.log({ data });
         const { errors, achievement } = data.createAchievement;
+
+        console.log({ errors, data });
 
         // TODO: Handle errors here by showing an error notification
         this.props.ui.notifySuccess("Saved").then(() =>
@@ -199,7 +202,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
           />
         </View>
 
-        <Drawer maxHeight={550} initiallyExpanded>
+        <Drawer snapTo={["35%", "70%"]} initialSnapIndex={1}>
           <AchievementForm
             onChange={this.props.setProperty}
             validationErrors={this.props.validationErrors}

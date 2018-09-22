@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 // @ts-ignore
 import fsStorage from "redux-persist-fs-storage";
-import { UserInfo } from "react-native-auth0";
 import {
   IntrospectionResultData,
   NormalizedCacheObject

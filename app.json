@@ -4,7 +4,7 @@
   },
   "name": "Achievements",
   "displayName": "Achievements",
-  "appVersion": "0.2",
-  "devApiUrl": "http://localhost:3000/graphql",
-  "apiUrl": "https://achievements-app.herokuapp.com/graphql"
+  "appVersion": "0.3",
+  "apiUrl": "http://localhost:3000/graphql"
+  //"apiUrl": "https://achievements-app.herokuapp.com/graphql"
 }
