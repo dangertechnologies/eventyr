@@ -25,16 +25,8 @@ export default gql`
         icon
       }
 
-      mode {
-        id
-        name
-      }
-
-      type {
-        id
-        name
-        icon
-      }
+      mode
+      kind
     }
   }
 `;

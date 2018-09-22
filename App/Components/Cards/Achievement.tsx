@@ -15,13 +15,15 @@ import {
   Text,
   Button
 } from "native-base";
-import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import KindIcon from "App/Components/KindIcon";
+
 // @ts-ignore
 import Swipeable from "react-native-swipeable";
 import AchievementIcon from "App/Components/AchievementIcon";
 
 /** UTILS **/
 import { compose } from "recompose";
+import { capitalize, isEqual } from "lodash";
 
 /** TYPES **/
 import { Achievement } from "App/Types/GraphQL";
@@ -44,40 +46,48 @@ const AchievementCard = ({
   onPress,
   onEdit,
   onDelete
-}: Props & { currentUser: UserContext }) =>
-  !achievement ? null : (
+}: Props & { currentUser: UserContext }) => {
+  if (!achievement) {
+    return null;
+  }
+
+  const canEdit =
+    achievement.author && isEqual(achievement.author.id, `${currentUser.id}`);
+  return (
     <Card>
       <Swipeable
-        swipeable={
-          achievement.author && achievement.author.id === `${currentUser.id}`
+        swipeable={canEdit}
+        rightButtons={
+          !canEdit
+            ? undefined
+            : [
+                <Button
+                  style={styles.editButton}
+                  onPress={() => onEdit && onEdit(achievement)}
+                >
+                  <Text style={{ textAlign: "center" }}>Edit</Text>
+                </Button>,
+                <Button
+                  style={styles.deleteButton}
+                  onPress={() => onDelete && onDelete(achievement)}
+                >
+                  <Text style={{ textAlign: "center" }}>Delete</Text>
+                </Button>
+              ]
         }
-        rightButtons={[
-          <Button
-            style={styles.editButton}
-            onPress={() => onEdit && onEdit(achievement)}
-          >
-            <Text style={{ textAlign: "center" }}>Edit</Text>
-          </Button>,
-          <Button
-            style={styles.deleteButton}
-            onPress={() => onDelete && onDelete(achievement)}
-          >
-            <Text style={{ textAlign: "center" }}>Delete</Text>
-          </Button>
-        ]}
       >
         <TouchableOpacity onPress={() => onPress && onPress()}>
           <CardItem>
             <Left style={{ flexDirection: "row" }}>
-              <MaterialIcon name={achievement.type.icon} />
+              <KindIcon kind={achievement.kind} />
               <Text note style={{ fontSize: 12 }}>
-                {achievement.type.name}
+                {capitalize(achievement.kind)}
               </Text>
             </Left>
 
             <Right style={{ alignItems: "flex-end" }}>
               <Text note style={{ fontSize: 12 }}>
-                {achievement.mode.name}
+                {capitalize(achievement.mode)}
               </Text>
             </Right>
           </CardItem>
@@ -86,7 +96,7 @@ const AchievementCard = ({
               <AchievementIcon
                 name={achievement.icon}
                 size={40}
-                difficulty={achievement.mode.name}
+                difficulty={achievement.mode}
               />
               <Body>
                 <Text>{achievement.name}</Text>
@@ -103,7 +113,7 @@ const AchievementCard = ({
       </Swipeable>
     </Card>
   );
-
+};
 const styles = EStyleSheet.create({
   editButton: {
     width: "100%",

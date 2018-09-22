@@ -8,7 +8,7 @@ import {
   NormalizedCacheObject
 } from "apollo-cache-inmemory";
 import { PersistentStorage, PersistedData } from "apollo-cache-persist/types";
-import { isEqual, get } from "lodash";
+import { isEqual, omit } from "lodash";
 import { compose } from "recompose";
 
 // Caching
@@ -17,15 +17,18 @@ import {
   IntrospectionFragmentMatcher
 } from "apollo-cache-inmemory";
 import { CachePersistor } from "apollo-cache-persist";
-import {
-  withAuth0,
-  contextShape as auth0Context,
-  Credentials,
-  Auth0Context
-} from "./Auth0Provider";
 
-import * as Config from "../../app.json";
 import introspectionSchema from "../Config/fragmentMatcher.json";
+
+import { BatchHttpLink } from "apollo-link-batch-http";
+import { onError, ErrorResponse } from "apollo-link-error";
+import { ApolloLink } from "apollo-link";
+
+import { ApolloClient } from "apollo-client";
+
+import { ApolloProvider } from "react-apollo";
+
+import Config from "../../app.json";
 
 // @ts-ignore
 const SCHEMA_VERSION = Config.appVersion;
@@ -50,58 +53,85 @@ interface State {
   isFirstLaunch: boolean;
   restored: boolean;
   version: string;
-  credentials: Credentials;
-  userInfo: UserInfo | {};
+  authenticationToken: string;
+  client: ApolloClient<NormalizedCacheObject>;
 }
 
 interface Props {
-  auth0: Auth0Context;
   children: React.ReactNode;
 }
 
-export interface CacheContext extends State {
+export interface RehydrationContext
+  extends Omit<State, "cache" | "persistor" | "client"> {
   clear: Function;
   updateCredentials: Function;
+  isLoggedIn: boolean;
 }
 
-export const contextShape = {
-  cache: PropTypes.instanceOf(InMemoryCache),
-  persistor: PropTypes.instanceOf(CachePersistor),
-  isFirstLaunch: PropTypes.bool.isRequired,
-  restored: PropTypes.bool.isRequired,
-  version: PropTypes.string.isRequired,
-  credentials: auth0Context.credentials,
-  clear: PropTypes.func.isRequired
-};
-
-const DEFAULT_CONTEXT: CacheContext = {
-  persistor: undefined,
-  cache: MEMORY_CACHE,
+const DEFAULT_CONTEXT: RehydrationContext = {
   isFirstLaunch: true,
+  isLoggedIn: false,
   restored: false,
   version: SCHEMA_VERSION,
-  userInfo: {},
-  credentials: {
-    idToken: "",
-    scope: "",
-    tokenType: "Bearer",
-    accessToken: "",
-    expiresIn: 0,
-    expiryDate: 0,
-    refreshToken: ""
-  },
+  authenticationToken: "",
   clear: () => null,
   updateCredentials: () => null
 };
 
 const { Provider, Consumer } = React.createContext(DEFAULT_CONTEXT);
 
-class CacheProvider extends React.Component<Props, State> {
+class RehydrationProvider extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.restoreCache.bind(this);
     this.updateCredentials.bind(this);
   }
+
+  onError = (result: ErrorResponse) => {
+    const { graphQLErrors, networkError, response, operation } = result;
+
+    console.log("NETWORK ERROR:");
+
+    // Ignore errors on currentUser check, since the user may be logged out,
+    // which will always cause an error.
+    if (operation && operation.operationName === "UserCheck") {
+      // @ts-ignore ref: https://www.apollographql.com/docs/react/features/error-handling.html
+      response.errors = null;
+    } else {
+      console.warn(JSON.stringify(response));
+      console.warn(JSON.stringify(operation));
+      console.warn(JSON.stringify(graphQLErrors));
+    }
+    if (graphQLErrors) {
+      graphQLErrors.map(({ message }) => console.log(message));
+    }
+
+    if (networkError) {
+      console.warn({ name: "Network error", value: networkError });
+    }
+  };
+
+  authenticatedFetch = (
+    uri: string,
+    options: { headers: { Authorization: string } }
+  ) => {
+    if (this.state.authenticationToken !== "") {
+      options.headers.Authorization = `Bearer ${
+        this.state.authenticationToken
+      }`;
+    }
+
+    return fetch(uri, options);
+  };
+
+  link: ApolloLink = ApolloLink.from([
+    onError(this.onError),
+    new BatchHttpLink({
+      uri: Config.apiUrl,
+      fetch: this.authenticatedFetch,
+      batchMax: 3
+    })
+  ]);
 
   state: State = {
     persistor: undefined,
@@ -109,16 +139,8 @@ class CacheProvider extends React.Component<Props, State> {
     isFirstLaunch: true,
     restored: false,
     version: SCHEMA_VERSION,
-    userInfo: {},
-    credentials: {
-      idToken: "",
-      scope: "",
-      tokenType: "Bearer",
-      accessToken: "",
-      expiresIn: 0,
-      expiryDate: 0,
-      refreshToken: ""
-    }
+    authenticationToken: "",
+    client: new ApolloClient({ cache: MEMORY_CACHE, link: this.link })
   };
 
   componentWillMount() {
@@ -127,8 +149,6 @@ class CacheProvider extends React.Component<Props, State> {
       storage: STORAGE,
       debug: true
     });
-
-    console.log("SETTING UP CACHE 4");
 
     this.setState(
       {
@@ -139,37 +159,12 @@ class CacheProvider extends React.Component<Props, State> {
     );
   }
 
-  componentWillReceiveProps(props: Props) {
-    const { auth0 }: { auth0: Auth0Context } = props;
-    if (
-      auth0 &&
-      auth0.credentials &&
-      auth0.credentials.accessToken &&
-      !isEqual(
-        auth0.credentials.accessToken,
-        get(this.state, "credentials.accessToken")
-      )
-    ) {
-      // $FlowFixMe
-      this.updateCredentials(auth0);
-    }
-  }
-
-  async updateCredentials({
-    credentials,
-    userInfo
-  }:
-    | {
-        credentials: Credentials;
-        userInfo: UserInfo | {};
-      }
-    | Auth0Context): Promise<any> {
+  updateCredentials = async (authenticationToken: string): Promise<any> => {
     this.setState({
-      credentials,
-      userInfo
+      authenticationToken
     });
-    await STORAGE.setItem("auth0", JSON.stringify({ credentials, userInfo }));
-  }
+    await STORAGE.setItem("authenticationToken", authenticationToken);
+  };
 
   async restoreCache(options?: { forceClear?: boolean }): Promise<any> {
     const forceClear = (options && options.forceClear) || false;
@@ -180,23 +175,22 @@ class CacheProvider extends React.Component<Props, State> {
       forceClear ? "EMPTY" : SCHEMA_VERSION_KEY
     );
 
-    const credentials: {
-      credentials: Credentials;
-      userInfo: UserInfo;
-      // @ts-ignore-next-line
-    } = await STORAGE.getItem("auth0").then(
-      (c: string) => (c ? JSON.parse(c) : {})
-    );
+    const authenticationToken = (await STORAGE.getItem(
+      "authenticationToken"
+    )) as string;
 
-    console.log("3. Cache restore");
+    console.log({
+      name: "Rehydration#restoredAuth",
+      value: authenticationToken
+    });
 
     if (currentVersion === SCHEMA_VERSION && !forceClear) {
       // If the current version matches the latest version,
       // we're good to go and can restore the cache.
-      console.log({ name: "GraphQLCache#restore" });
+      console.log({ name: "Rehydration#restoredCache" });
 
-      if (credentials.credentials) {
-        this.setState(credentials);
+      if (authenticationToken) {
+        this.setState({ authenticationToken });
       }
       if (persistor) {
         await persistor.restore();
@@ -206,30 +200,20 @@ class CacheProvider extends React.Component<Props, State> {
     } else {
       // Otherwise, we'll want to purge the outdated persisted cache
       // and mark ourselves as having updated to the latest version.
-      console.log({ name: "GraphQLCache#clear" });
+      console.log({ name: "Rehydration#purge" });
       if (persistor) {
         await persistor.purge();
       } else {
         console.log("Persistor doesnt exist!");
       }
       await STORAGE.setItem(SCHEMA_VERSION_KEY, SCHEMA_VERSION);
-      await this.updateCredentials({
-        credentials: {
-          expiresIn: 0,
-          accessToken: "",
-          refreshToken: "",
-          expiryDate: 0,
-          idToken: "",
-          scope: "",
-          tokenType: "Bearer"
-        },
-        userInfo: {}
-      });
+      await this.updateCredentials("");
     }
     return this.setState({
       cache,
       persistor,
-      restored: true
+      restored: true,
+      client: new ApolloClient({ cache, link: this.link })
     });
   }
 
@@ -243,25 +227,30 @@ class CacheProvider extends React.Component<Props, State> {
       persistor.getLogs(true);
     }
 
-    const contextValue: CacheContext = {
-      ...this.state,
+    const contextValue: RehydrationContext = {
+      ...omit(this.state, ["client", "cache", "persistor"]),
+      isLoggedIn: this.state.authenticationToken !== "",
       clear: this.purgeCache,
       updateCredentials: this.updateCredentials
     };
 
-    return <Provider value={contextValue}>{this.props.children}</Provider>;
+    return (
+      <ApolloProvider client={this.state.client}>
+        <Provider value={contextValue}>{this.props.children}</Provider>
+      </ApolloProvider>
+    );
   }
 }
 
-export const withCache = <P extends object>(
-  Component: React.ComponentType<P & { cache: CacheContext }>
+export const withRehydratedState = <P extends object>(
+  Component: React.ComponentType<P & { rehydratedState: RehydrationContext }>
 ) =>
-  class CacheConsumer extends React.PureComponent<P> {
+  class RehydrationConsumer extends React.PureComponent<P> {
     render() {
       const props = this.props || {};
       return (
         <Consumer>
-          {context => <Component {...props} cache={context} />}
+          {context => <Component {...props} rehydratedState={context} />}
         </Consumer>
       );
     }
@@ -269,5 +258,5 @@ export const withCache = <P extends object>(
 
 export default {
   Consumer,
-  Provider: compose<Props, {}>(withAuth0)(CacheProvider)
+  Provider: RehydrationProvider
 };

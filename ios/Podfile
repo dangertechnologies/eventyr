@@ -46,6 +46,8 @@ target 'Achievements' do
 
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
+  pod 'AppAuth', '>= 0.94'
+
 end
 
 post_install do |installer|

@@ -11,6 +11,7 @@ interface Props {
   objective: Objective | EditableObjective;
   calloutIcon?: string;
   onCalloutPress?(objective?: Objective | EditableObjective): any;
+  onPress?(): any;
   color?: string;
 }
 
@@ -18,6 +19,7 @@ const MapCallout: React.ComponentType<Props> = ({
   objective,
   color,
   onCalloutPress,
+  onPress,
   calloutIcon
 }: Props) =>
   objective && objective.lat && objective.lng ? (
@@ -27,6 +29,8 @@ const MapCallout: React.ComponentType<Props> = ({
         latitude: objective.lat,
         longitude: objective.lng
       }}
+      tracksViewChanges={false}
+      onPress={onPress}
     >
       <Callout tooltip>
         <Button

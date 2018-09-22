@@ -83,7 +83,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
     const protoAchievement = {
       ...omit(model, ["id", "category", "mode"]),
       categoryId: parseInt(category && category.id ? category.id : "0", 10),
-      modeId: parseInt(mode.id, 10),
+      mode,
       description: model.fullDescription,
       objectives: objectives.map(o => ({
         ...pick(o, [
@@ -199,7 +199,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
           />
         </View>
 
-        <Drawer maxHeight={500} initiallyExpanded>
+        <Drawer maxHeight={550} initiallyExpanded>
           <AchievementForm
             onChange={this.props.setProperty}
             validationErrors={this.props.validationErrors}
