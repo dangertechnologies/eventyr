@@ -10,6 +10,7 @@ import {
   NavigationState
 } from "react-navigation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Ionicon from "react-native-vector-icons/Ionicons";
 import { compose } from "recompose";
 import { TouchableOpacity } from "react-native";
 import LottieView from "lottie-react-native";
@@ -23,6 +24,8 @@ import AchievementDetailsScreen from "../Screens/Achievements/Details";
 import AchievementEditScreen from "../Screens/Achievements/Edit";
 import NearbyMapScreen from "../Screens/Nearby/Map";
 import ProfileScreen from "../Screens/Profile/Profile";
+import LoginScreen from "../Screens/Login/LoginScreen";
+import AuthorizationScreen from "../Screens/Login/AuthorizationScreen";
 
 import { withUser } from "../Providers/UserProvider";
 
@@ -32,7 +35,7 @@ const AchievementsTab = createStackNavigator(
       screen: createMaterialTopTabNavigator(
         {
           All: AchievementsScreen.All,
-          Tracked: AchievementsScreen.Tracked,
+          Suggested: AchievementsScreen.Suggested,
           Personal: AchievementsScreen.Personal
         },
         // @ts-ignore
@@ -123,7 +126,7 @@ const loggedInNavigation = createBottomTabNavigator(
   {
     // Default config for all screens
     tabBarPosition: "bottom",
-    initialRouteName: "ProfileScreen",
+    initialRouteName: "AchievementsScreen",
     swipeEnabled: true,
     lazy: true,
     paths: {
@@ -148,8 +151,12 @@ const loggedInNavigation = createBottomTabNavigator(
 
         switch (routeName) {
           case "AchievementsScreen":
+            return <Icon name="lock" color={color as string} size={25} />;
+          case "NearbyScreen":
+            return <Icon name="map" color={color as string} size={25} />;
+          case "ProfileScreen":
             return (
-              <Icon name="trending-up" color={color as string} size={25} />
+              <Ionicon name="ios-person" color={color as string} size={25} />
             );
           default:
             return <Icon name="map" color={color as string} size={25} />;
@@ -159,13 +166,13 @@ const loggedInNavigation = createBottomTabNavigator(
   }
 );
 
-const LoggedOutNavigation = createStackNavigator(
+const loggedOutNavigation = createStackNavigator(
   {
     // In case navigation is cached, point everything to LoginScreen
-    AchievementsScreen: { screen: AchievementsTab }
+    LoginScreen: { screen: LoginScreen }
   },
   {
-    initialRouteName: "AchievementsScreen"
+    initialRouteName: "LoginScreen"
   }
 );
 
@@ -175,11 +182,14 @@ const Navigation = createSwitchNavigator(
       screen: loggedInNavigation
     },
     LoggedOut: {
-      screen: loggedInNavigation
+      screen: loggedOutNavigation
+    },
+    Authorization: {
+      screen: AuthorizationScreen
     }
   },
   {
-    initialRouteName: "LoggedIn"
+    initialRouteName: "Authorization"
   }
 );
 

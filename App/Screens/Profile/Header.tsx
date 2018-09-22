@@ -111,6 +111,7 @@ const UserHeader = ({ user, height }: Props) => {
 
         <Row style={styles.metadata}>
           <AnimatedView
+            // @ts-ignore
             style={{
               alignItems: "center",
               justifyContent: "center",
@@ -123,6 +124,7 @@ const UserHeader = ({ user, height }: Props) => {
             </Text>
           </AnimatedView>
           <AnimatedView
+            // @ts-ignore
             style={{
               alignItems: "center",
               justifyContent: "center",
@@ -137,6 +139,7 @@ const UserHeader = ({ user, height }: Props) => {
             </Text>
           </AnimatedView>
           <AnimatedView
+            // @ts-ignore
             style={{
               alignItems: "center",
               justifyContent: "center",

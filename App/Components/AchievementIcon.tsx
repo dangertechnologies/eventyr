@@ -22,10 +22,10 @@ const styles = EStyleSheet.create({
 });
 
 const difficultyGradient = (difficulty: string) => {
-  switch (difficulty.toLowerCase()) {
+  switch ((difficulty || "").toLowerCase()) {
     case "easy":
       return ["#3A1C71", "#00dbde"];
-    case "hard":
+    case "difficult":
       return ["#FC5C7D", "#6a82fb"];
     case "normal":
     default:

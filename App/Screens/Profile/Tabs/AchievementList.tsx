@@ -1,21 +1,8 @@
 import React from "react";
 
 /** COMPONENTS **/
-import { FlatList, Animated } from "react-native";
-import {
-  Container,
-  Header,
-  Content,
-  H1,
-  H2,
-  H3,
-  Text,
-  Icon,
-  Left,
-  Right,
-  Body,
-  Row
-} from "native-base";
+import { FlatList, View } from "react-native";
+import { H3 } from "native-base";
 import AchievementCard from "App/Components/Cards/Achievement";
 
 /** UTILS */
@@ -25,6 +12,8 @@ import { graphql } from "react-apollo";
 /** TYPES **/
 import { ApolloQueryResult } from "apollo-client";
 import { Query, User } from "App/Types/GraphQL";
+
+import EStyleSheet from "react-native-extended-stylesheet";
 
 import QUERY_USER_PERSONAL_ACHIEVEMENTS from "../../../GraphQL/Users/UserAchievements";
 
@@ -40,13 +29,24 @@ export const scrollRangeForAnimation = 150;
 const AchievementList = ({ data }: ComposedProps) => {
   const { user } = data;
 
+  const achievements =
+    user && user.userAchievements && user.userAchievements.edges
+      ? user.userAchievements.edges
+      : [];
+
+  if (!achievements.length) {
+    return (
+      <View style={styles.empty}>
+        <H3 numberOfLines={2} style={styles.emptyText}>
+          You have not created any achievements yet
+        </H3>
+      </View>
+    );
+  }
+
   return (
     <FlatList
-      data={
-        user && user.userAchievements && user.userAchievements.edges
-          ? user.userAchievements.edges
-          : []
-      }
+      data={achievements}
       refreshing={data.loading}
       keyExtractor={({ node }) => (node ? node.id : "N/A")}
       renderItem={({ item }) =>
@@ -57,6 +57,22 @@ const AchievementList = ({ data }: ComposedProps) => {
     />
   );
 };
+
+const styles = EStyleSheet.create({
+  empty: {
+    width: "100% - $spacingDouble",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    flexGrow: 1,
+    minHeight: 250,
+    alignSelf: "center"
+  },
+
+  emptyText: {
+    textAlign: "center"
+  }
+});
 
 export default compose<ComposedProps, Props>(
   withProps(({ user }: ComposedProps) => ({

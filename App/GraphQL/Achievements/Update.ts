@@ -8,7 +8,7 @@ export default gql`
     $objectives: [ObjectiveInput!]!
     $icon: String!
     $categoryId: Int!
-    $modeId: Int!
+    $mode: Mode!
   ) {
     updateAchievement(
       input: {
@@ -16,7 +16,7 @@ export default gql`
         name: $name
         description: $description
         icon: $icon
-        modeId: $modeId
+        mode: $mode
         categoryId: $categoryId
         objectives: $objectives
       }

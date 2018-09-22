@@ -1,21 +1,8 @@
 import React from "react";
 
 /** COMPONENTS **/
-import { FlatList, Animated } from "react-native";
-import {
-  Container,
-  Header,
-  Content,
-  H1,
-  H2,
-  H3,
-  Text,
-  Icon,
-  Left,
-  Right,
-  Body,
-  Row
-} from "native-base";
+import { FlatList, View } from "react-native";
+import { H3 } from "native-base";
 import UnlockedCard from "App/Components/Cards/Unlocked";
 
 /** UTILS */
@@ -42,14 +29,24 @@ export const scrollRangeForAnimation = 150;
 const UnlockedList = ({ data }: ComposedProps) => {
   const { user } = data;
 
-  console.log({ data });
+  const unlocked =
+    user && user.unlockedAchievements && user.unlockedAchievements.edges
+      ? user.unlockedAchievements.edges
+      : [];
+
+  if (!unlocked.length) {
+    return (
+      <View style={styles.empty}>
+        <H3 numberOfLines={2} style={styles.emptyText}>
+          You have not unlocked any achievements yet
+        </H3>
+      </View>
+    );
+  }
+
   return (
     <FlatList
-      data={
-        user && user.unlockedAchievements && user.unlockedAchievements.edges
-          ? user.unlockedAchievements.edges
-          : []
-      }
+      data={unlocked}
       refreshing={data.loading}
       keyExtractor={({ node }) => (node ? node.id : "N/A")}
       renderItem={({ item }) =>
@@ -63,6 +60,20 @@ const styles = EStyleSheet.create({
   content: {
     flexGrow: 1,
     padding: "$spacing"
+  },
+
+  empty: {
+    width: "100% - $spacingDouble",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    flexGrow: 1,
+    minHeight: 250,
+    alignSelf: "center"
+  },
+
+  emptyText: {
+    textAlign: "center"
   }
 });
 

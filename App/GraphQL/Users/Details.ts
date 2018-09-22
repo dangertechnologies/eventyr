@@ -11,11 +11,6 @@ export default gql`
       unlockedCount
       coopPoints
 
-      country {
-        id
-        name
-      }
-
       role {
         id
         name

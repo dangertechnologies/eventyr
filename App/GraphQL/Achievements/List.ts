@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export default gql`
-  query AchievementsList($kind: String!) {
-    achievements(kind: $kind) {
+  query AchievementsList($type: String!) {
+    achievements(type: $type) {
       edges {
         node {
           id
@@ -20,15 +20,8 @@ export default gql`
             title
             icon
           }
-          mode {
-            id
-            name
-          }
-          type {
-            id
-            name
-            icon
-          }
+          mode
+          kind
         }
       }
     }

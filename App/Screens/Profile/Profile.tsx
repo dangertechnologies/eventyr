@@ -40,13 +40,17 @@ interface ComposedProps extends Props {
 export const scrollRangeForAnimation = 300;
 
 class ProfileScreen extends React.PureComponent<ComposedProps> {
+  static navigationOptions = {
+    tabBarLabel: "Profile"
+  };
+
   scrollView: ScrollView | null = null;
 
   onScrollEndSnapToEdge = (event: any) => {
     const y = event.nativeEvent.contentOffset.y;
     if (0 < y && y < scrollRangeForAnimation / 2) {
       if (this.scrollView) {
-        this.scrollView.scrollTo({ y: 100 });
+        this.scrollView.scrollTo({ y: 0 });
       }
     } else if (
       scrollRangeForAnimation / 2 <= y &&
@@ -60,6 +64,8 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
 
   render() {
     const user: User = this.props.data.user;
+
+    console.log({ props: this.props });
 
     return (
       <View style={{ flex: 1, flexDirection: "column-reverse" }}>
@@ -95,6 +101,7 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
           </Container>
         </Animated.ScrollView>
         <AnimatedView
+          // @ts-ignore
           style={{
             position: "absolute",
             top: this.props.headerHeight,
@@ -126,10 +133,10 @@ const styles = EStyleSheet.create({
   }
 });
 
-export default compose<ComposedProps, Props>(
+const Enhanced = compose<ComposedProps, Props>(
   withUser,
   withProps(({ navigation, currentUser }: ComposedProps) => ({
-    id: navigation.getParam("id", currentUser.id)
+    id: navigation.getParam("id", `${currentUser.id}`)
   })),
   graphql(QUERY_USER_DETAILS),
   withState("selectedTab", "setTab", 0),
@@ -148,3 +155,8 @@ export default compose<ComposedProps, Props>(
     })
   }))
 )(ProfileScreen);
+
+// @ts-ignore
+Enhanced.navigationOptions = ProfileScreen.navigationOptions;
+
+export default Enhanced;

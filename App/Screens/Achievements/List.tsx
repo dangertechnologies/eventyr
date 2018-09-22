@@ -33,7 +33,7 @@ import MUTATE_DELETE_ACHIEVEMENT, {
 interface Props extends MutateProps {
   data: Query & ApolloQueryResult<Query> & { error: string };
   navigation: NavigationScreenProp<NavigationState>;
-  kind: "all" | "personal" | "tracked";
+  type: "all" | "personal" | "suggested";
   ui: UIContext;
 }
 
@@ -132,26 +132,12 @@ const ListWithDefaultProps = (
 ): React.ComponentType<Props> => {
   const ListScreen: React.ComponentType<Props> = compose<Props, Props>(
     withProps(defaultProps),
-    graphql(
-      gql`
-        ${QUERY_ACHIEVEMENTS}
-      `,
-      {
-        options: ({ kind }: Props) => ({
-          variables: { kind }
-        })
-      }
-    ),
-    graphql(
-      gql`
-        ${MUTATE_DELETE_ACHIEVEMENT}
-      `,
-      {
-        options: ({ kind }: Props) => ({
-          variables: { kind }
-        })
-      }
-    ),
+    graphql(QUERY_ACHIEVEMENTS, {
+      options: ({ type }: Props) => ({
+        variables: { type }
+      })
+    }),
+    graphql(MUTATE_DELETE_ACHIEVEMENT),
     withUIHelpers
   )(Achievements);
 
@@ -162,7 +148,7 @@ const ListWithDefaultProps = (
 };
 
 export default {
-  All: ListWithDefaultProps({ kind: "all" }),
-  Tracked: ListWithDefaultProps({ kind: "tracked" }),
-  Personal: ListWithDefaultProps({ kind: "personal" })
+  All: ListWithDefaultProps({ type: "all" }),
+  Suggested: ListWithDefaultProps({ type: "suggested" }),
+  Personal: ListWithDefaultProps({ type: "personal" })
 };

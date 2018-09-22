@@ -78,6 +78,7 @@ class Drawer extends React.Component<Props, State> {
   onExpand = () => {
     if (!this.drawer) {
       console.log("Drawer undefined?");
+      setTimeout(this.onExpand, 200);
     } else {
       if (this.content) {
         this.content.measure((ox, oy, width, height) => {
@@ -87,7 +88,7 @@ class Drawer extends React.Component<Props, State> {
               height:
                 height + 60 > this.props.maxHeight
                   ? this.props.maxHeight
-                  : height + 60
+                  : height + 100
             });
           }
         });

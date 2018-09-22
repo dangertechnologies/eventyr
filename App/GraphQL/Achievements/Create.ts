@@ -7,7 +7,7 @@ export default gql`
     $objectives: [ObjectiveInput!]!
     $icon: String!
     $categoryId: Int!
-    $modeId: Int!
+    $mode: Mode!
   ) {
     createAchievement(
       input: {

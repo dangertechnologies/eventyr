@@ -91,8 +91,6 @@ class AchievementsView extends React.PureComponent<Props, State> {
 
     const visibleObjectives = achievement ? achievement.objectives : objectives;
 
-    console.log({ data, achievement, objectives, state: this.state });
-
     return (
       <View style={{ flex: 1 }}>
         <Map
@@ -101,9 +99,9 @@ class AchievementsView extends React.PureComponent<Props, State> {
           }}
           style={StyleSheet.absoluteFill}
           initialRegion={this.state.coordinates || undefined}
-          region={this.state.coordinates || undefined}
+          // region={this.state.coordinates || undefined}
           onPress={this.onMapPress}
-          onRegionChangeComplete={this.onRegionChange}
+          // onRegionChangeComplete={this.onRegionChange}
         >
           {visibleObjectives &&
             visibleObjectives.map(
@@ -113,6 +111,7 @@ class AchievementsView extends React.PureComponent<Props, State> {
                     key={node.id}
                     objective={node}
                     color={objectiveColors[index % 100]}
+                    onPress={() => this.onSelect(node)}
                     calloutIcon="plus"
                   />
                 ) : null

@@ -97,13 +97,13 @@ class AchievementsEdit extends React.Component<ComposedProps, State> {
     console.log({ model });
 
     const { objectives } = model;
-    const mode = model.mode as Mode;
+    const mode = model.mode;
     const category = model.category as Category;
 
     const protoAchievement = {
       ...omit(model, ["category", "mode", "type"]),
       categoryId: parseInt(category && category.id ? category.id : "0", 10),
-      modeId: parseInt(mode.id, 10),
+      mode: mode,
       description: model.fullDescription,
       objectives: objectives.map(o => ({
         ...pick(o, [

@@ -4,11 +4,8 @@ import { Root } from "native-base";
 import { PortalProvider, WhitePortal } from "react-native-portal";
 
 // Providers
-import AuthorizedFetch from "./Providers/FetchProvider";
 import OneSignal from "./Providers/OneSignalProvider";
-import Cache from "./Providers/CacheProvider";
-import ApolloProvider from "./Providers/GraphQLProvider";
-import Auth0 from "./Providers/Auth0Provider";
+import Rehydration from "./Providers/RehydrationProvider";
 import CurrentUser from "./Providers/UserProvider";
 import Web from "./Providers/WebProvider";
 import Theme from "./Providers/ThemeProvider";
@@ -20,32 +17,26 @@ import Navigation from "./Config/Navigation";
 
 const RootContainer = () => (
   <Root>
-    <Auth0.Provider>
-      <Cache.Provider>
-        <Theme.Provider>
-          <AuthorizedFetch.Provider>
-            <ApolloProvider>
-              <OneSignal.Provider>
-                <CurrentUser.Provider>
-                  <Web.Provider>
-                    <View style={{ flex: 1 }}>
-                      <StatusBar barStyle="light-content" hidden />
+    <Rehydration.Provider>
+      <Theme.Provider>
+        <OneSignal.Provider>
+          <CurrentUser.Provider>
+            <Web.Provider>
+              <View style={{ flex: 1 }}>
+                <StatusBar barStyle="light-content" hidden />
 
-                      <PortalProvider>
-                        <UIProvider.Provider>
-                          <Navigation />
-                          <WhitePortal name="outside" />
-                        </UIProvider.Provider>
-                      </PortalProvider>
-                    </View>
-                  </Web.Provider>
-                </CurrentUser.Provider>
-              </OneSignal.Provider>
-            </ApolloProvider>
-          </AuthorizedFetch.Provider>
-        </Theme.Provider>
-      </Cache.Provider>
-    </Auth0.Provider>
+                <PortalProvider>
+                  <UIProvider.Provider>
+                    <Navigation />
+                    <WhitePortal name="outside" />
+                  </UIProvider.Provider>
+                </PortalProvider>
+              </View>
+            </Web.Provider>
+          </CurrentUser.Provider>
+        </OneSignal.Provider>
+      </Theme.Provider>
+    </Rehydration.Provider>
   </Root>
 );
 
