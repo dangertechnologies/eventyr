@@ -18,7 +18,7 @@ import Drawer from "App/Components/Drawer";
 
 import { NavigationState, NavigationScreenProp } from "react-navigation";
 
-import QUERY_ACHIEVEMENT_DETAILS from "../../GraphQL/Achievements/Details";
+import QUERY_ACHIEVEMENT_DETAILS from "App/GraphQL/Queries/Achievements/Details";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;

@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -44,6 +45,7 @@
 		429A8F28213B493400B70804 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429A8F27213B493400B70804 /* MapKit.framework */; };
 		429A8F7B213DD37600B70804 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 429A8F78213DD36600B70804 /* libRNSVG.a */; };
 		429A90042142FF6200B70804 /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 429A8FC32142FEE400B70804 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		42D8394821582D8100363112 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42D8394521582D7200363112 /* libRCTPushNotification.a */; };
 		454C05D186524DF4A07123D5 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C2A30692FE54483BF25DE56 /* libBVLinearGradient.a */; };
 		4D3E55910A2C4122AB6AB4D7 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8768E9E5AB3F4CCBBE17273D /* EvilIcons.ttf */; };
 		5499700F3774473F98DAAB86 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 77C7912EBB934597A0E0D881 /* Foundation.ttf */; };
@@ -433,6 +435,20 @@
 			remoteGlobalIDString = 62CA59B71E3C173B002D7188;
 			remoteInfo = Lottie_iOS;
 		};
+		42D8394421582D7200363112 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 42D8393F21582D7200363112 /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
+		42D8394621582D7200363112 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 42D8393F21582D7200363112 /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
+			remoteInfo = "RCTPushNotification-tvOS";
+		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
@@ -519,6 +535,8 @@
 		429A8F72213DD36500B70804 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		429A8FB82142FEE400B70804 /* Lottie.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lottie.xcodeproj; path = "../node_modules/lottie-ios/Lottie.xcodeproj"; sourceTree = "<group>"; };
 		429A8FF92142FF0A00B70804 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/src/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
+		42D8393E21582A2300363112 /* Achievements.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Achievements.entitlements; path = Achievements/Achievements.entitlements; sourceTree = "<group>"; };
+		42D8393F21582D7200363112 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		4ABCD48881084F28900E6770 /* ReactNativeConfig.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeConfig.xcodeproj; path = "../node_modules/react-native-config/ios/ReactNativeConfig.xcodeproj"; sourceTree = "<group>"; };
 		4ACEE183EF7C4D8B8AB98E83 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		4D39EF1CE77F45F8BFF0BEE7 /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
@@ -567,6 +585,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42D8394821582D8100363112 /* libRCTPushNotification.a in Frameworks */,
 				429A8F7B213DD37600B70804 /* libRNSVG.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
@@ -699,6 +718,7 @@
 		13B07FAE1A68108700A75B9A /* Achievements */ = {
 			isa = PBXGroup;
 			children = (
+				42D8393E21582A2300363112 /* Achievements.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -845,6 +865,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		42D8394021582D7200363112 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				42D8394521582D7200363112 /* libRCTPushNotification.a */,
+				42D8394721582D7200363112 /* libRCTPushNotification-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -901,6 +930,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				42D8393F21582D7200363112 /* RCTPushNotification.xcodeproj */,
 				429A8FF92142FF0A00B70804 /* LottieReactNative.xcodeproj */,
 				429A8FB82142FEE400B70804 /* Lottie.xcodeproj */,
 				429A8F72213DD36500B70804 /* RNSVG.xcodeproj */,
@@ -1066,8 +1096,12 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = M55G84NM6X;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 						};
@@ -1138,6 +1172,10 @@
 				{
 					ProductGroup = 429A8E52213AD1AE00B70804 /* Products */;
 					ProjectRef = DDC56FF20F8143FEBE5BD566 /* RCTOneSignal.xcodeproj */;
+				},
+				{
+					ProductGroup = 42D8394021582D7200363112 /* Products */;
+					ProjectRef = 42D8393F21582D7200363112 /* RCTPushNotification.xcodeproj */;
 				},
 				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
@@ -1538,6 +1576,20 @@
 			remoteRef = 429A8FFD2142FF0B00B70804 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		42D8394521582D7200363112 /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 42D8394421582D7200363112 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		42D8394721582D7200363112 /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = 42D8394621582D7200363112 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1851,8 +1903,10 @@
 			baseConfigurationReference = 406B97226BB2624536EDF549 /* Pods-Achievements.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Achievements/Achievements.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = M55G84NM6X;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-auth0/ios",
@@ -1871,7 +1925,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.achievementsapp;
 				PRODUCT_NAME = Achievements;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1882,7 +1936,9 @@
 			baseConfigurationReference = CBE93406482B52D3AA896008 /* Pods-Achievements.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Achievements/Achievements.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M55G84NM6X;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-auth0/ios",
@@ -1901,7 +1957,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.achievementsapp;
 				PRODUCT_NAME = Achievements;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

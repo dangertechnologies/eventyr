@@ -95,7 +95,9 @@ class RehydrationProvider extends React.Component<Props, State> {
     // which will always cause an error.
     if (operation && operation.operationName === "UserCheck") {
       // @ts-ignore ref: https://www.apollographql.com/docs/react/features/error-handling.html
-      response.errors = null;
+      if (response && response.errors) {
+        response.errors = undefined;
+      }
     } else {
       console.warn(JSON.stringify(response));
       console.warn(JSON.stringify(operation));

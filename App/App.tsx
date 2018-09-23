@@ -9,7 +9,8 @@ import Rehydration from "./Providers/RehydrationProvider";
 import CurrentUser from "./Providers/UserProvider";
 import Web from "./Providers/WebProvider";
 import Theme from "./Providers/ThemeProvider";
-import UIProvider from "./Providers/UIProvider";
+import UI from "./Providers/UIProvider";
+import Unlock from "./Providers/UnlockProvider";
 
 import Navigation from "./Config/Navigation";
 
@@ -24,13 +25,14 @@ const RootContainer = () => (
             <Web.Provider>
               <View style={{ flex: 1 }}>
                 <StatusBar barStyle="light-content" hidden />
-
                 <PortalProvider>
-                  <UIProvider.Provider>
-                    <Navigation />
-                    <WhitePortal name="outside" />
-                    <WhitePortal name="dialog" />
-                  </UIProvider.Provider>
+                  <UI.Provider>
+                    <Unlock.Provider>
+                      <Navigation />
+                      <WhitePortal name="outside" />
+                      <WhitePortal name="dialog" />
+                    </Unlock.Provider>
+                  </UI.Provider>
                 </PortalProvider>
               </View>
             </Web.Provider>

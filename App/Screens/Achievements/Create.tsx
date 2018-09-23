@@ -42,8 +42,8 @@ import { LocationContext } from "App/Providers/LocationProvider";
 import { UIContext } from "App/Providers/UIProvider";
 
 /** GRAPHQL **/
-import MUTATION_CREATE_ACHIEVEMENT from "../../GraphQL/Achievements/Create";
-import QUERY_NEARBY_OBJECTIVES from "../../GraphQL/Achievements/ObjectivesNearby";
+import MUTATION_CREATE_ACHIEVEMENT from "../../GraphQL/Mutations/Achievements/Create";
+import QUERY_NEARBY_OBJECTIVES from "../../GraphQL/Queries/Achievements/ObjectivesNearby";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;

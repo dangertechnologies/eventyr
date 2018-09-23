@@ -43,9 +43,9 @@ import { ValidationProps } from "react-reformed/lib/validateSchema";
 import { LocationContext } from "App/Providers/LocationProvider";
 import { UIContext } from "App/Providers/UIProvider";
 
-import MUTATION_UPDATE_ACHIEVEMENT from "../../GraphQL/Achievements/Update";
-import QUERY_ACHIEVEMENT_DETAILS from "../../GraphQL/Achievements/Details";
-import QUERY_OBJECTIVES_NEARBY from "../../GraphQL/Achievements/ObjectivesNearby";
+import MUTATION_UPDATE_ACHIEVEMENT from "App/GraphQL/Mutations/Achievements/Update";
+import QUERY_ACHIEVEMENT_DETAILS from "App/GraphQL/Queries/Achievements/Details";
+import QUERY_OBJECTIVES_NEARBY from "App/GraphQL/Queries/Achievements/ObjectivesNearby";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;

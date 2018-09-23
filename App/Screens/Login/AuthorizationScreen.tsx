@@ -19,7 +19,7 @@ import LottieView from "lottie-react-native";
 /** GraphQL */
 import MUTATE_AUTHENTICATE_USER, {
   updateQueries
-} from "App/GraphQL/Users/Authenticate";
+} from "App/GraphQL/Mutations/Users/Authenticate";
 
 /** UTILS */
 import { compose } from "recompose";

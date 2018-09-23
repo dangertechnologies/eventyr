@@ -13,7 +13,7 @@ import {
 import { graphql, MutateProps } from "react-apollo";
 import MUTATE_AUTHENTICATE_USER, {
   updateQueries
-} from "App/GraphQL/Users/Authenticate";
+} from "App/GraphQL/Mutations/Users/Authenticate";
 
 /** UTILS */
 import Config from "react-native-config";

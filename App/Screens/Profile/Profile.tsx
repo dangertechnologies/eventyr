@@ -21,7 +21,7 @@ import { withUser, UserContext } from "App/Providers/UserProvider";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import QUERY_USER_DETAILS from "App/GraphQL/Users/Details";
+import QUERY_USER_DETAILS from "App/GraphQL/Queries/Users/Details";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;

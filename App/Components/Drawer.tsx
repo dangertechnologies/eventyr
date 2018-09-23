@@ -137,7 +137,7 @@ class Drawer extends React.Component<Props, State> {
 
   componentDidMount() {
     if (
-      this.props.initialSnapIndex &&
+      this.props.initialSnapIndex !== undefined &&
       this.props.snapTo.length > this.props.initialSnapIndex
     ) {
       this.snapToHeight(
@@ -166,32 +166,34 @@ class Drawer extends React.Component<Props, State> {
       <BlackPortal name="outside">
         <AnimatedView
           style={[
-            styles.drawerBottom,
-            { backgroundColor: this.props.backgroundColor || "transparent" },
-            { height }
+            styles.outerContainer,
+            {
+              height,
+              backgroundColor: "white"
+            }
           ]}
         >
-          <BlurView blurType="light" style={{ flex: 1 }}>
-            <View
-              style={[styles.transparent, styles.roundedBorders, styles.drawer]}
-            >
-              <View
-                style={styles.expansionContainer}
-                {...this.panResponder.panHandlers}
-              >
-                <TouchableOpacity style={{ height: 20 }}>
-                  <Icon
-                    name={"drag-handle"}
-                    fontSize={20}
-                    type="MaterialIcons"
-                  />
-                </TouchableOpacity>
+          <View style={styles.shadow}>
+            <BlurView blurType="light" style={styles.blurContainer}>
+              <View style={[styles.transparent, styles.content]}>
+                <View
+                  style={styles.dragHandleContainer}
+                  {...this.panResponder.panHandlers}
+                >
+                  <TouchableOpacity style={{ height: 20 }}>
+                    <Icon
+                      name={"drag-handle"}
+                      fontSize={20}
+                      type="MaterialIcons"
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={[styles.transparent, { flexGrow: 1 }]}>
+                  {this.props.children}
+                </View>
               </View>
-              <View style={[styles.transparent, { flexGrow: 1 }]}>
-                {this.props.children}
-              </View>
-            </View>
-          </BlurView>
+            </BlurView>
+          </View>
         </AnimatedView>
       </BlackPortal>
     );
@@ -199,38 +201,39 @@ class Drawer extends React.Component<Props, State> {
 }
 
 const styles = EStyleSheet.create({
-  roundedBorders: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    borderRightWidth: StyleSheet.hairlineWidth,
+  blurContainer: {
+    flex: 1,
+    borderWidth: 0,
+    borderRadius: 20
+  },
+
+  shadow: {
+    shadowOffset: { width: 1, height: 1 },
+    shadowColor: "black",
+    shadowOpacity: 1.0,
+    flex: 1,
+    borderRadius: 20
+  },
+
+  outerContainer: {
+    width: "100%",
+    position: "absolute",
+    bottom: 0,
+    borderRadius: 20
+  },
+  transparent: { backgroundColor: "transparent" },
+  content: {
+    flex: 1,
+    paddingTop: "$spacing / 2",
     borderTopLeftRadius: "$borderRadius",
     borderTopRightRadius: "$borderRadius"
   },
 
-  drawerBottom: {
-    height: 129,
-    width: "100%",
-    borderColor: "$borderColor",
-
-    position: "absolute",
-    bottom: 0
-  },
-  transparent: { backgroundColor: "transparent" },
-  drawer: { flex: 1, paddingTop: "$spacing / 2" },
-
-  expansionContainer: {
+  dragHandleContainer: {
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
     height: 20
-  },
-
-  scrolledContentContainer: {
-    flexGrow: 1
-  },
-
-  scrolledContent: {
-    flex: 1
   }
 });
 

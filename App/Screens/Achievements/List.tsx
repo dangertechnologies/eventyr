@@ -25,10 +25,10 @@ import { Query, Achievement } from "App/Types/GraphQL";
 import { ApolloQueryResult } from "apollo-client";
 import { MutateProps } from "react-apollo";
 import { UIContext } from "App/Providers/UIProvider";
-import QUERY_ACHIEVEMENTS from "App/GraphQL/Achievements/List";
+import QUERY_ACHIEVEMENTS from "App/GraphQL/Queries/Achievements/List";
 import MUTATE_DELETE_ACHIEVEMENT, {
   updateQueries
-} from "App/GraphQL/Achievements/Delete";
+} from "App/GraphQL/Mutations/Achievements/Delete";
 
 interface Props extends MutateProps {
   data: Query & ApolloQueryResult<Query> & { error: string };
