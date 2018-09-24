@@ -10,6 +10,7 @@ export default gql`
       basePoints
       points
       icon
+      unlocked
       objectives {
         id
         tagline

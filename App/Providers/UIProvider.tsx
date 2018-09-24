@@ -1,10 +1,12 @@
 import React from "react";
+import getTheme from "App/Themes/NativeBase/components";
+import nativeBaseTheme from "App/Themes/NativeBase/variables/platform";
 import PushNotification, {
   PushNotificationObject
 } from "react-native-push-notification";
 import { BlurView } from "react-native-blur";
 import EStyleSheet from "react-native-extended-stylesheet";
-import { Icon, H3 } from "native-base";
+import { Icon, H3, StyleProvider } from "native-base";
 import { View as AnimatedView } from "react-native-animatable";
 import { View, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
@@ -208,57 +210,59 @@ class UIProvider extends React.Component<Props, State> {
     );
 
     return (
-      <Provider value={contextValue}>
-        {this.props.children}
+      <StyleProvider style={getTheme(nativeBaseTheme())}>
+        <Provider value={contextValue}>
+          {this.props.children}
 
-        <AnimatedView
-          animation="fadeIn"
-          style={styles.overlay}
-          pointerEvents={!isVisible ? "none" : undefined}
-          ref={(view: any) => {
-            this.overlay = view;
-          }}
-          onAnimationEnd={this.onOverlayFaded}
-        >
-          {!isVisible ? null : (
-            <BlurView blurType="light" blurAmount={30} style={styles.blur}>
-              <React.Fragment>
-                <View style={styles.icon}>
-                  {isLottie && (
-                    <LottieView
-                      ref={(lottie: any) => {
-                        this.lottie = lottie;
-                      }}
-                      loop={this.state.notifications[0].duration === -1}
-                      // @ts-ignore We know this exists. isLottie says so.
-                      source={this.state.notifications[0].lottie}
-                      style={{
-                        width: 100,
-                        height: 100
-                      }}
-                    />
-                  )}
+          <AnimatedView
+            animation="fadeIn"
+            style={styles.overlay}
+            pointerEvents={!isVisible ? "none" : undefined}
+            ref={(view: any) => {
+              this.overlay = view;
+            }}
+            onAnimationEnd={this.onOverlayFaded}
+          >
+            {!isVisible ? null : (
+              <BlurView blurType="light" blurAmount={30} style={styles.blur}>
+                <React.Fragment>
+                  <View style={styles.icon}>
+                    {isLottie && (
+                      <LottieView
+                        ref={(lottie: any) => {
+                          this.lottie = lottie;
+                        }}
+                        loop={this.state.notifications[0].duration === -1}
+                        // @ts-ignore We know this exists. isLottie says so.
+                        source={this.state.notifications[0].lottie}
+                        style={{
+                          width: 100,
+                          height: 100
+                        }}
+                      />
+                    )}
 
-                  {isIcon && (
-                    <Icon
-                      // @ts-ignore We know this exists, isIcon says so.
-                      name={this.state.notifications[0].icon.name}
-                      style={{
-                        color: "#AA0000",
-                        fontSize: 100,
-                        width: 100
-                      }}
-                    />
-                  )}
-                </View>
-                <H3 style={styles.message}>
-                  {this.state.notifications[0].message}
-                </H3>
-              </React.Fragment>
-            </BlurView>
-          )}
-        </AnimatedView>
-      </Provider>
+                    {isIcon && (
+                      <Icon
+                        // @ts-ignore We know this exists, isIcon says so.
+                        name={this.state.notifications[0].icon.name}
+                        style={{
+                          color: "#AA0000",
+                          fontSize: 100,
+                          width: 100
+                        }}
+                      />
+                    )}
+                  </View>
+                  <H3 style={styles.message}>
+                    {this.state.notifications[0].message}
+                  </H3>
+                </React.Fragment>
+              </BlurView>
+            )}
+          </AnimatedView>
+        </Provider>
+      </StyleProvider>
     );
   }
 }

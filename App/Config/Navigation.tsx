@@ -43,7 +43,7 @@ const AchievementsTab = createStackNavigator(
           swipeEnabled: false,
           navigationOptions: () => ({
             tabBarOptions: {
-              style: { backgroundColor: EStyleSheet.value("$colorSecondary") }
+              style: { backgroundColor: EStyleSheet.value("$colorPrimary") }
             }
           })
         }
@@ -146,7 +146,7 @@ const loggedInNavigation = createBottomTabNavigator(
         const { routeName } = navigation.state;
 
         const color = focused
-          ? EStyleSheet.value("$colorSecondary")
+          ? EStyleSheet.value("$colorPrimary")
           : EStyleSheet.value("$colorDisabled");
 
         switch (routeName) {

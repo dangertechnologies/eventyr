@@ -165,14 +165,14 @@ class AchievementForm extends React.Component<ComposedProps, State> {
               onChange={(name: string) => onChange("icon", name)}
             />
             <Body>
-              <Item>
+              <Item style={styles.underlineDisabled}>
                 <Input
                   placeholder="Title"
                   onChangeText={(title: string) => onChange("name", title)}
                   value={achievement.name}
                 />
               </Item>
-              <Item style={{ borderBottomWidth: 0 }}>
+              <Item underline={false}>
                 <Select
                   items={categories.map((category: Category) => ({
                     label: category.title,
@@ -203,7 +203,7 @@ class AchievementForm extends React.Component<ComposedProps, State> {
 
         <CardItem style={styles.transparent}>
           <Body>
-            <Item stackedLabel>
+            <Item stackedLabel style={styles.underlineDisabled}>
               <Label style={styles.objectivesLabel}>Objectives</Label>
               <View style={styles.objectivesChips}>
                 {!achievement.objectives
@@ -250,7 +250,7 @@ class AchievementForm extends React.Component<ComposedProps, State> {
 
         <CardItem style={styles.transparent}>
           <Body>
-            <Item stackedLabel>
+            <Item stackedLabel style={styles.underlineDisabled}>
               <Label>Description</Label>
               <Textarea
                 rowSpan={3}
@@ -312,7 +312,10 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                   requiredCount: 1,
                   achievements: [],
                   altitude: 0,
-                  country: null
+                  country: null,
+                  fromTimestamp: null,
+                  toTimestamp: null,
+                  timeConstraint: "NONE"
                 }
               })
             }
@@ -385,6 +388,10 @@ const styles = EStyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center"
+  },
+
+  underlineDisabled: {
+    borderBottomWidth: 0
   }
 });
 

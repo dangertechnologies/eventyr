@@ -66,11 +66,11 @@ const styles = EStyleSheet.create({
   },
 
   submit: {
-    backgroundColor: "$colorSecondary"
+    backgroundColor: "$colorPrimary"
   },
 
   submitDisabled: {
-    backgroundColor: "$colorSecondary",
+    backgroundColor: "$colorPrimary",
     opacity: 0.2
   }
 });

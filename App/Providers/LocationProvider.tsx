@@ -57,6 +57,8 @@ const withLocation = (options: LocationOptions = { watch: false }) => <
       } else {
         navigator.geolocation.getCurrentPosition(
           (position: GeolocationReturnType) =>
+            position &&
+            position.coords &&
             this.setState({
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,

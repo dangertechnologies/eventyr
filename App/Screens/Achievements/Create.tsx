@@ -237,7 +237,7 @@ const styles = EStyleSheet.create({
     justifyContent: "center"
   },
   crosshair: {
-    color: "$colorSecondary",
+    color: "$colorPrimary",
     fontSize: 20
   }
 });

@@ -2,8 +2,12 @@ export default `
   fragment achievementWithObjectives on Achievement {
     id
     name
+    icon
     shortDescription
     fullDescription
+    mode
+    kind
+    
     author {
       id
       name

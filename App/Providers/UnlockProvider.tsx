@@ -3,7 +3,7 @@ import { sortBy, flatten, omit } from "lodash";
 
 // @ts-ignore
 import haversine from "haversine-distance";
-import { addMinutes, differenceInDays } from "date-fns";
+import { addSeconds, differenceInDays, differenceInSeconds } from "date-fns";
 import {
   Unlocked,
   Objective,
@@ -16,11 +16,14 @@ import { compose } from "recompose";
 
 import { withUIHelpers, UIContext } from "./UIProvider";
 
-import MUTATE_COMPLETE_OBJECTIVE from "App/GraphQL/Mutations/Achievements/CompleteObjective";
-import MUTATE_REFRESH_TRACKED from "App/GraphQL/Mutations/Achievements/RefreshTracked";
+import MUTATE_COMPLETE_OBJECTIVE, {
+  updateQueries
+} from "App/GraphQL/Mutations/Achievements/CompleteObjective";
+import MUTATE_REFRESH_TRACKED, {
+  updateQueries as updateTrackedAchievements
+} from "App/GraphQL/Mutations/Achievements/RefreshTracked";
 import QUERY_TRACKED from "App/GraphQL/Queries/Achievements/List";
 import { RehydrationContext, withRehydratedState } from "./RehydrationProvider";
-import { rejects } from "assert";
 
 export interface UnlockContext {
   completeObjective(id: string): Promise<Array<Unlocked>>;
@@ -76,24 +79,25 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
     lastTrackRefreshCoordinates: null
   };
 
-  recalculate() {
+  recalculate = () => {
     const { location } = this.props;
     this.setState(
       {
         tracked: this.state.tracked.map((tracked: TrackedObjective) => {
           if (tracked.nextCalculation < new Date().getTime()) {
-            const distance = haversine(tracked, location);
+            const distance = haversine(tracked.objective, location);
 
             // Attempt unlock
             if (distance < 30) {
+              console.log({
+                name: "UnlockProvider#attemptUnlock",
+                distance,
+                tracked
+              });
               this.completeObjective(tracked.objective.id).then(
                 (unlocked: Array<Unlocked>) => {
                   if (unlocked.length) {
-                    let message = `Unlocked: ${unlocked[0].achievement.name}`;
-                    if (unlocked.length > 1) {
-                      message = `${message} (+${unlocked.length - 1} more)`;
-                    }
-                    this.props.ui.notifySuccess(message);
+                    this.props.ui.notifySuccess(unlocked[0].achievement.name);
                   }
                 }
               );
@@ -102,7 +106,10 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
             return {
               objective: tracked.objective,
               distance,
-              nextCalculation: addMinutes(new Date(), distance).getTime()
+              nextCalculation: addSeconds(
+                new Date(),
+                distance > 15 ? distance : 15
+              ).getTime()
             };
           }
           return tracked;
@@ -114,17 +121,20 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
         if (tracked.length) {
           const { nextCalculation } = sortBy(tracked, "nextCalculation")[0];
 
-          setTimeout(this.recalculate, new Date().getTime() - nextCalculation);
+          setTimeout(this.recalculate, nextCalculation - new Date().getTime());
         }
       }
     );
-  }
+  };
 
   completeObjective = (id: string): Promise<Array<Unlocked>> => {
     return new Promise((resolve, reject) => {
       if (!this.props.location) {
-        console.log({ location: this.props.location });
-        reject(["Location unavailable"]);
+        console.log({
+          name: "UnlockProvider#locationUnavailable",
+          location: this.props.location
+        });
+        return reject(["Location unavailable"]);
       }
 
       const input: Omit<CompleteObjectiveInput, "clientMutationId"> = {
@@ -137,44 +147,60 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
       };
 
       this.props
-        .completeObjective({ variables: input })
-        .then(result => {
+        .completeObjective({
+          variables: input,
+          // @ts-ignore
+          updateQueries
+        })
+        .then((result: any) => {
           const { data } = result;
 
           if (data && data.errors && data.errors.length) {
-            console.log({ data, result });
+            console.log({
+              name: "UnlockProvider#failedMutation",
+              data,
+              result
+            });
             reject(result.errors);
           } else if (
             data &&
             data.completeObjective &&
-            data.completeObjective.errors
+            data.completeObjective.errors &&
+            data.completeObjective.errors.length
           ) {
-            console.log({ data, result });
+            console.log({
+              name: "UnlockProvider#failedMutation",
+              data,
+              result
+            });
             reject(data.completeObjective.errors);
           } else {
-            const { unlocked } = data.completeObjective;
+            const { unlockedAchievements } = data.completeObjective;
 
-            if (unlocked.length) {
-              let message = `${unlocked[0].achievement.name}`;
-              if (unlocked.length > 1) {
-                message = `${message} (+${unlocked.length - 1} more)`;
+            if (unlockedAchievements && unlockedAchievements.length) {
+              let message = `${unlockedAchievements[0].achievement.name}`;
+              if (unlockedAchievements.length > 1) {
+                message = `${message} (+${unlockedAchievements.length -
+                  1} more)`;
               }
               this.props.ui.localPushNotification({
                 title: "Achievement Unlocked",
                 message
               });
             }
-            resolve(data.completeObjective.unlocked);
+            this.refreshTrackedAchievements();
+            resolve(data.completeObjective.unlockedAchievements);
           }
         })
-        .catch(errors => {
-          console.log({ errors });
+        .catch((errors: any) => {
+          console.log({ name: "UnlockProvider#failedMutation", errors });
           reject(errors);
         });
     });
   };
 
   refreshTrackedAchievements = () =>
+    this.props.location &&
     this.props
       .refreshTracked({
         variables: {
@@ -182,25 +208,34 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
             this.props.location.latitude,
             this.props.location.longitude
           ]
-        }
+        },
+        // @ts-ignore
+        updateQueries: updateTrackedAchievements
       })
-      .then(result => {
-        this.setState({
-          lastTrackRefresh: new Date(),
-          lastTrackRefreshCoordinates: {
-            latitude: this.props.location.latitude,
-            longitude: this.props.location.longitude
-          }
-        });
-        console.log("Refetched tracked achievements");
-        console.log({ result });
-      });
+      .then(
+        (result: any) =>
+          this.props.location &&
+          this.setState({
+            lastTrackRefresh: new Date(),
+            lastTrackRefreshCoordinates: {
+              latitude: this.props.location.latitude,
+              longitude: this.props.location.longitude
+            }
+          })
+      );
 
   // Sort objectives by distance
   componentWillReceiveProps({ location, data }: ComposedProps) {
     // Refresh tracked Achievement if they haven't been refreshed in
     // more than a day, or if distance since last refresh is more than
     // 10km
+    if (this.state.lastTrackRefreshCoordinates && this.props.location) {
+      const d = haversine(
+        this.state.lastTrackRefreshCoordinates,
+        this.props.location
+      );
+      console.log({ distance: d });
+    }
     if (
       !this.state.lastTrackRefresh ||
       (this.state.lastTrackRefreshCoordinates &&
@@ -209,6 +244,7 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
       differenceInDays(this.state.lastTrackRefresh, new Date()) > 1
     ) {
       if (this.props.location && this.props.rehydratedState.isLoggedIn) {
+        console.log({ name: "UnlockProvider#refreshTracked" });
         this.setState(
           {
             lastTrackRefresh: new Date()
@@ -236,7 +272,10 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
             return {
               objective,
               distance,
-              nextCalculation: addMinutes(new Date(), distance).getTime()
+              nextCalculation: addSeconds(
+                new Date(),
+                distance > 15 ? distance : 15
+              ).getTime()
             };
           }
         ),
@@ -245,9 +284,15 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
 
       // Find shortest time and recalculate:
       if (tracked.length) {
-        const { nextCalculation } = sortBy(tracked, "nextCalculation")[0];
+        const nearest = sortBy(tracked, "nextCalculation")[0];
+        const { nextCalculation } = nearest;
 
-        setTimeout(this.recalculate, new Date().getTime() - nextCalculation);
+        console.log({
+          name: "UnlockProvider#recalculateTimer",
+          value: { nearest }
+        });
+
+        setTimeout(this.recalculate, nextCalculation - new Date().getTime());
       }
 
       this.setState({
@@ -262,7 +307,7 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
     };
 
     console.log({
-      name: "UnlockProvider",
+      name: "UnlockProvider#render",
       props: omit(this.props, ["children"])
     });
 
@@ -292,6 +337,6 @@ export default {
     graphql(QUERY_TRACKED, { options: { variables: { type: "suggested" } } }),
     withRehydratedState,
     withUIHelpers,
-    withLocation()
+    withLocation({ watch: true })
   )(UnlockProvider)
 };

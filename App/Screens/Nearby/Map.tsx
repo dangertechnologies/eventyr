@@ -9,7 +9,7 @@ import { View, StyleSheet, FlatList } from "react-native";
 import Map from "react-native-maps";
 import { Button, Icon, Text } from "native-base";
 import MapMarker from "App/Components/MapMarker";
-import DetailsView from "App/Components/AchievementForm/DetailsView";
+import DetailsView from "../../Components/AchievementDrawer";
 import Drawer from "App/Components/Drawer";
 
 /** UTILS **/
@@ -152,8 +152,8 @@ class AchievementsView extends React.PureComponent<Props, State> {
         {!achievement ? null : (
           <Drawer snapTo={[240, "70%"]} initialSnapIndex={0}>
             <DetailsView
-              achievement={achievement}
-              onPressObjective={objective => {
+              id={achievement.id}
+              onPressObjective={(objective: Objective) => {
                 if (objective.lat && objective.lng) {
                   this.onRegionChange({
                     latitudeDelta: 0.15,
@@ -177,7 +177,6 @@ class AchievementsView extends React.PureComponent<Props, State> {
                     });
                 }
               }}
-              loading={loading}
             />
           </Drawer>
         )}
