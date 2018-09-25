@@ -13,7 +13,7 @@ import {
 import { graphql, MutateProps } from "react-apollo";
 import MUTATE_AUTHENTICATE_USER, {
   updateQueries
-} from "App/GraphQL/Users/Authenticate";
+} from "App/GraphQL/Mutations/Users/Authenticate";
 
 /** UTILS */
 import Config from "react-native-config";
@@ -81,7 +81,11 @@ class LoginScreen extends React.PureComponent<ComposedProps> {
   render() {
     return (
       <LinearGradient
-        colors={["#7F00FF", "#CD1F7D"]}
+        // colors={["#7F00FF", "#CD1F7D"]}
+        colors={[
+          EStyleSheet.value("$colorPrimary"),
+          EStyleSheet.value("$colorAlert")
+        ]}
         start={{ x: 0.8, y: 0.1 }}
         end={{ x: 0.1, y: 0.8 }}
         style={styles.container}
@@ -145,8 +149,8 @@ const styles = EStyleSheet.create({
     height: 5,
     borderTopLeftRadius: 5,
     borderBottomRightRadius: 5,
-    borderBottomColor: "$colorPrimary",
-    backgroundColor: "#FFFFFF",
+    borderBottomColor: "$colorSecondary",
+    backgroundColor: "$colorSecondary",
     transform: [{ rotate: -5 }],
     marginTop: -35
   },
@@ -157,7 +161,7 @@ const styles = EStyleSheet.create({
 
   title: {
     fontFamily: "Italianno",
-    color: "$colorPrimary",
+    color: "$colorSecondary",
     fontWeight: "bold",
     fontSize: 100,
     lineHeight: 100,

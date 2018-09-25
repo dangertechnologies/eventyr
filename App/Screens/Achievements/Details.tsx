@@ -13,12 +13,13 @@ import objectiveColors from "../../Components/AchievementForm/Colors";
 
 import withLocation, { LocationContext } from "App/Providers/LocationProvider";
 
-import DetailsView from "App/Components/AchievementForm/DetailsView";
+import DetailsView from "../../Components/AchievementDrawer";
 import Drawer from "App/Components/Drawer";
 
 import { NavigationState, NavigationScreenProp } from "react-navigation";
 
-import QUERY_ACHIEVEMENT_DETAILS from "../../GraphQL/Achievements/Details";
+import QUERY_ACHIEVEMENT_DETAILS from "App/GraphQL/Queries/Achievements/Details";
+import { Objective } from "App/Types/GraphQL";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -94,8 +95,8 @@ class AchievementsView extends React.PureComponent<Props, State> {
         {!achievement ? null : (
           <Drawer>
             <DetailsView
-              achievement={achievement}
-              onPressObjective={objective =>
+              id={achievement.id}
+              onPressObjective={(objective: Objective) =>
                 objective.lat &&
                 objective.lng &&
                 this.setState({
@@ -107,7 +108,6 @@ class AchievementsView extends React.PureComponent<Props, State> {
                   }
                 })
               }
-              loading={loading}
             />
           </Drawer>
         )}
@@ -128,7 +128,7 @@ const styles = EStyleSheet.create({
     justifyContent: "center"
   },
   crosshair: {
-    color: "$colorSecondary"
+    color: "$colorPrimary"
   }
 });
 

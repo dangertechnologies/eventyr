@@ -163,7 +163,7 @@ const styles = EStyleSheet.create({
     width: "100%",
     position: "absolute",
     top: 0,
-    backgroundColor: "$colorSecondary",
+    backgroundColor: "$colorPrimary",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "$borderColor",
     justifyContent: "center",
@@ -173,7 +173,7 @@ const styles = EStyleSheet.create({
   avatar: {
     borderRadius: 40,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "$colorPrimary",
+    borderColor: "$colorPrimaryLight",
     width: AVATAR_SIZE,
     height: AVATAR_SIZE,
     alignItems: "center",
@@ -184,11 +184,11 @@ const styles = EStyleSheet.create({
   },
 
   userIcon: {
-    color: "#FFFFFF"
+    color: "$colorSecondary"
   },
 
   name: {
-    color: "$colorPrimary",
+    color: "$colorSecondary",
     margin: "$spacing",
     position: "absolute",
     top: NAME_OFFSET_Y,
@@ -204,11 +204,11 @@ const styles = EStyleSheet.create({
   },
 
   numbers: {
-    color: "$colorPrimary"
+    color: "$colorSecondary"
   },
 
   points: {
-    color: "#FFFFFF",
+    color: "$colorSecondaryLight",
     fontWeight: "bold"
   },
 

@@ -2,13 +2,14 @@ import React from "react";
 
 /** PROVIDERS **/
 import withLocation from "App/Providers/LocationProvider";
+import { withUnlockHelpers, UnlockContext } from "App/Providers/UnlockProvider";
 
 /** COMPONENTS **/
 import { View, StyleSheet, FlatList } from "react-native";
 import Map from "react-native-maps";
 import { Button, Icon, Text } from "native-base";
 import MapMarker from "App/Components/MapMarker";
-import DetailsView from "App/Components/AchievementForm/DetailsView";
+import DetailsView from "../../Components/AchievementDrawer";
 import Drawer from "App/Components/Drawer";
 
 /** UTILS **/
@@ -24,12 +25,15 @@ import { NavigationState, NavigationScreenProp } from "react-navigation";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import QUERY_NEARBY_ACHIEVEMENTS from "../../GraphQL/Achievements/AchievementsNearby";
+import QUERY_NEARBY_ACHIEVEMENTS from "App/GraphQL/Queries/Achievements/AchievementsNearby";
+import { withUIHelpers, UIContext } from "../../Providers/UIProvider";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
   data: Query & ApolloQueryResult<Query> & { error: string; loading: boolean };
   location: LocationContext;
+  unlockHelpers: UnlockContext;
+  ui: UIContext;
 }
 
 interface State {
@@ -146,20 +150,33 @@ class AchievementsView extends React.PureComponent<Props, State> {
         )}
 
         {!achievement ? null : (
-          <Drawer maxHeight={500}>
+          <Drawer snapTo={[240, "70%"]} initialSnapIndex={0}>
             <DetailsView
-              achievement={achievement}
-              onPressObjective={objective =>
-                objective.lat &&
-                objective.lng &&
-                this.onRegionChange({
-                  latitudeDelta: 0.15,
-                  longitudeDelta: 0.15,
-                  latitude: objective.lat,
-                  longitude: objective.lng
-                })
-              }
-              loading={loading}
+              id={achievement.id}
+              onPressObjective={(objective: Objective) => {
+                if (objective.lat && objective.lng) {
+                  this.onRegionChange({
+                    latitudeDelta: 0.15,
+                    longitudeDelta: 0.15,
+                    latitude: objective.lat,
+                    longitude: objective.lng
+                  });
+
+                  this.props.unlockHelpers
+                    .completeObjective(objective.id)
+                    .then(() => {
+                      this.props.ui.localPushNotification({
+                        title: "Achievement Unlocked"
+                      });
+                    })
+                    .catch(errors => {
+                      this.props.ui.localPushNotification({
+                        title: "Achievement Unlocked",
+                        message: errors ? errors.join(", ") : ""
+                      });
+                    });
+                }
+              }}
             />
           </Drawer>
         )}
@@ -181,7 +198,9 @@ const Screen = compose(
   withLocation(),
   graphql(QUERY_NEARBY_ACHIEVEMENTS, {
     options: ({ location }: Props) => ({ variables: location })
-  })
+  }),
+  withUnlockHelpers,
+  withUIHelpers
 )(AchievementsView);
 
 Screen.navigationOptions = {

@@ -21,7 +21,7 @@ import { withUser, UserContext } from "App/Providers/UserProvider";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import QUERY_USER_DETAILS from "App/GraphQL/Users/Details";
+import QUERY_USER_DETAILS from "App/GraphQL/Queries/Users/Details";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -113,9 +113,10 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
             items={["Unlocked", "Personal"]}
             selectedIndex={this.props.selectedTab}
             onChange={this.props.setTab}
-            barColor={`${EStyleSheet.value("$colorSecondary")}`}
-            indicatorColor="#fffe94"
-            activeTextColor={`${EStyleSheet.value("$colorPrimary")}`}
+            barColor={`${EStyleSheet.value("$colorPrimary")}`}
+            indicatorColor={`${EStyleSheet.value("$colorSuccess")}`}
+            inactiveTextColor={`${EStyleSheet.value("$colorSecondaryDark")}`}
+            activeTextColor={`${EStyleSheet.value("$colorSecondary")}`}
           />
         </AnimatedView>
         <UserHeader

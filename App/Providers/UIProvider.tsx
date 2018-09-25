@@ -1,45 +1,16 @@
 import React from "react";
-
+import getTheme from "App/Themes/NativeBase/components";
+import nativeBaseTheme from "App/Themes/NativeBase/variables/platform";
+import PushNotification, {
+  PushNotificationObject
+} from "react-native-push-notification";
 import { BlurView } from "react-native-blur";
 import EStyleSheet from "react-native-extended-stylesheet";
-import { Icon, H3 } from "native-base";
+import { Icon, H3, StyleProvider } from "native-base";
 import { View as AnimatedView } from "react-native-animatable";
 import { View, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
 import { tail } from "lodash";
-
-const styles = EStyleSheet.create({
-  overlay: {
-    position: "absolute",
-    $size: "$screenWidth / 2",
-    width: "$size",
-    height: "$size * 1.25",
-    left: "$screenWidth / 4",
-    top: "$screenHeight / 3",
-    borderRadius: "$borderRadius"
-  },
-
-  blur: {
-    borderRadius: "$borderRadius",
-    borderColor: "$borderColor",
-    borderWidth: StyleSheet.hairlineWidth,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-
-  icon: {
-    alignItems: "center",
-    justifyContent: "center"
-  },
-
-  message: {
-    position: "absolute",
-    color: "#333333",
-    fontWeight: "bold",
-    bottom: "10%"
-  }
-});
 
 export interface Notification {
   message: string;
@@ -62,6 +33,7 @@ export interface UIContext {
   notify(notification: Notification): any;
   closeNotification(): any;
   notifyLoading(options: { onClose?(): any }): any;
+  localPushNotification(options?: Partial<PushNotificationObject>): any;
 }
 
 interface Props {
@@ -78,7 +50,8 @@ const DEFAULT_CONTEXT: UIContext = {
   notifyError: (text: string) => text,
   notify: (notification: Notification) => null,
   closeNotification: () => null,
-  notifyLoading: () => null
+  notifyLoading: () => null,
+  localPushNotification: () => null
 };
 
 const { Provider, Consumer } = React.createContext(DEFAULT_CONTEXT);
@@ -191,13 +164,38 @@ class UIProvider extends React.Component<Props, State> {
       duration: 800
     });
 
+  localPushNotification = (settings?: Partial<PushNotificationObject>) =>
+    PushNotification.localNotification({
+      /* Android Only Properties */
+      largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
+      smallIcon: "ic_notification", // (optional) default: "ic_notification" with fallback for "ic_launcher"
+      bigText: "My big text that will be shown when notification is expanded", // (optional) default: "message" prop
+      subText: "This is a subText", // (optional) default: none
+      color: "red", // (optional) default: system default
+      vibrate: true, // (optional) default: true
+      vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
+
+      /* iOS only properties */
+      alertAction: "view", // (optional) default: view
+
+      /* iOS and Android properties */
+      title: "My Notification Title", // (optional)
+      message: "My Notification Message", // (required)
+      playSound: false, // (optional) default: true
+      soundName: "default", // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+      repeatType: "day", // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
+      actions: '["Yes", "No"]', // (Android only) See the doc for notification actions to know more
+      ...(settings || {})
+    });
+
   render(): JSX.Element {
     const contextValue: UIContext = {
       notify: this.notify,
       notifySuccess: this.notifySuccess,
       notifyError: this.notifyError,
       closeNotification: this.closeNotification,
-      notifyLoading: this.notifyLoading
+      notifyLoading: this.notifyLoading,
+      localPushNotification: this.localPushNotification
     };
 
     const isVisible: boolean = Boolean(this.state.notifications.length);
@@ -212,60 +210,95 @@ class UIProvider extends React.Component<Props, State> {
     );
 
     return (
-      <Provider value={contextValue}>
-        {this.props.children}
+      <StyleProvider style={getTheme(nativeBaseTheme())}>
+        <Provider value={contextValue}>
+          {this.props.children}
 
-        <AnimatedView
-          animation="fadeIn"
-          style={styles.overlay}
-          pointerEvents={!isVisible ? "none" : undefined}
-          ref={(view: any) => {
-            this.overlay = view;
-          }}
-          onAnimationEnd={this.onOverlayFaded}
-        >
-          {!isVisible ? null : (
-            <BlurView blurType="light" blurAmount={30} style={styles.blur}>
-              <React.Fragment>
-                <View style={styles.icon}>
-                  {isLottie && (
-                    <LottieView
-                      ref={(lottie: any) => {
-                        this.lottie = lottie;
-                      }}
-                      loop={this.state.notifications[0].duration === -1}
-                      // @ts-ignore We know this exists. isLottie says so.
-                      source={this.state.notifications[0].lottie}
-                      style={{
-                        width: 100,
-                        height: 100
-                      }}
-                    />
-                  )}
+          <AnimatedView
+            animation="fadeIn"
+            style={styles.overlay}
+            pointerEvents={!isVisible ? "none" : undefined}
+            ref={(view: any) => {
+              this.overlay = view;
+            }}
+            onAnimationEnd={this.onOverlayFaded}
+          >
+            {!isVisible ? null : (
+              <BlurView blurType="light" blurAmount={30} style={styles.blur}>
+                <React.Fragment>
+                  <View style={styles.icon}>
+                    {isLottie && (
+                      <LottieView
+                        ref={(lottie: any) => {
+                          this.lottie = lottie;
+                        }}
+                        loop={this.state.notifications[0].duration === -1}
+                        // @ts-ignore We know this exists. isLottie says so.
+                        source={this.state.notifications[0].lottie}
+                        style={{
+                          width: 100,
+                          height: 100
+                        }}
+                      />
+                    )}
 
-                  {isIcon && (
-                    <Icon
-                      // @ts-ignore We know this exists, isIcon says so.
-                      name={this.state.notifications[0].icon.name}
-                      style={{
-                        color: "#AA0000",
-                        fontSize: 100,
-                        width: 100
-                      }}
-                    />
-                  )}
-                </View>
-                <H3 style={styles.message}>
-                  {this.state.notifications[0].message}
-                </H3>
-              </React.Fragment>
-            </BlurView>
-          )}
-        </AnimatedView>
-      </Provider>
+                    {isIcon && (
+                      <Icon
+                        // @ts-ignore We know this exists, isIcon says so.
+                        name={this.state.notifications[0].icon.name}
+                        style={{
+                          color: "#AA0000",
+                          fontSize: 100,
+                          width: 100
+                        }}
+                      />
+                    )}
+                  </View>
+                  <H3 style={styles.message}>
+                    {this.state.notifications[0].message}
+                  </H3>
+                </React.Fragment>
+              </BlurView>
+            )}
+          </AnimatedView>
+        </Provider>
+      </StyleProvider>
     );
   }
 }
+
+const styles = EStyleSheet.create({
+  overlay: {
+    position: "absolute",
+    $size: "$screenWidth / 2",
+    width: "$size",
+    height: "$size * 1.25",
+    left: "$screenWidth / 4",
+    top: "$screenHeight / 3",
+    borderRadius: "$borderRadius"
+  },
+
+  blur: {
+    borderRadius: "$borderRadius",
+    borderColor: "$borderColor",
+    borderWidth: StyleSheet.hairlineWidth,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
+  icon: {
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
+  message: {
+    position: "absolute",
+    color: "#333333",
+    fontWeight: "bold",
+    bottom: "10%"
+  }
+});
 
 export const withUIHelpers = <P extends object>(
   Component: React.ComponentType<P & { ui: UIContext }>

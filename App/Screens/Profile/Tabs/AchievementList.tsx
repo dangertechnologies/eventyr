@@ -15,7 +15,7 @@ import { Query, User } from "App/Types/GraphQL";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import QUERY_USER_PERSONAL_ACHIEVEMENTS from "../../../GraphQL/Users/UserAchievements";
+import QUERY_USER_PERSONAL_ACHIEVEMENTS from "../../../GraphQL/Queries/Users/UserAchievements";
 
 interface Props {
   user: User;
