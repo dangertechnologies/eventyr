@@ -11,6 +11,7 @@ const theme: { [key: string]: number | string } = {
   $spacingDouble: 32,
   $paddingButton: 6,
   $paddingBadge: platform === "ios" ? 3 : 0,
+  $heightInputBase: 50,
 
   // Colors
   $colorPrimary: "#7F00FF",
@@ -38,12 +39,35 @@ const theme: { [key: string]: number | string } = {
   $borderColor: "#a7a6ab",
 
   // Fonts
-  $fontFamily: platform === "ios" ? "System" : "Roboto",
+  $sizeInput: 17,
+
+  ...Platform.select({
+    android: {
+      $fontFamily: "Roboto"
+    },
+    ios: {
+      $fontFamily: "System"
+    }
+  }),
+
+  // Icons
+  ...Platform.select({
+    android: {
+      $iconSize: 28,
+      $iconSizeHeader: 24
+    },
+    ios: {
+      $iconSize: 30,
+      $iconSizeHeader: 33
+    }
+  }),
+
   $sizeH1: 32,
   $sizeH2: 26,
   $sizeH3: 20,
   $sizeH4: 18,
-  $sizeParagraph: 14
+  $sizeParagraph: 15,
+  $sizeTiny: 13
 };
 
 export default theme;

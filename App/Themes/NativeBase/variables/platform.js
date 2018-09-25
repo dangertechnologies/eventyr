@@ -123,9 +123,9 @@ export default () => ({
   datePickerBg: "transparent",
 
   // Font
-  DefaultFontSize: 16,
+  DefaultFontSize: EStyleSheet.value("$sizeParagraph"),
   fontFamily: platform === "ios" ? "System" : "Roboto",
-  fontSizeBase: 15,
+  fontSizeBase: EStyleSheet.value("$sizeParagraph"),
   get fontSizeH1() {
     return this.fontSizeBase * 1.8;
   },
@@ -194,15 +194,15 @@ export default () => ({
 
   // Icon
   iconFamily: "MaterialCommunityIcons",
-  iconFontSize: platform === "ios" ? 30 : 28,
-  iconHeaderSize: platform === "ios" ? 33 : 24,
+  iconFontSize: EStyleSheet.value("$iconSize"),
+  iconHeaderSize: EStyleSheet.value("$iconSizeHeader"),
 
   // InputGroup
   inputFontSize: 17,
   inputBorderColor: EStyleSheet.value("$colorBorder"),
   inputSuccessBorderColor: EStyleSheet.value("$colorSuccess"),
   inputErrorBorderColor: EStyleSheet.value("$colorAlert"),
-  inputHeightBase: 50,
+  inputHeightBase: EStyleSheet.value("$heightInputBase"),
   get inputColor() {
     return this.textColor;
   },
@@ -212,9 +212,9 @@ export default () => ({
 
   // Line Height
   btnLineHeight: 19,
-  lineHeightH1: 32,
-  lineHeightH2: 27,
-  lineHeightH3: 22,
+  lineHeightH1: EStyleSheet.value("$sizeH1"),
+  lineHeightH2: EStyleSheet.value("$sizeH2"),
+  lineHeightH3: EStyleSheet.value("$sizeH3"),
   lineHeight: platform === "ios" ? 20 : 24,
   listItemSelected:
     platform === "ios"
@@ -226,9 +226,9 @@ export default () => ({
   listBorderColor: EStyleSheet.value("$colorBorder"),
   listDividerBg: EStyleSheet.value("$colorSecondary"),
   listBtnUnderlayColor: "#DDD",
-  listItemPadding: platform === "ios" ? 10 : 12,
+  listItemPadding: EStyleSheet.value("$spacingDouble"),
   listNoteColor: EStyleSheet.value("$colorGreyDark"),
-  listNoteSize: 13,
+  listNoteSize: EStyleSheet.value("$sizeTiny"),
 
   // Progress Bar
   defaultProgressColor: EStyleSheet.value("$colorAlert"),
