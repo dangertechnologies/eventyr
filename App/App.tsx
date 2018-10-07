@@ -10,7 +10,7 @@ import CurrentUser from "./Providers/UserProvider";
 import UI from "./Providers/UIProvider";
 import Unlock from "./Providers/UnlockProvider";
 
-import Navigation from "./Config/Navigation";
+import Navigation from "./Navigation/Router";
 
 // const stateLink = withClientState({ cache });
 

@@ -13,13 +13,14 @@ import objectiveColors from "../../Components/AchievementForm/Colors";
 
 import withLocation, { LocationContext } from "App/Providers/LocationProvider";
 
-import DetailsView from "../../Components/AchievementDrawer";
+import DetailsView from "../../Components/Achievement/Drawer";
 import Drawer from "App/Components/Drawer";
 
 import { NavigationState, NavigationScreenProp } from "react-navigation";
 
 import QUERY_ACHIEVEMENT_DETAILS from "App/GraphQL/Queries/Achievements/Details";
 import { Objective } from "App/Types/GraphQL";
+import HeaderStyle from "../../Navigation/HeaderStyle";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -93,7 +94,7 @@ class AchievementsView extends React.PureComponent<Props, State> {
             )}
         </Map>
         {!achievement ? null : (
-          <Drawer>
+          <Drawer snapTo={[160, "50%", "75%"]}>
             <DetailsView
               id={achievement.id}
               onPressObjective={(objective: Objective) =>
@@ -142,13 +143,8 @@ const Screen = compose(
 
 Screen.navigationOptions = {
   tabBarVisible: false,
-  headerMode: "float",
-  headerTransparent: true,
   title: "Details",
-  headerStyle: {
-    backgroundColor: "transparent",
-    borderBottomWidth: 0
-  }
+  ...HeaderStyle
 };
 
 export default Screen;

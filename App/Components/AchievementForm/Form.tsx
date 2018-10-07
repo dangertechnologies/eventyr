@@ -53,6 +53,8 @@ import {
 
 /** GRAPHQL **/
 import QUERY_TAXONOMY from "../../GraphQL/Taxonomy";
+import Difficulty from "../Achievement/Difficulty";
+import Points from "../Achievement/Points";
 
 export interface State {
   _objective: ProtoObjective | null;
@@ -120,8 +122,6 @@ class AchievementForm extends React.Component<ComposedProps, State> {
 
     const { achievement, data, onChange } = this.props;
 
-    const modes: Array<Mode> = data && data.modes ? data.modes : [];
-
     const categories: Array<Category> =
       data && data.categories && data.categories.edges
         ? (data.categories.edges
@@ -137,22 +137,9 @@ class AchievementForm extends React.Component<ComposedProps, State> {
       <React.Fragment>
         <CardItem style={[styles.transparent, styles.noVerticalPadding]}>
           <Right style={{ flexGrow: 1, alignItems: "flex-end" }}>
-            <Select
-              items={modes.map((mode: Mode) => ({
-                label: capitalize(mode),
-                value: mode.toUpperCase()
-              }))}
-              style={{
-                inputIOS: styles.selectModeInput,
-                viewContainer: styles.selectMode
-              }}
-              hideIcon
-              placeholder={{
-                label: "Click to set Difficulty",
-                value: null
-              }}
-              value={achievement.mode}
-              onValueChange={(mode: Mode) => onChange("mode", mode)}
+            <Difficulty
+              level={achievement.mode || "EASY"}
+              onChange={(mode: Mode) => onChange("mode", mode)}
             />
           </Right>
         </CardItem>
@@ -160,8 +147,7 @@ class AchievementForm extends React.Component<ComposedProps, State> {
           <Left style={{ flexGrow: 1, paddingTop: 0 }}>
             <IconPicker
               name={achievement.icon}
-              size={40}
-              difficulty={"Normal"}
+              size={30}
               onChange={(name: string) => onChange("icon", name)}
             />
             <Body>
@@ -172,7 +158,7 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                   value={achievement.name}
                 />
               </Item>
-              <Item underline={false}>
+              <Item style={styles.underlineDisabled}>
                 <Select
                   items={categories.map((category: Category) => ({
                     label: category.title,
@@ -197,21 +183,20 @@ class AchievementForm extends React.Component<ComposedProps, State> {
             </Body>
           </Left>
           <Right style={{ flex: 0.3 }}>
-            <H3>{this.calculatePoints()}</H3>
+            <Points>{this.calculatePoints()}</Points>
           </Right>
         </CardItem>
 
         <CardItem style={styles.transparent}>
           <Body>
             <Item stackedLabel style={styles.underlineDisabled}>
-              <Label style={styles.objectivesLabel}>Objectives</Label>
+              <Label style={styles.objectivesLabel}>Objectives: </Label>
               <View style={styles.objectivesChips}>
                 {!achievement.objectives
                   ? null
                   : objectives.map((objective: EditableObjective, index) => (
                       <ObjectiveChip
                         objective={objective}
-                        color={colors[index]}
                         onPress={() =>
                           this.props.onClickObjective &&
                           this.props.onClickObjective(objective)
@@ -228,6 +213,7 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                 <Button
                   rounded
                   small
+                  transparent
                   onPress={() =>
                     this.fab &&
                     // @ts-ignore
@@ -241,7 +227,7 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                     type="MaterialCommunityIcons"
                     fontSize={20}
                   />
-                  <Text>New</Text>
+                  <Text>Add objective</Text>
                 </Button>
               </View>
             </Item>
@@ -380,8 +366,8 @@ const styles = EStyleSheet.create({
   objectivesLabel: { marginBottom: 10 },
   objectivesChips: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between"
+    flexDirection: "column",
+    justifyContent: "space-evenly"
   },
 
   actions: {

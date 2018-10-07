@@ -12,6 +12,7 @@ import { View as AnimatedView } from "react-native-animatable";
 /** UTILS */
 import { compose, withProps, withState } from "recompose";
 import { graphql } from "react-apollo";
+import color from "color";
 
 /** TYPES **/
 import { NavigationScreenProp, NavigationState } from "react-navigation";
@@ -22,6 +23,7 @@ import { withUser, UserContext } from "App/Providers/UserProvider";
 import EStyleSheet from "react-native-extended-stylesheet";
 
 import QUERY_USER_DETAILS from "App/GraphQL/Queries/Users/Details";
+import ListsTab from "./Tabs/ListsTab";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -89,14 +91,16 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
           <Container>
             <Content style={styles.content}>
               {user &&
-                this.props.selectedTab === 0 && (
+                this.props.selectedTab === 1 && (
                   <UnlockedAchievements user={user} />
                 )}
 
               {user &&
-                this.props.selectedTab === 1 && (
+                this.props.selectedTab === 0 && (
                   <UserAchievements user={user} />
                 )}
+
+              {user && this.props.selectedTab === 2 && <ListsTab />}
             </Content>
           </Container>
         </Animated.ScrollView>
@@ -110,12 +114,14 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
           }}
         >
           <MaterialTabs
-            items={["Unlocked", "Personal"]}
+            items={["Created", "Unlocked", "Lists"]}
             selectedIndex={this.props.selectedTab}
             onChange={this.props.setTab}
             barColor={`${EStyleSheet.value("$colorPrimary")}`}
-            indicatorColor={`${EStyleSheet.value("$colorSuccess")}`}
-            inactiveTextColor={`${EStyleSheet.value("$colorSecondaryDark")}`}
+            indicatorColor={`${EStyleSheet.value("$colorPointsIcon")}`}
+            inactiveTextColor={`${color(
+              EStyleSheet.value("$colorSecondary")
+            ).fade(0.5)}`}
             activeTextColor={`${EStyleSheet.value("$colorSecondary")}`}
           />
         </AnimatedView>
@@ -140,7 +146,7 @@ const Enhanced = compose<ComposedProps, Props>(
     id: navigation.getParam("id", `${currentUser.id}`)
   })),
   graphql(QUERY_USER_DETAILS),
-  withState("selectedTab", "setTab", 0),
+  withState("selectedTab", "setTab", 1),
   withState("scrollY", "setScrollY", new Animated.Value(0)),
   withProps(({ scrollY }: ComposedProps) => ({
     headerHeight: scrollY.interpolate({

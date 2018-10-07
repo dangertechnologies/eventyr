@@ -30,6 +30,7 @@ import { UserContext } from "App/Providers/UserProvider";
 
 /** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
+import Overview from "../Achievement/Overview";
 
 interface Props {
   unlocked: Unlocked;
@@ -60,40 +61,10 @@ const AchievementCard = ({
         </Button>
       ]}
     >
-      <TouchableOpacity onPress={() => onPress && onPress()}>
-        <CardItem>
-          <Left style={{ flexDirection: "row" }}>
-            <KindIcon kind={unlocked.achievement.kind} />
-            <Text note style={{ fontSize: 12 }}>
-              {capitalize(unlocked.achievement.kind)}
-            </Text>
-          </Left>
-
-          <Right style={{ alignItems: "flex-end" }}>
-            <Text note style={{ fontSize: 12 }}>
-              {capitalize(unlocked.achievement.mode)}
-            </Text>
-          </Right>
-        </CardItem>
-        <CardItem>
-          <Left style={{ flexGrow: 1 }}>
-            <AchievementIcon
-              name={unlocked.achievement.icon}
-              size={40}
-              difficulty={unlocked.achievement.mode}
-            />
-            <Body>
-              <Text>{unlocked.achievement.name}</Text>
-              <Text note>{unlocked.achievement.category.title}</Text>
-            </Body>
-          </Left>
-          <Right style={{ flex: 0.3 }}>
-            <H3>{unlocked.points}</H3>
-          </Right>
-        </CardItem>
-
-        <CardItem />
-      </TouchableOpacity>
+      <Overview
+        achievement={{ ...unlocked.achievement, points: unlocked.points }}
+      />
+      <CardItem />
     </Swipeable>
   </Card>
 );
