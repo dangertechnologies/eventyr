@@ -44,6 +44,7 @@ import { UIContext } from "App/Providers/UIProvider";
 /** GRAPHQL **/
 import MUTATION_CREATE_ACHIEVEMENT from "../../GraphQL/Mutations/Achievements/Create";
 import QUERY_NEARBY_OBJECTIVES from "../../GraphQL/Queries/Achievements/ObjectivesNearby";
+import HeaderStyle from "../../Navigation/HeaderStyle";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -202,7 +203,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
           />
         </View>
 
-        <Drawer snapTo={["35%", "70%"]} initialSnapIndex={1}>
+        <Drawer snapTo={[30, "35%", "70%"]} initialSnapIndex={2}>
           <AchievementForm
             onChange={this.props.setProperty}
             validationErrors={this.props.validationErrors}
@@ -288,13 +289,8 @@ const Screen = compose(
 
 Screen.navigationOptions = {
   tabBarVisible: false,
-  headerMode: "float",
-  headerTransparent: true,
   title: "New Achievement",
-  headerStyle: {
-    backgroundColor: "transparent",
-    borderBottomWidth: 0
-  }
+  ...HeaderStyle
 };
 
 export default Screen;

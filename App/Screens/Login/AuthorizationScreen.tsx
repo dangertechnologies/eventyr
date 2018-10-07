@@ -65,7 +65,7 @@ class AuthorizationScreen extends React.PureComponent<ComposedProps> {
         // colors={["#7F00FF", "#CD1F7D"]}
         colors={[
           EStyleSheet.value("$colorPrimary"),
-          EStyleSheet.value("$colorAlert")
+          EStyleSheet.value("$colorPrimaryLight")
         ]}
         start={{ x: 0.8, y: 0.1 }}
         end={{ x: 0.1, y: 0.8 }}

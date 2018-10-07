@@ -9,7 +9,7 @@ import { View, StyleSheet, FlatList } from "react-native";
 import Map from "react-native-maps";
 import { Button, Icon, Text } from "native-base";
 import MapMarker from "App/Components/MapMarker";
-import DetailsView from "../../Components/AchievementDrawer";
+import DetailsView from "../../Components/Achievement/Drawer";
 import Drawer from "App/Components/Drawer";
 
 /** UTILS **/
@@ -167,12 +167,6 @@ class AchievementsView extends React.PureComponent<Props, State> {
                     .then(() => {
                       this.props.ui.localPushNotification({
                         title: "Achievement Unlocked"
-                      });
-                    })
-                    .catch(errors => {
-                      this.props.ui.localPushNotification({
-                        title: "Achievement Unlocked",
-                        message: errors ? errors.join(", ") : ""
                       });
                     });
                 }

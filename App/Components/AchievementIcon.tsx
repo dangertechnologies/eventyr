@@ -6,8 +6,6 @@ import LottieView from "lottie-react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 
 export interface Props extends IconProps {
-  difficulty: string;
-
   // If the icon receives unlocked=true when
   // unlocked was previously false, an animation
   // will play (once)
@@ -20,7 +18,7 @@ export interface State {
 
 const styles = EStyleSheet.create({
   container: {
-    $size: "$spacingDouble * 2",
+    $size: "$spacingDouble",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -31,30 +29,19 @@ const styles = EStyleSheet.create({
   }
 });
 
-const difficultyGradient = (difficulty: string) => {
-  switch ((difficulty || "").toLowerCase()) {
-    case "easy":
-      // return ["#3A1C71", "#00dbde"];
-      return [
-        EStyleSheet.value("$colorPrimaryLight"),
-        EStyleSheet.value("$colorSuccess")
-      ];
-    case "difficult":
-      // return ["#FC5C7D", "#6a82fb"];
-      return [
-        EStyleSheet.value("$colorPrimaryLight"),
-        EStyleSheet.value("$colorAlert")
-      ];
-    case "normal":
-    default:
-      return [
-        EStyleSheet.value("$colorPrimary"),
-        EStyleSheet.value("$colorWarning")
-      ];
-    // return ["#3A1C71", "#7F00FF", "#E100FF"];
-  }
-};
-
+/**
+ * AchievementIcon displays the icon for the Achievement,
+ * unless the Achievement *just* became Unlocked.
+ * If unlocked={true}, while it was previously false,
+ * the icon will be replaced by an animation that runs once,
+ * before it's set back to display the icon again.
+ *
+ * This is so that we can display the AchievementIcon in cards
+ * or drawers, and animate the icon as soon as the achievement
+ * is actually unlocked.
+ *
+ * If unlocked={true}, the icon will have a gold background.
+ */
 class AchievementIcon extends React.Component<Props, State> {
   static defaultProps = {
     unlocked: false
@@ -80,7 +67,7 @@ class AchievementIcon extends React.Component<Props, State> {
   }
 
   render() {
-    const { unlocked, difficulty, ...rest } = this.props;
+    const { unlocked, ...rest } = this.props;
 
     const goldGradient = [
       "#FEDB37",
@@ -92,7 +79,14 @@ class AchievementIcon extends React.Component<Props, State> {
 
     return (
       <LinearGradient
-        colors={!unlocked ? difficultyGradient(difficulty) : goldGradient}
+        colors={
+          !unlocked
+            ? [
+                EStyleSheet.value("$colorSecondary"),
+                EStyleSheet.value("$colorSecondary")
+              ]
+            : goldGradient
+        }
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 0 }}
         style={styles.container}
@@ -106,7 +100,7 @@ class AchievementIcon extends React.Component<Props, State> {
             source={require("../Lottie/unlock.json")}
           />
         ) : (
-          <Icon color={"#FFFFFF"} {...rest} />
+          <Icon color={"#112F41"} {...rest} />
         )}
       </LinearGradient>
     );

@@ -8,6 +8,13 @@ interface Props extends Omit<IconProps, "name"> {
   kind: Kind;
 }
 
+/**
+ * Displays different icons depending on Achievement.kind.
+ * This is an enum, so we know all values beforehand.
+ *
+ * TODO: Move this switch to a config file instead, mapping
+ * each Achievement.kind to a value for icons.
+ */
 const KindIcon = ({ kind, ...rest }: Props) => {
   let iconName = "flag-variant";
 

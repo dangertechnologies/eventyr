@@ -14,9 +14,11 @@ const theme: { [key: string]: number | string } = {
   $heightInputBase: 50,
 
   // Colors
-  $colorPrimary: "#7F00FF",
-  $colorPrimaryDark: "#130089",
-  $colorPrimaryLight: "#8c52ed",
+  $colorBackground: "#DFF9FF",
+
+  $colorPrimary: "#5cb85c",
+  $colorPrimaryDark: "#40802C",
+  $colorPrimaryLight: "#51DE69",
 
   $colorSecondary: "#fbfffe",
   $colorSecondaryLight: "#FFFFFF",
@@ -25,6 +27,16 @@ const theme: { [key: string]: number | string } = {
   $colorSuccess: "#5cb85c",
   $colorWarning: "#f0ad4e",
   $colorAlert: "#ED1727",
+
+  $colorAccent: "#5CAEFF",
+  $colorAccentAlternative: "rgb(104, 44, 196)",
+
+  $colorDifficultyEasy: "#5cb85c",
+  $colorDifficultyNormal: "#FFD300",
+  $colorDifficultyHard: "#ED1727",
+
+  $colorPoints: "#F2B134",
+  $colorPointsIcon: "#d459cb",
 
   $colorGreyDark: "#737373",
   $colorGrayLight: "#CDE1F9",
@@ -67,7 +79,7 @@ const theme: { [key: string]: number | string } = {
   $sizeH3: 20,
   $sizeH4: 18,
   $sizeParagraph: 15,
-  $sizeTiny: 13
+  $sizeTiny: 12
 };
 
 export default theme;

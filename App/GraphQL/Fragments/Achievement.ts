@@ -4,6 +4,11 @@ fragment achievement on Achievement {
   name
   points
   icon
+  upvotes
+  downvotes
+
+  isSuggestedGlobal
+  isGlobal
 
   author {
     id

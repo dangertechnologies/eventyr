@@ -1,29 +1,17 @@
 import React from "react";
+import { View } from "react-native";
 
 /** PROVIDERS **/
 import { withUser } from "App/Providers/UserProvider";
 
 /** COMPONENTS **/
-import { TouchableOpacity } from "react-native";
-import {
-  Card,
-  CardItem,
-  Body,
-  Right,
-  Left,
-  H3,
-  Text,
-  Button
-} from "native-base";
-import KindIcon from "App/Components/KindIcon";
-
-// @ts-ignore
-import Swipeable from "react-native-swipeable";
-import AchievementIcon from "App/Components/AchievementIcon";
+import { Card, CardItem, Text } from "native-base";
 
 /** UTILS **/
 import { compose } from "recompose";
-import { capitalize, isEqual } from "lodash";
+import { isEqual, round } from "lodash";
+// @ts-ignore
+import distance from "haversine-distance";
 
 /** TYPES **/
 import { Achievement } from "App/Types/GraphQL";
@@ -31,90 +19,83 @@ import { UserContext } from "App/Providers/UserProvider";
 
 /** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
+import Overview, { LongPressAction } from "../Achievement/Overview";
+import withLocation, {
+  LocationContext
+} from "../../Providers/LocationProvider";
 
 interface Props {
   achievement: Achievement | null;
+  isVotable?: boolean;
 
   onPress?(): any;
-  onEdit?(achievement: Achievement): any;
-  onDelete?(achievement: Achievement): any;
+  actions?: Array<LongPressAction>;
+}
+
+interface ComposedProps extends Props {
+  location: LocationContext;
+  currentUser: UserContext;
 }
 
 const AchievementCard = ({
   achievement,
   currentUser,
   onPress,
-  onEdit,
-  onDelete
-}: Props & { currentUser: UserContext }) => {
+  location,
+  actions,
+  isVotable
+}: ComposedProps & { currentUser: UserContext }) => {
   if (!achievement) {
     return null;
   }
 
   const canEdit =
     achievement.author && isEqual(achievement.author.id, `${currentUser.id}`);
+
+  let kmAway =
+    achievement.objectives &&
+    achievement.objectives &&
+    achievement.objectives
+      .map(
+        node =>
+          node && node.lat && node.lng ? distance(node, location) || null : null
+      )
+      .sort()[0];
+
+  kmAway =
+    kmAway && kmAway > 1000 ? `${round(kmAway / 1000)}km` : `${round(kmAway)}m`;
+
   return (
-    <Card>
-      <Swipeable
-        swipeable={canEdit}
-        rightButtons={
-          !canEdit
-            ? undefined
-            : [
-                <Button
-                  style={styles.editButton}
-                  onPress={() => onEdit && onEdit(achievement)}
-                >
-                  <Text style={{ textAlign: "center" }}>Edit</Text>
-                </Button>,
-                <Button
-                  style={styles.deleteButton}
-                  onPress={() => onDelete && onDelete(achievement)}
-                >
-                  <Text style={{ textAlign: "center" }}>Delete</Text>
-                </Button>
-              ]
-        }
-      >
-        <TouchableOpacity onPress={() => onPress && onPress()}>
-          <CardItem>
-            <Left style={{ flexDirection: "row" }}>
-              <KindIcon kind={achievement.kind} />
-              <Text note style={{ fontSize: 12 }}>
-                {capitalize(achievement.kind)}
+    <Card transparent>
+      <View style={styles.card}>
+        <Overview
+          achievement={achievement}
+          onPress={onPress}
+          actions={actions}
+        />
+        {!isVotable &&
+          kmAway && (
+            <CardItem>
+              <Text note style={styles.distance}>
+                {kmAway}
               </Text>
-            </Left>
-
-            <Right style={{ alignItems: "flex-end" }}>
-              <Text note style={{ fontSize: 12 }}>
-                {capitalize(achievement.mode)}
-              </Text>
-            </Right>
-          </CardItem>
-          <CardItem>
-            <Left style={{ flexGrow: 1 }}>
-              <AchievementIcon
-                name={achievement.icon}
-                size={40}
-                difficulty={achievement.mode}
-              />
-              <Body>
-                <Text>{achievement.name}</Text>
-                <Text note>{achievement.category.title}</Text>
-              </Body>
-            </Left>
-            <Right style={{ flex: 0.3 }}>
-              <H3>{achievement.points}</H3>
-            </Right>
-          </CardItem>
-
-          <CardItem />
-        </TouchableOpacity>
-      </Swipeable>
+            </CardItem>
+          )}
+      </View>
     </Card>
   );
 };
 const styles = EStyleSheet.create({
+  card: {
+    borderRadius: 8,
+    shadowOffset: { width: 1, height: 1 },
+    shadowColor: "rgba(0, 0, 0, 1)",
+    shadowOpacity: 0.1,
+    backgroundColor: "#FFFFFF",
+    padding: 5,
+    marginHorizontal: "$spacing"
+  },
+
   editButton: {
     width: "100%",
     height: "100%",
@@ -128,9 +109,14 @@ const styles = EStyleSheet.create({
     backgroundColor: "red",
     borderRadius: 0,
     margin: 0
+  },
+
+  distance: {
+    fontSize: 11
   }
 });
 
-export default compose<Props & { currentUser: UserContext }, Props>(withUser)(
-  AchievementCard
-);
+export default compose<ComposedProps, Props>(
+  withLocation(),
+  withUser
+)(AchievementCard);

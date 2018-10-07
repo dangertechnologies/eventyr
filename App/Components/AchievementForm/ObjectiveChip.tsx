@@ -2,25 +2,26 @@ import React from "react";
 import { Button, Text, Icon } from "native-base";
 import { EditableObjective } from "App/Types/Prototypes";
 
+import EStyleSheet from "react-native-extended-stylesheet";
+
 interface Props extends React.ClassAttributes<Button> {
   objective: EditableObjective;
-  color?: string;
   onPress?(): any;
   onLongPress?(): any;
 }
 
-const ObjectiveChip = ({
-  objective,
-  color,
-  onPress,
-  onLongPress,
-  ...rest
-}: Props) => (
+const styles = EStyleSheet.create({
+  plain: {
+    color: "$colorText"
+  }
+});
+
+const ObjectiveChip = ({ objective, onPress, onLongPress, ...rest }: Props) => (
   <Button
     rounded
     small
+    transparent
     iconLeft
-    style={!color ? {} : { backgroundColor: color, margin: 2 }}
     onPress={onPress}
     onLongPress={onLongPress}
     {...rest}
@@ -31,7 +32,7 @@ const ObjectiveChip = ({
       color="#FFFFFF"
       fontSize={20}
     />
-    <Text>{objective.tagline}</Text>
+    <Text style={styles.plain}>{objective.tagline}</Text>
   </Button>
 );
 

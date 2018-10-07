@@ -21,6 +21,13 @@ interface Props {
   onClose?(): any;
 }
 
+/**
+ * Dialogs need to be rendered outside of the regular DOM tree,
+ * otherwise the Tab Bar would be rendered on top of it.
+ * This component renders any content in a SafeAreaView
+ * (to accommodate for iPhone X{s,max}) in a portal placed
+ * in the Router, outside of the navigation hierarchy.
+ */
 const Dialog = ({ open, title, onClose, children }: Props) =>
   !open ? null : (
     <BlackPortal name="dialog">

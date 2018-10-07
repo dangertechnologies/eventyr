@@ -2,17 +2,17 @@ import React from "react";
 
 /** COMPONENTS **/
 import { View, Animated, StyleSheet, Dimensions } from "react-native";
-import { H2, H3, Text, Icon, Body, Row } from "native-base";
+import { Icon } from "native-base";
 import {
   View as AnimatedView,
   Text as AnimatedText
 } from "react-native-animatable";
-import MaterialTabs from "react-native-material-tabs";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 
 /** TYPES **/
 import { User } from "App/Types/GraphQL";
+import Points from "../../Components/Profile/Points";
 
 interface Props {
   user: User;
@@ -28,36 +28,10 @@ export const UserHeaderPlaceholder = (
 const { width } = Dimensions.get("window");
 
 const HEADER_HEIGHT = 300;
-const AVATAR_SIZE = 80;
-const AVATAR_OFFSET_Y = HEADER_HEIGHT * 0.5 - AVATAR_SIZE * 0.5 - 20;
-const AVATAR_OFFSET_X = width * 0.5 - AVATAR_SIZE * 0.5;
-const NAME_OFFSET_Y = HEADER_HEIGHT * 0.5 + AVATAR_SIZE * 0.5 - 30;
+const AVATAR_SIZE = 30;
+const NAME_OFFSET_Y = 32;
 
 const UserHeader = ({ user, height }: Props) => {
-  const avatarOffsetY = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
-    outputRange: [40, AVATAR_OFFSET_Y],
-    extrapolate: "clamp"
-  });
-
-  const avatarOffsetX = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
-    outputRange: [16, AVATAR_OFFSET_X],
-    extrapolate: "clamp"
-  });
-
-  const avatarSize = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
-    outputRange: [AVATAR_SIZE / 2, AVATAR_SIZE],
-    extrapolate: "clamp"
-  });
-
-  const avatarBorderRadius = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
-    outputRange: [AVATAR_SIZE / 4, AVATAR_SIZE / 2],
-    extrapolate: "clamp"
-  });
-
   const nameOffsetY = height.interpolate({
     inputRange: [100, HEADER_HEIGHT],
     outputRange: [30, NAME_OFFSET_Y],
@@ -78,30 +52,24 @@ const UserHeader = ({ user, height }: Props) => {
 
   const pointsOffsetY = height.interpolate({
     inputRange: [100, HEADER_HEIGHT],
-    outputRange: [30, 0],
+    outputRange: [30, 40],
+    extrapolate: "clamp"
+  });
+
+  const pointsScale = height.interpolate({
+    inputRange: [100, HEADER_HEIGHT],
+    outputRange: [0.5, 1.0],
     extrapolate: "clamp"
   });
 
   return (
     <React.Fragment>
       <AnimatedView style={[styles.header, { height }]} animation="bounceIn">
-        <AnimatedView
-          style={[
-            styles.avatar,
-            {
-              top: avatarOffsetY,
-              left: avatarOffsetX,
-              height: avatarSize,
-              width: avatarSize,
-              borderRadius: avatarBorderRadius
-            }
-          ]}
-          animation="bounceIn"
-        >
+        <AnimatedView style={[styles.avatar]} animation="bounceIn">
           <AnimatedIcon
             name="ios-person"
             type="Ionicons"
-            style={[styles.userIcon, { fontSize: avatarSize }]}
+            style={[styles.userIcon, { top: nameOffsetY }]}
           />
         </AnimatedView>
 
@@ -109,7 +77,7 @@ const UserHeader = ({ user, height }: Props) => {
           {user && user.name}
         </AnimatedText>
 
-        <Row style={styles.metadata}>
+        <AnimatedView style={{ flexDirection: "row", padding: 16 }}>
           <AnimatedView
             // @ts-ignore
             style={{
@@ -118,10 +86,12 @@ const UserHeader = ({ user, height }: Props) => {
               opacity: metadataOpacity
             }}
           >
-            <H3 style={styles.numbers}>{user && user.unlockedCount}</H3>
-            <Text note style={styles.pointsLabel}>
+            <Points
+              scale={new Animated.Value(0.7)}
+              value={user && user.unlockedCount ? user.unlockedCount : 0}
+            >
               Unlocked
-            </Text>
+            </Points>
           </AnimatedView>
           <AnimatedView
             // @ts-ignore
@@ -133,10 +103,9 @@ const UserHeader = ({ user, height }: Props) => {
               flexGrow: 1
             }}
           >
-            <H2 style={styles.points}>{user && user.points}</H2>
-            <Text note style={styles.pointsLabel}>
+            <Points scale={pointsScale} value={(user && user.points) || 0}>
               Points
-            </Text>
+            </Points>
           </AnimatedView>
           <AnimatedView
             // @ts-ignore
@@ -146,12 +115,14 @@ const UserHeader = ({ user, height }: Props) => {
               opacity: metadataOpacity
             }}
           >
-            <H3 style={styles.numbers}>{user && user.coopPoints}</H3>
-            <Text note style={styles.pointsLabel}>
-              Coop bonus
-            </Text>
+            <Points
+              scale={new Animated.Value(0.7)}
+              value={(user && user.coopPoints) || 0}
+            >
+              Coop Bonus
+            </Points>
           </AnimatedView>
-        </Row>
+        </AnimatedView>
       </AnimatedView>
     </React.Fragment>
   );
@@ -166,7 +137,7 @@ const styles = EStyleSheet.create({
     backgroundColor: "$colorPrimary",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "$borderColor",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center"
   },
 
@@ -179,8 +150,8 @@ const styles = EStyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    top: AVATAR_OFFSET_Y,
-    left: AVATAR_OFFSET_X
+    top: "$spacing",
+    left: "$spacing"
   },
 
   userIcon: {

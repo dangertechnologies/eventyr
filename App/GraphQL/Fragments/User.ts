@@ -7,6 +7,7 @@ fragment user on User {
   personalPoints
   unlockedCount
   coopPoints
+  avatar
 
   role {
     id

@@ -9,30 +9,26 @@ import {
   Button,
   CardItem,
   Body,
-  Right,
   Icon,
   Left,
-  H3,
-  H2,
   Text
 } from "native-base";
 import LottieView from "lottie-react-native";
 import ObjectiveChip from "App/Components/AchievementForm/ObjectiveChip";
-import AchievementIcon from "App/Components/AchievementIcon";
 
 import { graphql } from "react-apollo";
 
 /** TYPES **/
-import { Achievement, Objective, Query } from "App/Types/GraphQL";
+import { Objective, Query } from "App/Types/GraphQL";
 
 import QUERY_ACHIEVEMENT_DETAILS from "App/GraphQL/Queries/Achievements/Details";
 
-import { capitalize } from "lodash";
 import { compose } from "recompose";
 
 /** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
 import colors from "App/Components/AchievementForm/Colors";
+import Overview from "./Overview";
 
 interface Props {
   id?: string;
@@ -43,6 +39,15 @@ interface ComposedProps extends Props {
   data: Query & { loading: boolean; error: string };
 }
 
+/**
+ * Displays additional information about an Achievement,
+ * e.g description, individual objectives, and so on, in
+ * a drawer at the bottom of the screen that can be dragged
+ * up / down, and snaps to different positions on the screen.
+ *
+ * This is the view used on the MapScreen to display all Achievement
+ * information.
+ */
 class AchievementsDrawer extends React.PureComponent<ComposedProps> {
   drawer: AnimatedView | null = null;
 
@@ -66,7 +71,7 @@ class AchievementsDrawer extends React.PureComponent<ComposedProps> {
         }}
       >
         <LottieView
-          source={require("../Lottie/achievement-loading.json")}
+          source={require("../../Lottie/achievement-loading.json")}
           style={{ flex: 1, padding: 5 }}
           autoPlay
           loop
@@ -74,36 +79,8 @@ class AchievementsDrawer extends React.PureComponent<ComposedProps> {
       </View>
     ) : (
       <React.Fragment>
-        <CardItem style={[styles.transparent, styles.noVerticalPadding]}>
-          <Right style={{ flexGrow: 1, alignItems: "flex-end" }}>
-            <Text note>{capitalize(achievement.mode)}</Text>
-          </Right>
-        </CardItem>
-        <CardItem style={[styles.transparent, styles.noVerticalPadding]}>
-          <Left style={{ flexGrow: 1, paddingTop: 0 }}>
-            <AchievementIcon
-              name={achievement.icon}
-              size={40}
-              difficulty={"Normal"}
-              unlocked={achievement.unlocked}
-            />
-            <Body>
-              <Item style={styles.underlineDisabled}>
-                <H2 numberOfLines={1} allowFontScaling>
-                  {achievement.name}
-                </H2>
-              </Item>
-              <Item style={styles.underlineDisabled}>
-                <Text note>{achievement.category.title}</Text>
-              </Item>
-            </Body>
-          </Left>
-          <Right style={{ flex: 0.3 }}>
-            <H3>{achievement.points}</H3>
-          </Right>
-        </CardItem>
-
         <View style={styles.scrolledContentContainer}>
+          <Overview achievement={achievement} />
           <CardItem style={styles.transparent}>
             <Body>
               <Item stackedLabel style={styles.underlineDisabled}>
@@ -115,7 +92,6 @@ class AchievementsDrawer extends React.PureComponent<ComposedProps> {
                         <ObjectiveChip
                           key={objective.id}
                           objective={objective}
-                          color={colors[index]}
                           onPress={() =>
                             this.props.onPressObjective &&
                             this.props.onPressObjective(objective)
@@ -125,24 +101,6 @@ class AchievementsDrawer extends React.PureComponent<ComposedProps> {
                 </View>
               </Item>
             </Body>
-          </CardItem>
-
-          <CardItem>
-            <Left>
-              <Button iconLeft rounded small transparent>
-                <Icon type="MaterialIcons" name="group-add" />
-                <Text>Cooperate</Text>
-              </Button>
-              <Button iconLeft rounded small transparent>
-                <Icon type="MaterialCommunityIcons" name="playlist-plus" />
-                <Text>Add to list</Text>
-              </Button>
-
-              <Button iconLeft rounded small transparent>
-                <Icon type="MaterialCommunityIcons" name="share" />
-                <Text>Share</Text>
-              </Button>
-            </Left>
           </CardItem>
 
           <CardItem style={styles.transparent}>
@@ -173,7 +131,7 @@ const styles = EStyleSheet.create({
 
   objectivesLabel: { marginBottom: 10 },
   objectivesChips: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-evenly",
     flexWrap: "wrap"
   },

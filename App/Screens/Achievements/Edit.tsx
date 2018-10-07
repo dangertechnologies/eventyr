@@ -46,6 +46,7 @@ import { UIContext } from "App/Providers/UIProvider";
 import MUTATION_UPDATE_ACHIEVEMENT from "App/GraphQL/Mutations/Achievements/Update";
 import QUERY_ACHIEVEMENT_DETAILS from "App/GraphQL/Queries/Achievements/Details";
 import QUERY_OBJECTIVES_NEARBY from "App/GraphQL/Queries/Achievements/ObjectivesNearby";
+import HeaderStyle from "../../Navigation/HeaderStyle";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -313,13 +314,8 @@ const Screen = compose<ComposedProps, Props>(
 // @ts-ignore
 Screen.navigationOptions = {
   tabBarVisible: false,
-  headerMode: "float",
-  headerTransparent: true,
   title: "Edit Achievement",
-  headerStyle: {
-    backgroundColor: "transparent",
-    borderBottomWidth: 0
-  }
+  ...HeaderStyle
 };
 
 export default Screen;

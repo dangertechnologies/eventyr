@@ -1,26 +1,19 @@
+import achievement from "App/GraphQL/Fragments/Achievement";
 export default `
   fragment achievementWithObjectives on Achievement {
-    id
-    name
-    icon
-    shortDescription
-    fullDescription
-    mode
-    kind
+    ...achievement
     
     author {
       id
       name
     }
 
-    isMultiPlayer
     category {
       id
       title
       icon
     }
 
-    points
 
     objectives {
       id
@@ -31,4 +24,6 @@ export default `
       kind
     }
   }
+
+  ${achievement}
 `;
