@@ -72,6 +72,9 @@ type Achievement {
 
   # Category the Achievement belongs to, e.g Food & Culinary, Culture, etc.
   category: Category!
+
+  # Other users the user is currently cooperating with on this Achievement
+  cooperationUsers: User
   downvotes: Int!
   expires: Int
 
@@ -119,6 +122,9 @@ type Achievement {
 type AchievementConnection {
   # A list of edges.
   edges: [AchievementEdge]
+
+  # A list of nodes.
+  nodes: [Achievement]
 
   # Information to aid in pagination.
   pageInfo: PageInfo!
@@ -199,6 +205,9 @@ type CategoryConnection {
   # A list of edges.
   edges: [CategoryEdge]
 
+  # A list of nodes.
+  nodes: [Category]
+
   # Information to aid in pagination.
   pageInfo: PageInfo!
 }
@@ -240,6 +249,9 @@ type Continent {
 type ContinentConnection {
   # A list of edges.
   edges: [ContinentEdge]
+
+  # A list of nodes.
+  nodes: [Continent]
 
   # Information to aid in pagination.
   pageInfo: PageInfo!
@@ -298,7 +310,7 @@ type ContinentEdge {
 # time and location for them to meet up, but without knowing either users
 # location, this is difficult. Instead, we may need to introduce a way for
 # users to either a) message eachother or b) agree on a meetup point.
-type CoopRequest {
+type CoopRequest implements NotificationInterface {
   # Achievement the coop request applies to. May be null if a list is given
   achievement: Achievement
   createdAt: Int!
@@ -315,6 +327,9 @@ type CoopRequest {
 
   # List the coop request applies to. May be null if an Achievement is given.
   list: List
+
+  # Message to the receiver
+  message: String!
 
   # User who received this request
   receiver: User!
@@ -334,6 +349,9 @@ type Country {
 type CountryConnection {
   # A list of edges.
   edges: [CountryEdge]
+
+  # A list of nodes.
+  nodes: [Country]
 
   # Information to aid in pagination.
   pageInfo: PageInfo!
@@ -399,6 +417,7 @@ type CreatePayload {
 #       TODO: Cache this token, instead of generating a new one on every request.
 type CurrentUser {
   authenticationToken: String!
+  avatar: String
   coopPoints: Int!
   country: Country!
   email: String!
@@ -1089,6 +1108,9 @@ type ListConnection {
   # A list of edges.
   edges: [ListEdge]
 
+  # A list of nodes.
+  nodes: [List]
+
   # Information to aid in pagination.
   pageInfo: PageInfo!
 }
@@ -1117,9 +1139,9 @@ enum Mode {
 }
 
 type Mutation {
-  #     Accepts a cooperation request by setting pending: false. Rejected
-  #     coop requests are deleted, so if a coop request has pending: false,
-  #     it's an active cooperation link between two users
+  #   Accepts a cooperation request by setting pending: false. Rejected
+  #   coop requests are deleted, so if a coop request has pending: false,
+  #   it's an active cooperation link between two users
   acceptCoop(input: AcceptCoopInput!): AcceptCoopPayload
 
   #     Identifies and accepts a friend request by id. The friend request
@@ -1203,6 +1225,108 @@ type Mutation {
   #   Upvote an Achievement. If the user has already downvoted the
   #   achievement, his/her vote will be changed.
   upvote(input: UpvoteInput!): UpvotePayload
+}
+
+# **IMPORTANT**: These are not necessarily PUSH notifications,
+# but notifications that may show up in a users "feed",
+# or in-app notification list.
+#
+# A Notification could be anything like:
+# - "Annie has invited you to cooperate on View from the Top"
+# - "Claire sent you a friend request"
+# - "Achievement Unlocked: DoubleDutch Dinosaur Duplex in Dubai"
+# - "Dirk accepted your cooperation request."
+# - "Erin added a new item to your list Hiking the Pyrenees"
+# - "Fred unlocked Stormy Seas! +375 coop bonus"
+# - "Gerardo shared a List with you."
+#
+# Some notifications may require an action from the user, and
+# some may just be informational. It's up to the client to decide
+# whether an action should be required of, or offered to the user.
+#
+# If a notification involves another user, such as when the notification
+# is a FriendRequest, or CoopRequest, this user will be set as Notification.sender,
+# and the resource it concerns, e.g a CoopRequest, will be set as the
+# Notification.target
+#
+# Messages displayed for notifications are up to the client, to allow
+# proper localization.
+type Notification {
+  createdAt: Int!
+  id: ID!
+  kind: NotificationKind!
+
+  # User receiving the notification
+  receiver: User!
+
+  # Whether or not the user has seen this notification. Will be set to `true` when the receiving user receives it.
+  seen: Boolean!
+
+  # User sending the notification, if any
+  sender: User
+
+  # Resource to perform additional actions upon, e.g a CoopRequest to accept/reject
+  target: NotificationInterface!
+
+  # String representation of the target model, e.g CoopRequest, Unlocked, etc.
+  targetType: String!
+}
+
+# The connection type for Notification.
+type NotificationConnection {
+  # A list of edges.
+  edges: [NotificationEdge]
+
+  # A list of nodes.
+  nodes: [Notification]
+
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+}
+
+# An edge in a connection.
+type NotificationEdge {
+  # A cursor for use in pagination.
+  cursor: String!
+
+  # The item at the end of the edge.
+  node: Notification
+}
+
+interface NotificationInterface {
+  id: ID!
+}
+
+enum NotificationKind {
+  # 0
+  ACHIEVEMENT_UNLOCKED
+
+  # 1
+  ACHIEVEMENT_UNLOCKED_COOP_BONUS
+
+  # 3
+  COOPERATION_REQUEST_ACCEPTED
+
+  # 2
+  COOPERATION_REQUEST_RECEIVED
+
+  # 4
+  COOPERATION_REQUEST_REJECTED
+
+  # 8
+  FRIEND_REQUEST_ACCEPTED
+
+  # 7
+  FRIEND_REQUEST_RECEIVED
+
+  # 9
+  REWARD_UNLOCKED
+
+  # 5
+  SHARED_ACHIEVEMENT_RECEIVED
+
+  # 6
+  SHARED_LIST_RECEIVED
 }
 
 # Supported OAuth providers to authenticate with
@@ -1309,6 +1433,9 @@ type Objective {
 type ObjectiveConnection {
   # A list of edges.
   edges: [ObjectiveEdge]
+
+  # A list of nodes.
+  nodes: [Objective]
 
   # Information to aid in pagination.
   pageInfo: PageInfo!
@@ -1495,11 +1622,29 @@ type Query {
 
     # Find lists with Achievements in the nearby area. This can be used to show lists in the feed
     near: [Float!]
+
+    # Used to determine what kind of Achievements to search for, same as the type field on Achievements
+    type: String
     userId: String
   ): ListConnection!
 
   # Fetch all existing modes an Achievement may have
   modes: [Mode!]!
+
+  # Notifications received by the user
+  notifications(
+    # Returns the elements in the list that come after the specified cursor.
+    after: String
+
+    # Returns the elements in the list that come before the specified cursor.
+    before: String
+
+    # Returns the first _n_ elements from the list.
+    first: Int
+
+    # Returns the last _n_ elements from the list.
+    last: Int
+  ): NotificationConnection!
   objectives(
     # Returns the elements in the list that come after the specified cursor.
     after: String
@@ -1533,6 +1678,28 @@ type Query {
 
   # Fetch another users data. This requires authentication.
   user(id: String!): User!
+
+  # Find users currently working on the same achievements, or search for users by
+  # name or email. At least one argument is required.
+  users(
+    # Find users currently working on this Achievement
+    achievementId: String
+
+    # Returns the elements in the list that come after the specified cursor.
+    after: String
+
+    # Returns the elements in the list that come before the specified cursor.
+    before: String
+
+    # Returns the first _n_ elements from the list.
+    first: Int
+
+    # Returns the last _n_ elements from the list.
+    last: Int
+
+    # Search for users by email or name. The match must be /exact/, for privacy reasons.
+    search: String
+  ): UserConnection!
 }
 
 # Autogenerated input type of RefreshSuggested
@@ -1574,6 +1741,9 @@ type Region {
 type RegionConnection {
   # A list of edges.
   edges: [RegionEdge]
+
+  # A list of nodes.
+  nodes: [Region]
 
   # Information to aid in pagination.
   pageInfo: PageInfo!
@@ -1671,15 +1841,18 @@ input RequestCoopInput {
   # List to request coop for
   listId: String
 
+  # Message to show the receiving user
+  message: String!
+
   # User to send request to
-  userId: String!
+  userIds: [String!]!
 }
 
 # Autogenerated return type of RequestCoop
 type RequestCoopPayload {
   # A unique identifier for the client performing the mutation.
   clientMutationId: String
-  coopRequest: CoopRequest
+  coopRequests: [CoopRequest!]
   errors: [String!]!
 }
 
@@ -1689,6 +1862,11 @@ type Role {
   name: String!
   permissionLevel: String!
   users: [User!]
+}
+
+type Subscription {
+  # User received a notification
+  notificationReceived: Notification
 }
 
 # When an Achievement becomes **Unlocked**, a container is created
@@ -1729,6 +1907,9 @@ type Unlocked {
 type UnlockedConnection {
   # A list of edges.
   edges: [UnlockedEdge]
+
+  # A list of nodes.
+  nodes: [Unlocked]
 
   # Information to aid in pagination.
   pageInfo: PageInfo!
@@ -1808,6 +1989,7 @@ type UpvotePayload {
 }
 
 type User {
+  avatar: String
   coopPoints: Int!
   country: Country!
   email: String!
@@ -1862,4 +2044,25 @@ type User {
     # Returns the last _n_ elements from the list.
     last: Int
   ): AchievementConnection!
+}
+
+# The connection type for User.
+type UserConnection {
+  # A list of edges.
+  edges: [UserEdge]
+
+  # A list of nodes.
+  nodes: [User]
+
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+}
+
+# An edge in a connection.
+type UserEdge {
+  # A cursor for use in pagination.
+  cursor: String!
+
+  # The item at the end of the edge.
+  node: User
 }

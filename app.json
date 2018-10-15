@@ -5,6 +5,7 @@
   "name": "Achievements",
   "displayName": "Achievements",
   "appVersion": "0.3",
-  "apiUrl": "http://localhost:3000/graphql"
+  "apiUrl": "http://localhost:3000/graphql",
+  "baseUrl": "localhost:3000"
   //"apiUrl": "https://achievements-app.herokuapp.com/graphql"
 }

@@ -5,10 +5,12 @@ import { View, Animated, StyleSheet, Dimensions } from "react-native";
 import { Icon } from "native-base";
 import {
   View as AnimatedView,
-  Text as AnimatedText
+  Text as AnimatedText,
+  Image
 } from "react-native-animatable";
 
 import EStyleSheet from "react-native-extended-stylesheet";
+import Config from "../../../app.json";
 
 /** TYPES **/
 import { User } from "App/Types/GraphQL";
@@ -19,45 +21,30 @@ interface Props {
   height: Animated.AnimatedInterpolation;
 }
 
-const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-
 export const UserHeaderPlaceholder = (
-  <View style={{ flex: 0, height: 350, width: "100%" }} />
+  <View style={{ flex: 0, height: 250, width: "100%" }} />
 );
 
-const { width } = Dimensions.get("window");
+export const HEADER_HEIGHT = 200;
+export const HEADER_MIN_HEIGHT = 10;
 
-const HEADER_HEIGHT = 300;
-const AVATAR_SIZE = 30;
-const NAME_OFFSET_Y = 32;
+const smallPoints = new Animated.Value(0.7);
 
 const UserHeader = ({ user, height }: Props) => {
-  const nameOffsetY = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
-    outputRange: [30, NAME_OFFSET_Y],
-    extrapolate: "clamp"
-  });
-
   const metadataOpacity = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
+    inputRange: [HEADER_MIN_HEIGHT, HEADER_HEIGHT],
     outputRange: [0, 1],
     extrapolate: "clamp"
   });
 
-  const pointsOffsetX = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
-    outputRange: [width * 0.8, 0],
-    extrapolate: "clamp"
-  });
-
-  const pointsOffsetY = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
-    outputRange: [30, 40],
+  const pointsOpacity = height.interpolate({
+    inputRange: [HEADER_MIN_HEIGHT, HEADER_HEIGHT],
+    outputRange: [0.0, 1.0],
     extrapolate: "clamp"
   });
 
   const pointsScale = height.interpolate({
-    inputRange: [100, HEADER_HEIGHT],
+    inputRange: [HEADER_MIN_HEIGHT, HEADER_HEIGHT],
     outputRange: [0.5, 1.0],
     extrapolate: "clamp"
   });
@@ -65,18 +52,6 @@ const UserHeader = ({ user, height }: Props) => {
   return (
     <React.Fragment>
       <AnimatedView style={[styles.header, { height }]} animation="bounceIn">
-        <AnimatedView style={[styles.avatar]} animation="bounceIn">
-          <AnimatedIcon
-            name="ios-person"
-            type="Ionicons"
-            style={[styles.userIcon, { top: nameOffsetY }]}
-          />
-        </AnimatedView>
-
-        <AnimatedText style={[styles.name, { top: nameOffsetY }]}>
-          {user && user.name}
-        </AnimatedText>
-
         <AnimatedView style={{ flexDirection: "row", padding: 16 }}>
           <AnimatedView
             // @ts-ignore
@@ -87,7 +62,7 @@ const UserHeader = ({ user, height }: Props) => {
             }}
           >
             <Points
-              scale={new Animated.Value(0.7)}
+              scale={smallPoints}
               value={user && user.unlockedCount ? user.unlockedCount : 0}
             >
               Unlocked
@@ -98,8 +73,7 @@ const UserHeader = ({ user, height }: Props) => {
             style={{
               alignItems: "center",
               justifyContent: "center",
-              marginLeft: pointsOffsetX,
-              paddingTop: pointsOffsetY,
+              opacity: pointsOpacity,
               flexGrow: 1
             }}
           >
@@ -115,10 +89,7 @@ const UserHeader = ({ user, height }: Props) => {
               opacity: metadataOpacity
             }}
           >
-            <Points
-              scale={new Animated.Value(0.7)}
-              value={(user && user.coopPoints) || 0}
-            >
+            <Points scale={smallPoints} value={(user && user.coopPoints) || 0}>
               Coop Bonus
             </Points>
           </AnimatedView>
@@ -130,7 +101,7 @@ const UserHeader = ({ user, height }: Props) => {
 
 const styles = EStyleSheet.create({
   header: {
-    height: 300,
+    height: HEADER_HEIGHT,
     width: "100%",
     position: "absolute",
     top: 0,
@@ -139,31 +110,6 @@ const styles = EStyleSheet.create({
     borderBottomColor: "$borderColor",
     justifyContent: "flex-end",
     alignItems: "center"
-  },
-
-  avatar: {
-    borderRadius: 40,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "$colorPrimaryLight",
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    top: "$spacing",
-    left: "$spacing"
-  },
-
-  userIcon: {
-    color: "$colorSecondary"
-  },
-
-  name: {
-    color: "$colorSecondary",
-    margin: "$spacing",
-    position: "absolute",
-    top: NAME_OFFSET_Y,
-    fontSize: 24
   },
 
   metadata: {

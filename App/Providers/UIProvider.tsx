@@ -6,7 +6,7 @@ import PushNotification, {
 } from "react-native-push-notification";
 import { BlurView } from "react-native-blur";
 import EStyleSheet from "react-native-extended-stylesheet";
-import { Icon, H3, StyleProvider } from "native-base";
+import { Icon, H3, StyleProvider, Toast } from "native-base";
 import { View as AnimatedView } from "react-native-animatable";
 import { View, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
@@ -158,11 +158,7 @@ class UIProvider extends React.Component<Props, State> {
     );
 
   notifyError = (text: string) =>
-    this.notify({
-      message: text,
-      lottie: require("../Lottie/success.json"),
-      duration: 800
-    });
+    Toast.show({ text, type: "danger", position: "top" });
 
   localPushNotification = (settings?: Partial<PushNotificationObject>) =>
     PushNotification.localNotification({

@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -45,6 +46,7 @@
 		429A8F7B213DD37600B70804 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 429A8F78213DD36600B70804 /* libRNSVG.a */; };
 		429A90042142FF6200B70804 /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 429A8FC32142FEE400B70804 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		42D8394821582D8100363112 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42D8394521582D7200363112 /* libRCTPushNotification.a */; };
+		42E88FBA21753C7A0000FB2B /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42E88F8421753C6E0000FB2B /* libFastImage.a */; };
 		454C05D186524DF4A07123D5 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C2A30692FE54483BF25DE56 /* libBVLinearGradient.a */; };
 		4D3E55910A2C4122AB6AB4D7 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8768E9E5AB3F4CCBBE17273D /* EvilIcons.ttf */; };
 		5499700F3774473F98DAAB86 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 77C7912EBB934597A0E0D881 /* Foundation.ttf */; };
@@ -448,6 +450,13 @@
 			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
 			remoteInfo = "RCTPushNotification-tvOS";
 		};
+		42E88F8321753C6E0000FB2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 42E88F7C21753C6D0000FB2B /* FastImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A287971D1DE0C0A60081BDFA;
+			remoteInfo = FastImage;
+		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
@@ -536,6 +545,7 @@
 		429A8FF92142FF0A00B70804 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/src/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
 		42D8393E21582A2300363112 /* Achievements.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Achievements.entitlements; path = Achievements/Achievements.entitlements; sourceTree = "<group>"; };
 		42D8393F21582D7200363112 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
+		42E88F7C21753C6D0000FB2B /* FastImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		4ABCD48881084F28900E6770 /* ReactNativeConfig.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeConfig.xcodeproj; path = "../node_modules/react-native-config/ios/ReactNativeConfig.xcodeproj"; sourceTree = "<group>"; };
 		4ACEE183EF7C4D8B8AB98E83 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		4D39EF1CE77F45F8BFF0BEE7 /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
@@ -584,6 +594,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42E88FBA21753C7A0000FB2B /* libFastImage.a in Frameworks */,
 				42D8394821582D8100363112 /* libRCTPushNotification.a in Frameworks */,
 				429A8F7B213DD37600B70804 /* libRNSVG.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -873,6 +884,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		42E88F7D21753C6D0000FB2B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				42E88F8421753C6E0000FB2B /* libFastImage.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -929,6 +948,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				42E88F7C21753C6D0000FB2B /* FastImage.xcodeproj */,
 				42D8393F21582D7200363112 /* RCTPushNotification.xcodeproj */,
 				429A8FF92142FF0A00B70804 /* LottieReactNative.xcodeproj */,
 				429A8FB82142FEE400B70804 /* Lottie.xcodeproj */,
@@ -1131,6 +1151,10 @@
 				{
 					ProductGroup = 429A8E50213AD1AE00B70804 /* Products */;
 					ProjectRef = CA0B5692DC90402DB1E42405 /* BVLinearGradient.xcodeproj */;
+				},
+				{
+					ProductGroup = 42E88F7D21753C6D0000FB2B /* Products */;
+					ProjectRef = 42E88F7C21753C6D0000FB2B /* FastImage.xcodeproj */;
 				},
 				{
 					ProductGroup = 429A8FB92142FEE400B70804 /* Products */;
@@ -1589,6 +1613,13 @@
 			remoteRef = 42D8394621582D7200363112 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		42E88F8421753C6E0000FB2B /* libFastImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFastImage.a;
+			remoteRef = 42E88F8321753C6E0000FB2B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1916,6 +1947,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
+					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
 				INFOPLIST_FILE = Achievements/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1948,6 +1980,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
+					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
 				INFOPLIST_FILE = Achievements/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

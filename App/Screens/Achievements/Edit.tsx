@@ -131,6 +131,10 @@ class AchievementsEdit extends React.Component<ComposedProps, State> {
         console.log({ data });
         const { errors, achievement } = data.editAchievement;
 
+        if (errors && errors.length) {
+          this.props.ui.notifyError(errors[0]);
+        }
+
         // TODO: Handle errors here by showing an error notification
         this.props.ui.notifySuccess("Saved").then(() =>
           this.props.navigation.navigate("DetailsScreen", {

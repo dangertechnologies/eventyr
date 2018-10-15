@@ -15,12 +15,13 @@ import EStyleSheet from "react-native-extended-stylesheet";
 import { Icon } from "native-base";
 import { BlackPortal } from "react-native-portal";
 
-interface Props {
+export interface Props {
   children: React.ReactNode;
   snapTo: Array<string | number>;
   initialSnapIndex: number;
   avoidKeyboard: boolean;
   backgroundColor?: string;
+  onOutOfScreen?(): any;
 }
 
 interface State {
@@ -44,10 +45,18 @@ class Drawer extends React.Component<Props, State> {
   private _keyboardWillHideSubscription: any | null = null;
   private fingerPosition = new Animated.Value(screenHeight);
 
-  private snapToHeight = (height: number) =>
+  private snapToHeight = (height: number) => {
     Animated.timing(this.fingerPosition, {
       toValue: screenHeight - height
     }).start();
+
+    if (height <= 0) {
+      console.log("Going out of screen");
+      if (this.props.onOutOfScreen) {
+        this.props.onOutOfScreen();
+      }
+    }
+  };
 
   /**
    * Calculates the real height from a string (or a number). If e.g 50% is
@@ -126,6 +135,8 @@ class Drawer extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    this.snapToHeight(0);
+
     if (this._keyboardWillHideSubscription) {
       this._keyboardWillHideSubscription.remove();
     }
@@ -183,7 +194,7 @@ class Drawer extends React.Component<Props, State> {
                   <TouchableOpacity style={{ height: 20 }}>
                     <Icon
                       name={"drag-handle"}
-                      fontSize={20}
+                      style={styles.dragHandle}
                       type="MaterialIcons"
                     />
                   </TouchableOpacity>
@@ -227,6 +238,11 @@ const styles = EStyleSheet.create({
     paddingTop: "$spacing / 2",
     borderTopLeftRadius: "$borderRadius",
     borderTopRightRadius: "$borderRadius"
+  },
+
+  dragHandle: {
+    color: "$colorDisabled",
+    fontSize: 24
   },
 
   dragHandleContainer: {

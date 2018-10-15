@@ -22,11 +22,6 @@ import AchievementIcon from "App/Components/AchievementIcon";
 
 /** UTILS **/
 import { capitalize, round, findIndex } from "lodash";
-import {
-  withNavigation,
-  NavigationScreenProp,
-  NavigationState
-} from "react-navigation";
 
 /** TYPES **/
 import { Achievement } from "App/Types/GraphQL";
@@ -86,7 +81,10 @@ const Overview = ({ achievement, onPress, actions, isVotable }: Props) => {
         </CardItem>
         <CardItem>
           <Left style={{ flexGrow: 1 }}>
-            <AchievementIcon name={achievement.icon} size={30} />
+            <AchievementIcon
+              name={achievement.icon.replace("_", "-")}
+              size={30}
+            />
             <Body>
               <H2
                 style={{ fontWeight: "bold" }}

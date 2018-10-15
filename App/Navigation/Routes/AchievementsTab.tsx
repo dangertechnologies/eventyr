@@ -146,6 +146,7 @@ const AchievementsTab = createStackNavigator(
         headerStyle: styles.header,
         headerTintColor: "#FFFFFF",
         headerLeft: null,
+
         headerRight: (
           <TouchableOpacity
             onPress={() => navigation.navigate("AchievementScreen")}
@@ -156,7 +157,8 @@ const AchievementsTab = createStackNavigator(
       })
     }
   },
-  { initialRouteName: "NearbyMapScreen" }
+  //{ initialRouteName: "NearbyMapScreen" }
+  { initialRouteName: "AchievementScreen" }
 );
 
 /**

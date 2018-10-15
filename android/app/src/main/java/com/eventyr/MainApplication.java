@@ -3,6 +3,7 @@ package com.eventyr;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.dylanvann.fastimage.FastImageViewPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.reactlibrary.RNAppAuthPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
@@ -41,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new FastImageViewPackage(),
             new ReactNativePushNotificationPackage(),
             new RNAppAuthPackage(),
             new LottiePackage(),

@@ -22,13 +22,12 @@ import ActionButton from "react-native-action-button";
 
 import IconPicker from "./IconPicker";
 import ObjectiveChip from "./ObjectiveChip";
-import colors from "./Colors";
 import ProtoObjectiveDialog from "./ProtoObjectiveDialog";
 
 /** UTILS **/
 import { graphql } from "react-apollo";
 import { compose } from "recompose";
-import { sum, isEqual, capitalize } from "lodash";
+import { sum, isEqual } from "lodash";
 import { kindPoints, modeMultiplier } from "App/Helpers/Points";
 
 /** STYLES **/

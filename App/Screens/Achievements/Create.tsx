@@ -112,14 +112,16 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
         console.log({ data });
         const { errors, achievement } = data.createAchievement;
 
-        console.log({ errors, data });
-
-        // TODO: Handle errors here by showing an error notification
-        this.props.ui.notifySuccess("Saved").then(() =>
-          this.props.navigation.navigate("DetailsScreen", {
-            id: achievement.id
-          })
-        );
+        if (errors && errors.length) {
+          this.props.ui.notifyError(errors[0]);
+        } else {
+          // TODO: Handle errors here by showing an error notification
+          this.props.ui.notifySuccess("Saved").then(() =>
+            this.props.navigation.navigate("DetailsScreen", {
+              id: achievement.id
+            })
+          );
+        }
       });
   };
 
@@ -252,11 +254,9 @@ const Screen = compose(
     {
       coordinates: null
     },
-    // @ts-ignore
     {
-      setCoordinates: ({ location }: ComposedProps) => (
-        coordinates: Region
-      ) => ({
+      // @ts-ignore
+      setCoordinates: (_: any, { location }) => (coordinates: Region) => ({
         coordinates: coordinates || location
       })
     }
