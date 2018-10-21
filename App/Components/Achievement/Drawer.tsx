@@ -1,19 +1,11 @@
 import React from "react";
 
 /** COMPONENTS  **/
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { View as AnimatedView } from "react-native-animatable";
-import {
-  Label,
-  Item,
-  Button,
-  CardItem,
-  Body,
-  Icon,
-  Left,
-  Text
-} from "native-base";
+import { Label, Item, CardItem, Body } from "native-base";
 import LottieView from "lottie-react-native";
+import Markdown from "react-native-simple-markdown";
 import ObjectiveChip from "App/Components/AchievementForm/ObjectiveChip";
 
 import { graphql } from "react-apollo";
@@ -107,9 +99,9 @@ class AchievementsDrawer extends React.PureComponent<ComposedProps> {
             <Body>
               <Item stackedLabel style={styles.underlineDisabled}>
                 <Label>Description</Label>
-                <Text numberOfLines={10}>
-                  {achievement.fullDescription || ""}
-                </Text>
+                <ScrollView>
+                  <Markdown>{achievement.fullDescription || ""}</Markdown>
+                </ScrollView>
               </Item>
             </Body>
           </CardItem>

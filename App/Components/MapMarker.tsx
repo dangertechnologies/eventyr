@@ -1,13 +1,14 @@
 import React from "react";
 import { Objective } from "App/Types/GraphQL";
-import { Callout, Marker } from "react-native-maps";
+import { Callout, Marker, MarkerProps } from "react-native-maps";
+import { OpenMapDirections } from "react-native-navigation-directions";
 
-import { Button, Icon, Text } from "native-base";
+import { Button, Icon, Text, ActionSheet } from "native-base";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 import { EditableObjective } from "App/Types/Prototypes";
 
-interface Props {
+interface Props extends Omit<MarkerProps, "coordinate"> {
   objective: Objective | EditableObjective;
   calloutIcon?: string;
   onCalloutPress?(objective?: Objective | EditableObjective): any;
@@ -20,7 +21,8 @@ const MapCallout: React.ComponentType<Props> = ({
   color,
   onCalloutPress,
   onPress,
-  calloutIcon
+  calloutIcon,
+  ...rest
 }: Props) =>
   objective && objective.lat && objective.lng ? (
     <Marker
@@ -31,14 +33,46 @@ const MapCallout: React.ComponentType<Props> = ({
       }}
       tracksViewChanges={false}
       onPress={onPress}
+      {...rest}
     >
       <Callout tooltip>
         <Button
           iconLeft={!!calloutIcon}
+          iconRight
           small
           rounded
           style={{ backgroundColor: color || "#333333" }}
-          onPress={() => onCalloutPress && onCalloutPress(objective)}
+          onPress={() =>
+            onCalloutPress
+              ? onCalloutPress(objective)
+              : OpenMapDirections(
+                  null,
+                  {
+                    latitude: objective.lat,
+                    longitude: objective.lng
+                  },
+                  "r"
+                )
+          }
+          onLongPress={() =>
+            ActionSheet.show(
+              {
+                title: objective.tagline,
+                options: ["Directions", "Cancel"],
+                cancelButtonIndex: 1
+              },
+              buttonIndex =>
+                buttonIndex === 0 &&
+                OpenMapDirections(
+                  null,
+                  {
+                    latitude: objective.lat,
+                    longitude: objective.lng
+                  },
+                  "r"
+                )
+            )
+          }
         >
           {calloutIcon && (
             <Icon
@@ -48,6 +82,8 @@ const MapCallout: React.ComponentType<Props> = ({
             />
           )}
           <Text>{objective.tagline}</Text>
+
+          <Icon name="directions" color="#FFFFFF" />
         </Button>
       </Callout>
     </Marker>

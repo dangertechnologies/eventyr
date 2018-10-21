@@ -1,54 +1,28 @@
 import React from "react";
-import PropTypes from "prop-types";
 // @ts-ignore
-import fsStorage from "redux-persist-fs-storage";
-import {
-  IntrospectionResultData,
-  NormalizedCacheObject
-} from "apollo-cache-inmemory";
-import { PersistentStorage, PersistedData } from "apollo-cache-persist/types";
-import { isEqual, omit } from "lodash";
-import { compose } from "recompose";
-
-// Caching
-import {
-  InMemoryCache,
-  IntrospectionFragmentMatcher
-} from "apollo-cache-inmemory";
-import { CachePersistor } from "apollo-cache-persist";
-
-import introspectionSchema from "../Config/fragmentMatcher.json";
+import { NormalizedCacheObject } from "apollo-cache-inmemory";
+import { omit } from "lodash";
 
 import { BatchHttpLink } from "apollo-link-batch-http";
 import { onError, ErrorResponse } from "apollo-link-error";
 import { ApolloLink } from "apollo-link";
 
 import { ApolloClient } from "apollo-client";
-
 import { ApolloProvider } from "react-apollo";
 
 import Config from "../../app.json";
 
-// @ts-ignore
-const SCHEMA_VERSION = Config.appVersion;
-const SCHEMA_VERSION_KEY = "apollo-schema-version";
-const introspectionQueryResultData: IntrospectionResultData = introspectionSchema;
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData
-});
-
-const MEMORY_CACHE: InMemoryCache = new InMemoryCache({
-  fragmentMatcher,
-  addTypename: true
-});
-
-const STORAGE: PersistentStorage<
-  PersistedData<NormalizedCacheObject>
-> = fsStorage();
+import {
+  STORAGE,
+  MEMORY_CACHE,
+  SCHEMA_VERSION,
+  SCHEMA_VERSION_KEY,
+  CACHE_PERSISTOR,
+  createWebsocketLink,
+  hasSubscriptionOperation
+} from "../Config/GraphQL";
 
 interface State {
-  cache: InMemoryCache;
-  persistor?: CachePersistor<NormalizedCacheObject> | undefined;
   isFirstLaunch: boolean;
   restored: boolean;
   version: string;
@@ -60,8 +34,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export interface RehydrationContext
-  extends Omit<State, "cache" | "persistor" | "client"> {
+export interface RehydrationContext extends Omit<State, "client"> {
   clear: Function;
   updateCredentials: Function;
   isLoggedIn: boolean;
@@ -135,8 +108,6 @@ class RehydrationProvider extends React.Component<Props, State> {
   ]);
 
   state: State = {
-    persistor: undefined,
-    cache: MEMORY_CACHE,
     isFirstLaunch: true,
     restored: false,
     version: SCHEMA_VERSION,
@@ -144,20 +115,8 @@ class RehydrationProvider extends React.Component<Props, State> {
     client: new ApolloClient({ cache: MEMORY_CACHE, link: this.link })
   };
 
-  componentWillMount() {
-    const CACHE_PERSISTOR = new CachePersistor({
-      cache: MEMORY_CACHE,
-      storage: STORAGE,
-      debug: true
-    });
-
-    this.setState(
-      {
-        persistor: CACHE_PERSISTOR,
-        cache: MEMORY_CACHE
-      },
-      this.restoreCache
-    );
+  componentDidMount() {
+    this.restoreCache();
   }
 
   updateCredentials = async (authenticationToken: string): Promise<any> => {
@@ -169,8 +128,6 @@ class RehydrationProvider extends React.Component<Props, State> {
 
   async restoreCache(options?: { forceClear?: boolean }): Promise<any> {
     const forceClear = (options && options.forceClear) || false;
-
-    const { cache, persistor } = this.state;
 
     const currentVersion = await STORAGE.getItem(
       forceClear ? "EMPTY" : SCHEMA_VERSION_KEY
@@ -193,8 +150,8 @@ class RehydrationProvider extends React.Component<Props, State> {
       if (authenticationToken) {
         this.setState({ authenticationToken });
       }
-      if (persistor) {
-        await persistor.restore();
+      if (CACHE_PERSISTOR) {
+        await CACHE_PERSISTOR.restore();
       } else {
         console.log("persistor doesnt exist!");
       }
@@ -202,8 +159,8 @@ class RehydrationProvider extends React.Component<Props, State> {
       // Otherwise, we'll want to purge the outdated persisted cache
       // and mark ourselves as having updated to the latest version.
       console.log({ name: "Rehydration#purge" });
-      if (persistor) {
-        await persistor.purge();
+      if (CACHE_PERSISTOR) {
+        await CACHE_PERSISTOR.purge();
       } else {
         console.log("Persistor doesnt exist!");
       }
@@ -211,25 +168,29 @@ class RehydrationProvider extends React.Component<Props, State> {
       await this.updateCredentials("");
     }
     return this.setState({
-      cache,
-      persistor,
       restored: true,
-      client: new ApolloClient({ cache, link: this.link })
+      client: new ApolloClient({
+        cache: MEMORY_CACHE,
+        link: ApolloLink.split(
+          // if hasSubscriptionOperation is true,
+          // use the first link, otherwise use the
+          // second link - this way we redirect WebSockets
+          // to the websocket link
+          hasSubscriptionOperation,
+          createWebsocketLink({
+            tokenAccessor: async () => this.state.authenticationToken
+          }),
+          this.link
+        )
+      })
     });
   }
 
   purgeCache = () => this.restoreCache({ forceClear: true });
 
   render() {
-    const { persistor } = this.state;
-
-    // eslint-disable-next-line
-    if (__DEV__ && persistor) {
-      persistor.getLogs(true);
-    }
-
     const contextValue: RehydrationContext = {
-      ...omit(this.state, ["client", "cache", "persistor"]),
+      ...omit(this.state, ["client"]),
       isLoggedIn: this.state.authenticationToken !== "",
       clear: this.purgeCache,
       updateCredentials: this.updateCredentials

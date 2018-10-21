@@ -1,9 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import { FlatList } from "react-native";
 import { compose, withProps } from "recompose";
-import { graphql } from "react-apollo";
+import { graphql, DataValue } from "react-apollo";
 import { List, Query, ListConnection } from "App/Types/GraphQL";
-import { ApolloQueryResult } from "apollo-client";
 import { withUser, UserContext } from "../../Providers/UserProvider";
 import Loading from "App/Components/Loading";
 import ListCard from "App/Components/Cards/List";
@@ -17,7 +16,7 @@ import {
 } from "react-navigation";
 
 interface Props {
-  userId: string | number;
+  userId: string;
   selectable?: boolean;
   selected?: Array<List>;
   onSelect?(list: List): any;
@@ -26,7 +25,7 @@ interface Props {
 
 interface ComposedProps extends Props {
   currentUser: UserContext;
-  data?: Query & ApolloQueryResult<Query> & { error: string };
+  data?: DataValue<Query>;
   lists: ListConnection;
   loading?: boolean;
   navigation?: NavigationScreenProp<NavigationState>;
@@ -52,7 +51,7 @@ interface ComposedProps extends Props {
  * a) the Achievement may already be in the list, and
  * b) the selection may be for other purposes than to add Achievements
  */
-export class ListCollection extends Component<ComposedProps> {
+export class ListCollection extends React.PureComponent<ComposedProps> {
   toggleSelect = (list?: List | null) => {
     if (!this.props.selected || !list) {
       return;
@@ -90,6 +89,8 @@ export class ListCollection extends Component<ComposedProps> {
         data={this.props.lists.edges || []}
         keyExtractor={item => (item.node && item.node.id ? item.node.id : "0")}
         extraData={this.props.selected}
+        refreshing={this.props.data && this.props.data.loading}
+        onRefresh={() => this.props.data && this.props.data.refetch()}
         renderItem={({ item }) => (
           <ListCard
             selected={

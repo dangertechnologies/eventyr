@@ -34,46 +34,51 @@ const withLocation = (options: LocationOptions = { watch: false }) => <
   class LocationProvider extends React.Component<P, State> {
     state: State = { ...DEFAULT_CONTEXT, watchId: null };
 
-    componentWillMount() {
+    private extractPosition = (position: GeolocationReturnType) =>
+      position &&
+      position.coords &&
+      this.setState({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        latitudeDelta: 0.03,
+        longitudeDelta: 0.03,
+        alt: position.coords.altitude,
+        timestamp: position.timestamp
+      });
+
+    private geoLocationError = (error: GeolocationError) => console.warn(error);
+
+    componentDidMount() {
       navigator.geolocation.requestAuthorization();
       if (options.watch) {
-        navigator.geolocation.watchPosition(
-          (position: GeolocationReturnType) =>
-            this.setState({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              latitudeDelta: 0.03,
-              longitudeDelta: 0.03,
-              alt: position.coords.altitude,
-              timestamp: position.timestamp
-            }),
-          (error: GeolocationError) => console.warn(error),
-          {
-            maximumAge: 60 * 1000, // Maximum one minute old cache
-            enableHighAccuracy: true,
-            distanceFilter: 50
-          }
-        );
+        this.setState({
+          watchId: navigator.geolocation.watchPosition(
+            this.extractPosition,
+            this.geoLocationError,
+            {
+              maximumAge: 60 * 1000, // Maximum one minute old cache
+              enableHighAccuracy: true,
+              distanceFilter: 50
+            }
+          )
+        });
       } else {
         navigator.geolocation.getCurrentPosition(
-          (position: GeolocationReturnType) =>
-            position &&
-            position.coords &&
-            this.setState({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              latitudeDelta: 0.03,
-              longitudeDelta: 0.03,
-              alt: position.coords.altitude,
-              timestamp: position.timestamp
-            }),
-          (error: GeolocationError) => console.warn(error),
+          this.extractPosition,
+          this.geoLocationError,
           {
             maximumAge: 60 * 1000, // Maximum one minute old cache
             enableHighAccuracy: true
           }
         );
       }
+    }
+
+    componentWillUnmount() {
+      if (this.state.watchId) {
+        this.setState({ watchId: navigator.clearWatch(this.state.watchId) });
+      }
+      navigator.geolocation.stopObserving();
     }
 
     render() {

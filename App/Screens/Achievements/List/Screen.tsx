@@ -9,13 +9,13 @@ import withLocation, { LocationContext } from "App/Providers/LocationProvider";
 import { Container, Content, Text } from "native-base";
 
 /** UTILS */
-import { withProps, compose } from "recompose";
-import { concat, sortBy } from "lodash";
+import { withProps, compose, withStateHandlers } from "recompose";
+import { concat, sortBy, uniqBy } from "lodash";
 // @ts-ignore
 import haversine from "haversine-distance";
 
 /** GRAPHQL **/
-import { graphql } from "react-apollo";
+import { graphql, DataValue } from "react-apollo";
 
 /** STYLES **/
 import EStyleSheet from "react-native-extended-stylesheet";
@@ -29,20 +29,16 @@ import {
   ListEdge,
   AchievementEdge
 } from "App/Types/GraphQL";
-import { ApolloQueryResult } from "apollo-client";
 import { MutateProps } from "react-apollo";
 
 import QUERY_ACHIEVEMENTS from "App/GraphQL/Queries/Achievements/List";
 import QUERY_LISTS from "App/GraphQL/Queries/Lists/NearbyLists";
-import MUTATE_DELETE_ACHIEVEMENT, {
-  updateQueries
-} from "App/GraphQL/Mutations/Achievements/Delete";
 
 import Feed from "./Feed";
 
 interface Props extends MutateProps {
-  listsQuery: Query & ApolloQueryResult<Query> & { error: string };
-  achievementsQuery: Query & ApolloQueryResult<Query> & { error: string };
+  listsQuery: DataValue<Query>;
+  achievementsQuery: DataValue<Query>;
   navigation: NavigationScreenProp<NavigationState>;
   type: "all" | "personal" | "suggested" | "community";
   list?: List;
@@ -136,7 +132,43 @@ const AchievementsScreen = ({ listsQuery, achievementsQuery, feed }: Props) => {
       <Content style={styles.content}>
         <Feed
           data={data || []}
-          loading={listsQuery.loading || achievementsQuery.loading}
+          refreshing={listsQuery.loading || achievementsQuery.loading}
+          onRefresh={() => achievementsQuery && achievementsQuery.refetch()}
+          onEndReached={() =>
+            achievementsQuery &&
+            achievementsQuery.achievements &&
+            achievementsQuery.achievements.edges &&
+            achievementsQuery.achievements.edges.length &&
+            achievementsQuery.fetchMore({
+              variables: {
+                after:
+                  achievementsQuery.achievements.edges[
+                    achievementsQuery.achievements.edges.length - 1
+                  ].cursor
+              },
+              updateQuery: (
+                prev: Query,
+                { fetchMoreResult }: { fetchMoreResult?: Query }
+              ) => {
+                if (!fetchMoreResult) {
+                  return prev;
+                }
+                return {
+                  ...prev,
+                  achievements: {
+                    ...prev.achievements,
+                    edges: uniqBy(
+                      [
+                        ...(prev.achievements.edges || []),
+                        ...(fetchMoreResult.achievements.edges || [])
+                      ],
+                      ({ node }) => node && node.id
+                    )
+                  }
+                };
+              }
+            })
+          }
         />
       </Content>
     </Container>

@@ -3,9 +3,7 @@ import React from "react";
 /** COMPONENTS **/
 import { ScrollView, View, Animated } from "react-native";
 import { Container, Content } from "native-base";
-import UserHeader, { UserHeaderPlaceholder } from "./Header";
-import UnlockedAchievements from "./Tabs/UnlockedList";
-import UserAchievements from "./Tabs/AchievementList";
+
 import MaterialTabs from "react-native-material-tabs";
 import { View as AnimatedView } from "react-native-animatable";
 
@@ -13,6 +11,7 @@ import { View as AnimatedView } from "react-native-animatable";
 import { compose, withProps, withState } from "recompose";
 import { graphql } from "react-apollo";
 import color from "color";
+import { isEqual } from "lodash";
 
 /** TYPES **/
 import { NavigationScreenProp, NavigationState } from "react-navigation";
@@ -21,6 +20,14 @@ import { Query, User } from "App/Types/GraphQL";
 import { withUser, UserContext } from "App/Providers/UserProvider";
 
 import EStyleSheet from "react-native-extended-stylesheet";
+
+import UserHeader, {
+  UserHeaderPlaceholder,
+  HEADER_HEIGHT,
+  HEADER_MIN_HEIGHT
+} from "./Header";
+import UnlockedAchievements from "./Tabs/UnlockedList";
+import UserAchievements from "./Tabs/AchievementList";
 
 import QUERY_USER_DETAILS from "App/GraphQL/Queries/Users/Details";
 import ListsTab from "./Tabs/ListsTab";
@@ -39,7 +46,7 @@ interface ComposedProps extends Props {
   setTab(number: any): any;
 }
 
-export const scrollRangeForAnimation = 300;
+export const scrollRangeForAnimation = HEADER_HEIGHT;
 
 class ProfileScreen extends React.PureComponent<ComposedProps> {
   static navigationOptions = {
@@ -47,6 +54,28 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
   };
 
   scrollView: ScrollView | null = null;
+
+  componentDidMount() {
+    this.setUserNavigationParams();
+  }
+  componentDidUpdate() {
+    this.setUserNavigationParams();
+  }
+
+  private setUserNavigationParams = () => {
+    const { currentUser, data } = this.props;
+    const { user } = data;
+
+    if (user && this.props.navigation.getParam("title") !== user.name) {
+      this.props.navigation.setParams({
+        title: user.name,
+        avatar: user.avatar,
+        isSelf: Boolean(
+          currentUser && user && `${currentUser.id}` === `${user.id}`
+        )
+      });
+    }
+  };
 
   onScrollEndSnapToEdge = (event: any) => {
     const y = event.nativeEvent.contentOffset.y;
@@ -88,21 +117,15 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
         >
           {UserHeaderPlaceholder}
 
-          <Container>
-            <Content style={styles.content}>
-              {user &&
-                this.props.selectedTab === 1 && (
-                  <UnlockedAchievements user={user} />
-                )}
+          {user &&
+            this.props.selectedTab === 1 && (
+              <UnlockedAchievements user={user} />
+            )}
 
-              {user &&
-                this.props.selectedTab === 0 && (
-                  <UserAchievements user={user} />
-                )}
+          {user &&
+            this.props.selectedTab === 0 && <UserAchievements user={user} />}
 
-              {user && this.props.selectedTab === 2 && <ListsTab />}
-            </Content>
-          </Container>
+          {user && this.props.selectedTab === 2 && <ListsTab />}
         </Animated.ScrollView>
         <AnimatedView
           // @ts-ignore
@@ -143,7 +166,8 @@ const styles = EStyleSheet.create({
 const Enhanced = compose<ComposedProps, Props>(
   withUser,
   withProps(({ navigation, currentUser }: ComposedProps) => ({
-    id: navigation.getParam("id", `${currentUser.id}`)
+    id: navigation.getParam("id", `${currentUser.id}`),
+    title: currentUser.name
   })),
   graphql(QUERY_USER_DETAILS),
   withState("selectedTab", "setTab", 1),
@@ -151,13 +175,13 @@ const Enhanced = compose<ComposedProps, Props>(
   withProps(({ scrollY }: ComposedProps) => ({
     headerHeight: scrollY.interpolate({
       inputRange: [0, scrollRangeForAnimation],
-      outputRange: [300, 100],
+      outputRange: [HEADER_HEIGHT, HEADER_MIN_HEIGHT],
       extrapolate: "clamp"
     }),
 
     contentPadding: scrollY.interpolate({
       inputRange: [0, scrollRangeForAnimation],
-      outputRange: [0, 100],
+      outputRange: [0, HEADER_MIN_HEIGHT],
       extrapolate: "clamp"
     })
   }))

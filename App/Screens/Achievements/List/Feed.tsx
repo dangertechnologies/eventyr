@@ -6,7 +6,7 @@ import { withUser, UserContext } from "App/Providers/UserProvider";
 import withLocation, { LocationContext } from "App/Providers/LocationProvider";
 
 /** COMPONENTS **/
-import { FlatList, Alert } from "react-native";
+import { FlatList, FlatListProps } from "react-native";
 import AchievementCard from "App/Components/Cards/Achievement";
 import ListCard from "App/Components/Cards/List";
 import Loading from "App/Components/Loading";
@@ -27,17 +27,15 @@ import {
   ListEdge,
   AchievementEdge
 } from "App/Types/GraphQL";
-import { MutationFunc } from "react-apollo";
-import { graphql } from "react-apollo";
 
-import MUTATE_DELETE_ACHIEVEMENT, {
-  updateQueries
-} from "App/GraphQL/Mutations/Achievements/Delete";
 import Overview from "App/Components/List/Overview";
+import { LongPressAction } from "App/Components/Achievement/Overview";
+import withAchievementActions, {
+  Actions
+} from "App/Components/withAchievementActions";
 
-interface Props {
-  data: Array<ListEdge | AchievementEdge> | Array<AchievementEdge>;
-  loading: boolean;
+interface Props
+  extends Omit<FlatListProps<ListEdge | AchievementEdge>, "renderItem"> {
   feed?: Array<ListEdge | AchievementEdge>;
 }
 
@@ -46,126 +44,81 @@ interface ComposedProps extends Props {
   ui: UIContext;
   location: LocationContext;
   currentUser: UserContext;
-  mutate: MutationFunc;
+  actions: Actions;
 }
 
-class Feed extends React.PureComponent<ComposedProps> {
-  deleteAchievement = (achievement: Achievement) => {
-    this.props
-      .mutate({
-        variables: { id: achievement.id },
+const Feed = ({ currentUser, actions, ...rest }: ComposedProps) => (
+  <React.Fragment>
+    <FlatList
+      {...rest}
+      keyExtractor={({ node }) =>
         // @ts-ignore
-        updateQueries
-      })
-      .then(() =>
-        this.props.ui
-          .closeNotification()
-          .then(() => this.props.ui.notifySuccess("Done"))
-      );
-  };
-
-  confirmDelete = (achievement: Achievement) =>
-    Alert.alert(`Delete ${achievement.name}`, "Are you sure?", [
-      {
-        text: "Cancel",
-        onPress: () => null
-      },
-      {
-        text: "Yes",
-        onPress: () => this.deleteAchievement(achievement)
+        node && node.__typename === "List"
+          ? `List:${node && node.id}`
+          : `Achievement:${node && node.id}`
       }
-    ]);
-  editAchievement = (achievement: Achievement | null) =>
-    achievement &&
-    this.props.navigation.navigate("EditScreen", {
-      id: achievement.id
-    });
-
-  viewDetails = (achievement: Achievement | null) =>
-    achievement &&
-    this.props.navigation.navigate("DetailsScreen", {
-      id: achievement.id
-    });
-
-  viewList = (list: List | null) =>
-    list &&
-    this.props.navigation.navigate("ListContent", {
-      list
-    });
-
-  addToLists = (achievement: Achievement | null) =>
-    achievement &&
-    this.props.navigation.navigate("AddToLists", {
-      achievementIds: [achievement.id]
-    });
-
-  render() {
-    const { data, loading, currentUser } = this.props;
-
-    return loading ? (
-      <Loading />
-    ) : (
-      <FlatList
-        data={data || []}
-        refreshing={loading}
-        keyExtractor={({ node }) =>
-          node && node.hasOwnProperty("Symbol(id)")
-            ? // We know every node has a Symbol(id) from Apollo
-              // @ts-ignore
-              node["Symbol(id)"]
-            : "N/A"
-        }
-        renderItem={({ item }) =>
-          // @ts-ignore
-          item.node.__typename === "List" ? (
-            <ListCard>
-              <Overview onPress={this.viewList} list={item.node as List} />
-            </ListCard>
-          ) : (
-            <AchievementCard
-              achievement={item.node as Achievement}
-              actions={concat(
-                [
-                  {
-                    label: "Add to List",
-                    onPress: this.addToLists
-                  }
-                ],
-                item &&
-                item.node &&
-                item.node.author &&
-                item.node.author.id === `${currentUser.id}`
-                  ? [
-                      {
-                        label: "Edit",
-                        onPress: this.editAchievement
-                      },
-                      {
-                        label: "Delete",
-                        onPress: this.confirmDelete,
-                        destructive: true
-                      }
-                    ]
-                  : []
-              )}
-              onPress={() =>
-                item.node &&
-                this.props.navigation.navigate("DetailsScreen", {
-                  id: item.node.id
-                })
-              }
+      renderItem={({ item }) =>
+        // @ts-ignore
+        item.node.__typename === "List" ? (
+          <ListCard>
+            <Overview
+              onPress={actions.viewDetails}
+              list={item.node as List}
+              actions={[
+                {
+                  label: "Share",
+                  onPress: actions.shareList
+                }
+              ]}
             />
-          )
-        }
-      />
-    );
-  }
-}
+          </ListCard>
+        ) : (
+          <AchievementCard
+            achievement={item.node as Achievement}
+            actions={concat(
+              [
+                {
+                  label: "Share",
+                  onPress: actions.shareAchievement
+                },
+                {
+                  label: "Add to List",
+                  onPress: actions.addToLists
+                },
+                {
+                  label: "Cooperate",
+                  onPress: actions.requestCooperation
+                }
+              ],
+              item &&
+              item.node &&
+              item.node.author &&
+              item.node.author.id === `${currentUser.id}`
+                ? ([
+                    {
+                      label: "Edit",
+                      onPress: actions.editAchievement
+                    },
+                    {
+                      label: "Delete",
+                      onPress: actions.deleteAchievement,
+                      destructive: true
+                    }
+                  ] as Array<LongPressAction>)
+                : []
+            )}
+            onPress={() => item.node && actions.viewDetails(item.node)}
+          />
+        )
+      }
+    />
+  </React.Fragment>
+);
 
 export default compose<ComposedProps, Props>(
   withUser,
   withLocation(),
   withUIHelpers,
   withNavigation,
-  graphql(MUTATE_DELETE_ACHIEVEMENT)
+  withAchievementActions
 )(Feed);

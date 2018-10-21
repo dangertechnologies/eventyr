@@ -6,9 +6,17 @@ export default gql`
     $type: String!
     $coordinates: [Float!]
     $listId: String
+    $after: String
   ) {
-    achievements(type: $type, coordinates: $coordinates, listId: $listId) {
+    achievements(
+      type: $type
+      first: 20
+      after: $after
+      coordinates: $coordinates
+      listId: $listId
+    ) {
       edges {
+        cursor
         node {
           ...achievementWithObjectives
         }

@@ -76,21 +76,18 @@ class AchievementsEdit extends React.Component<ComposedProps, State> {
     coordinates: null
   };
 
-  componentDidMount() {
-    this.props.setCoordinates();
+  hasBeenZoomed: boolean = false;
 
+  componentDidMount() {
     if (this.map) {
       this.map.fitToElements(true);
     }
   }
 
-  componentWillReceiveProps(nextProps: ComposedProps) {
-    if (this.map) {
+  componentDidUpdate() {
+    if (this.map && !this.hasBeenZoomed) {
+      this.hasBeenZoomed = true;
       this.map.fitToElements(true);
-    }
-
-    if (!isEqual(nextProps.initialModel, this.props.initialModel)) {
-      this.props.setModel(nextProps.initialModel);
     }
   }
 
@@ -127,9 +124,13 @@ class AchievementsEdit extends React.Component<ComposedProps, State> {
         variables: protoAchievement,
         refetchQueries: ["AchievementsList"]
       })
-      .then(({ data }) => {
+      .then(({ data }: any) => {
         console.log({ data });
         const { errors, achievement } = data.editAchievement;
+
+        if (errors && errors.length) {
+          this.props.ui.notifyError(errors[0]);
+        }
 
         // TODO: Handle errors here by showing an error notification
         this.props.ui.notifySuccess("Saved").then(() =>
@@ -290,15 +291,12 @@ const Screen = compose<ComposedProps, Props>(
   ),
   reformed<Achievement>(),
   withStateHandlers(
+    ({ location }: ComposedProps) => ({
+      coordinates: location
+    }),
     {
-      coordinates: null
-    },
-    // @ts-ignore
-    {
-      setCoordinates: ({ location }: ComposedProps) => (
-        coordinates: Region
-      ) => ({
-        coordinates: coordinates || location
+      setCoordinates: ({ coordinates }) => (coords: LocationContext) => ({
+        coordinates: coords || coordinates
       })
     }
   ),

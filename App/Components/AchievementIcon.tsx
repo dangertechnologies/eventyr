@@ -53,15 +53,18 @@ class AchievementIcon extends React.Component<Props, State> {
 
   animation: LottieView | null = null;
 
-  componentWillReceiveProps(props: Props, nextState: State) {
-    if (!this.props.unlocked && props.unlocked) {
-      this.setState(
-        { animating: true },
-        () =>
-          this.animation &&
-          Promise.resolve(this.animation.play()).then(() =>
-            setTimeout(() => this.setState({ animating: false }), 2000)
-          )
+  getSnapshotBeforeUpdate(prevProps: Props) {
+    // If previous props was !unlocked, and we're now unlocked,
+    if (!prevProps.unlocked && this.props.unlocked) {
+      return true;
+    }
+    return null;
+  }
+
+  componentDidUpdate(_: Props, __: State, shouldAnimate: boolean) {
+    if (this.animation && shouldAnimate) {
+      Promise.resolve(this.animation.play()).then(() =>
+        setTimeout(() => this.setState({ animating: false }), 2000)
       );
     }
   }

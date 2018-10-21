@@ -6,7 +6,7 @@ import PushNotification, {
 } from "react-native-push-notification";
 import { BlurView } from "react-native-blur";
 import EStyleSheet from "react-native-extended-stylesheet";
-import { Icon, H3, StyleProvider } from "native-base";
+import { Icon, H3, StyleProvider, Toast } from "native-base";
 import { View as AnimatedView } from "react-native-animatable";
 import { View, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
@@ -65,7 +65,7 @@ class UIProvider extends React.Component<Props, State> {
   overlay: AnimatedView | null = null;
   lottie: LottieView | null = null;
 
-  onOverlayFaded = () => {
+  private onOverlayFaded = () => {
     if (this.state.notifications && this.state.notifications.length) {
       if (this.lottie) {
         this.lottie.play();
@@ -91,7 +91,7 @@ class UIProvider extends React.Component<Props, State> {
     }
   };
 
-  closeNotification = () =>
+  public closeNotification = () =>
     new Promise(resolve => {
       if (this.overlay && this.overlay.fadeOut) {
         const notification = this.state.notifications[0];
@@ -110,11 +110,11 @@ class UIProvider extends React.Component<Props, State> {
       }
     });
 
-  componentWillReceiveProps(_: Props, nextState: State) {
+  componentDidUpdate(_: Props, prevState: State) {
     if (
-      nextState.notifications &&
-      nextState.notifications.length &&
-      this.state.invisible &&
+      this.state.notifications &&
+      this.state.notifications.length &&
+      prevState.invisible &&
       this.overlay &&
       this.overlay.fadeIn
     ) {
@@ -124,7 +124,7 @@ class UIProvider extends React.Component<Props, State> {
     }
   }
 
-  notify = (notification: Notification) =>
+  public notify = (notification: Notification) =>
     this.overlay && this.overlay.fadeIn
       ? this.overlay.fadeIn().then(() =>
           this.setState(
@@ -139,7 +139,7 @@ class UIProvider extends React.Component<Props, State> {
           notifications: this.state.notifications.concat([notification])
         });
 
-  notifyLoading = ({ onClose }: { onClose?(): any }) =>
+  public notifyLoading = ({ onClose }: { onClose?(): any }) =>
     this.notify({
       message: "Hang on...",
       lottie: require("../Lottie/hamster.json"),
@@ -147,7 +147,7 @@ class UIProvider extends React.Component<Props, State> {
       onClose
     });
 
-  notifySuccess = (text: string) =>
+  public notifySuccess = (text: string) =>
     new Promise(resolve =>
       this.notify({
         message: text,
@@ -157,14 +157,10 @@ class UIProvider extends React.Component<Props, State> {
       })
     );
 
-  notifyError = (text: string) =>
-    this.notify({
-      message: text,
-      lottie: require("../Lottie/success.json"),
-      duration: 800
-    });
+  public notifyError = (text: string) =>
+    Toast.show({ text, type: "danger", position: "top" });
 
-  localPushNotification = (settings?: Partial<PushNotificationObject>) =>
+  public localPushNotification = (settings?: Partial<PushNotificationObject>) =>
     PushNotification.localNotification({
       /* Android Only Properties */
       largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
