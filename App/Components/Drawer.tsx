@@ -123,17 +123,6 @@ class Drawer extends React.Component<Props, State> {
     }
   });
 
-  componentWillMount() {
-    this._keyboardWillShowSubscription = Keyboard.addListener(
-      "keyboardDidShow",
-      this.keyboardWillShow
-    );
-    this._keyboardWillHideSubscription = Keyboard.addListener(
-      "keyboardDidHide",
-      this.keyboardWillHide
-    );
-  }
-
   componentWillUnmount() {
     this.snapToHeight(0);
 
@@ -147,6 +136,15 @@ class Drawer extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    this._keyboardWillShowSubscription = Keyboard.addListener(
+      "keyboardDidShow",
+      this.keyboardWillShow
+    );
+    this._keyboardWillHideSubscription = Keyboard.addListener(
+      "keyboardDidHide",
+      this.keyboardWillHide
+    );
+
     if (
       this.props.initialSnapIndex !== undefined &&
       this.props.snapTo.length > this.props.initialSnapIndex
@@ -159,11 +157,11 @@ class Drawer extends React.Component<Props, State> {
     }
   }
 
-  keyboardWillShow = (e: any) => {
+  private keyboardWillShow = (e: any) => {
     this.setState({ visibleKeyboardHeight: e.endCoordinates.height });
   };
 
-  keyboardWillHide = (e: any) =>
+  private keyboardWillHide = (e: any) =>
     this.props.avoidKeyboard && this.setState({ visibleKeyboardHeight: 0 });
 
   render() {

@@ -9,6 +9,11 @@ fragment achievement on Achievement {
 
   isSuggestedGlobal
   isGlobal
+  cooperationUsers {
+    id
+    avatar
+    name
+  }
 
   author {
     id

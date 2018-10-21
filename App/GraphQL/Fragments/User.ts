@@ -8,6 +8,8 @@ fragment user on User {
   unlockedCount
   coopPoints
   avatar
+  isFriend
+  isPendingFriend
 
   role {
     id

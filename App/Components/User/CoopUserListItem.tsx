@@ -1,8 +1,9 @@
 import React from "react";
-import { Left, ListItem, Body, H3, Thumbnail, Icon } from "native-base";
+import { Left, ListItem, Body, H3, Icon } from "native-base";
 import EStyleSheet from "react-native-extended-stylesheet";
-import Config from "../../../app.json";
 import { User } from "App/Types/GraphQL";
+
+import RemoteImage from "App/Components/RemoteImage";
 
 interface Props {
   selected?: boolean;
@@ -14,12 +15,9 @@ interface Props {
 const UserListItem = ({ selected, selectable, user, onPress }: Props) => (
   <ListItem icon noIndent onPress={() => onPress(user)} selected={selected}>
     <Left>
-      <Thumbnail
-        small
+      <RemoteImage
         source={{
-          uri: `${__DEV__ ? "http://" : "https://"}${Config.baseUrl}${
-            user.avatar
-          }`
+          uri: user.avatar as string
         }}
       />
     </Left>

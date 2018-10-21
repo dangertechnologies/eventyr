@@ -6,8 +6,8 @@ import { withUser, UserContext } from "App/Providers/UserProvider";
 import { UIContext, withUIHelpers } from "App/Providers/UIProvider";
 
 import { compose, withProps } from "recompose";
-import { graphql, MutationFunc } from "react-apollo";
-import { intersection, isEqual } from "lodash";
+import { graphql, MutationFunc, MutationResult } from "react-apollo";
+import { intersection } from "lodash";
 
 import { ListCollection } from "App/Components/List/Collection";
 import ListForm from "App/Components/List/Form";
@@ -30,7 +30,9 @@ interface State {
   selectedLists: Array<List>;
 }
 
-import MUTATE_ADD_TO_LIST from "App/GraphQL/Mutations/Lists/AddToList";
+import MUTATE_ADD_TO_LIST, {
+  updateQueries
+} from "App/GraphQL/Mutations/Lists/AddToList";
 import QUERY_USER_LISTS from "App/GraphQL/Queries/Lists/UserLists";
 
 export const HeaderSaveButton = ({ state }: { state: any }) =>
@@ -45,67 +47,41 @@ class ListsScreen extends React.Component<ComposedProps, State> {
     selectedLists: []
   };
 
-  componentWillMount() {
-    if (this.props.data.lists && this.props.data.lists.edges) {
-      const preselectedLists = this.props.data.lists.edges.filter(
+  static getDerivedStateFromProps(nextProps: ComposedProps, nextState: State) {
+    // Preselect lists an Achievement has already been added to:
+    if (
+      nextProps.data.lists &&
+      nextProps.data.lists.edges &&
+      nextProps.achievementIds &&
+      nextProps.achievementIds.length
+    ) {
+      const preselectedLists = nextProps.data.lists.edges.filter(
         ({ node }) =>
           node &&
           node.achievements &&
           node.achievements.edges &&
           intersection(
             node.achievements.edges.map(({ node }) => node && node.id),
-            this.props.achievementIds
-          ).length
+            nextProps.achievementIds
+          ).length === nextProps.achievementIds.length
       );
 
       console.log({
         preselectedLists,
-        lists: this.props.data.lists,
-        achievementId: this.props.achievementIds
+        lists: nextProps.data.lists,
+        achievementIds: nextProps.achievementIds
       });
+
       if (preselectedLists.length) {
-        this.setState({
-          selectedLists: this.state.selectedLists.concat(
+        return {
+          selectedLists: nextState.selectedLists.concat(
             preselectedLists.map(({ node }) => node as List)
           )
-        });
+        };
       }
+      return null;
     }
-  }
-
-  componentWillReceiveProps(nextProps: ComposedProps) {
-    if (
-      !isEqual(nextProps.data.lists, this.props.data.lists) ||
-      !isEqual(nextProps.achievementIds, this.props.achievementIds)
-    ) {
-      // Preselect lists an Achievement has already been added to:
-      if (nextProps.data.lists && nextProps.data.lists.edges) {
-        const preselectedLists = nextProps.data.lists.edges.filter(
-          ({ node }) =>
-            node &&
-            node.achievements &&
-            node.achievements.edges &&
-            intersection(
-              node.achievements.edges.map(({ node }) => node && node.id),
-              nextProps.achievementIds
-            )
-        );
-
-        console.log({
-          preselectedLists,
-          lists: nextProps.data.lists,
-          achievementIds: this.props.achievementIds
-        });
-
-        if (preselectedLists.length) {
-          this.setState({
-            selectedLists: this.state.selectedLists.concat(
-              preselectedLists.map(({ node }) => node as List)
-            )
-          });
-        }
-      }
-    }
+    return null;
   }
 
   headerRight = () => <Icon name="chevron-right" color="#FFFFFF" />;
@@ -117,9 +93,11 @@ class ListsScreen extends React.Component<ComposedProps, State> {
           achievementIds: this.props.achievementIds,
           listIds: this.state.selectedLists.map(list => list.id)
         },
-        refetchQueries: ["UserLists"]
+        refetchQueries: ["UserLists"],
+        // @ts-ignore
+        updateQueries
       })
-      .then(result => {
+      .then((result: MutationResult) => {
         if (
           result.data &&
           result.data.addToList &&
@@ -161,13 +139,20 @@ class ListsScreen extends React.Component<ComposedProps, State> {
     return (
       <Container>
         <Content style={styles.content}>
-          <ListForm onCreate={this.selectList} />
+          <ListForm
+            onCreate={this.selectList}
+            initiallyOpen={Boolean(
+              this.props.data.lists &&
+                this.props.data.lists.edges &&
+                this.props.data.lists.edges.length < 1
+            )}
+          />
           <ListCollection
             selectable
             currentUser={this.props.currentUser}
             lists={this.props.data.lists}
             loading={this.props.data.loading}
-            userId={this.props.currentUser.id}
+            userId={this.props.currentUser.id || "0"}
             selected={this.state.selectedLists}
             onSelect={this.selectList}
             onDeselect={this.deselectList}

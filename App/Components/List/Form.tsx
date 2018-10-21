@@ -12,13 +12,15 @@ import {
   Button
 } from "native-base";
 import { compose } from "recompose";
-import { graphql, MutationFunc } from "react-apollo";
+import { graphql, MutationFunc, MutationResult } from "react-apollo";
 import { List } from "App/Types/GraphQL";
 import { withUser, UserContext } from "App/Providers/UserProvider";
 import { withUIHelpers, UIContext } from "App/Providers/UIProvider";
 import ListCard from "App/Components/Cards/List";
 
-import MUTATION_CREATE_LIST from "App/GraphQL/Mutations/Lists/Create";
+import MUTATION_CREATE_LIST, {
+  updateQueries
+} from "App/GraphQL/Mutations/Lists/Create";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 
@@ -26,6 +28,7 @@ interface Props {
   // Preselected Achievements to create list with
   achievementIds?: Array<string>;
   onCreate(list: List): any;
+  initiallyOpen?: boolean;
 }
 
 interface ComposedProps extends Props {
@@ -56,18 +59,26 @@ class ListForm extends Component<ComposedProps, State> {
 
   toggle = () => this.setState({ visible: !this.state.visible });
 
+  componentDidMount() {
+    if (this.props.initiallyOpen) {
+      this.setState({ visible: true });
+    }
+  }
+
   createList = () =>
-    this.setState({ title: "", visible: false }, () =>
+    this.setState({ visible: false }, () =>
       this.props
         .mutate({
           variables: {
             title: this.state.title,
             achievements: this.props.achievementIds
           },
-          refetchQueries: ["UserLists"]
+          // @ts-ignore
+          updateQueries
         })
-        .then(result =>
+        .then((result: MutationResult) =>
           this.props.ui.notifySuccess("New list").then(() => {
+            this.setState({ title: "" });
             if (
               result.data &&
               result.data.createList &&
@@ -76,6 +87,12 @@ class ListForm extends Component<ComposedProps, State> {
               if (this.props.onCreate) {
                 this.props.onCreate(result.data.createList.list);
               }
+            } else if (
+              result.data &&
+              result.data.createList &&
+              result.data.createList.errors
+            ) {
+              this.props.ui.notifyError(result.data.createList.errors[0]);
             }
           })
         )

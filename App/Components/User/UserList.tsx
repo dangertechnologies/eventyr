@@ -1,22 +1,27 @@
 import React from "react";
-import { Container, Content, List } from "native-base";
-import { compose, withStateHandlers } from "recompose";
+import { Container, Content, List, ListItem, Text, Body } from "native-base";
+import { compose, withStateHandlers, withProps } from "recompose";
 import { graphql, DataValue } from "react-apollo";
-import { Query, User } from "App/Types/GraphQL";
+import { Query, User, UserEdge } from "App/Types/GraphQL";
 import Loading from "App/Components/Loading";
 
 import QUERY_USERS_SIMILAR_TRACKING from "App/GraphQL/Queries/Users/Coop";
+import EStyleSheet from "react-native-extended-stylesheet";
 
-import UserListItem from "./ListItem";
+import UserListItem from "./CoopUserListItem";
 
 interface ComposedProps {
   data: DataValue<Query>;
+  users: Array<UserEdge>;
   selectedUsers: Array<User>;
   toggleUserSelect(user: User): any;
+  noResultsText?: string;
 }
 
 const SelectableUserList = ({
   data,
+  users,
+  noResultsText,
   selectedUsers,
   toggleUserSelect
 }: ComposedProps) => (
@@ -26,9 +31,8 @@ const SelectableUserList = ({
         <Loading />
       ) : (
         <List>
-          {data.users &&
-            data.users.edges &&
-            data.users.edges.map(
+          {users && users.length ? (
+            users.map(
               ({ node }) =>
                 node && (
                   <UserListItem
@@ -41,20 +45,45 @@ const SelectableUserList = ({
                     user={node}
                   />
                 )
-            )}
+            )
+          ) : (
+            <ListItem style={{ borderBottomWidth: 0 }}>
+              <Body>
+                <Text note style={styles.noResults}>
+                  {noResultsText || "No users found"}
+                </Text>
+              </Body>
+            </ListItem>
+          )}
         </List>
       )}
     </Content>
   </Container>
 );
 
-interface CoopUserSelectProps {
-  achievementId: string;
+const styles = EStyleSheet.create({
+  noResults: { textAlign: "center" }
+});
+
+interface UserSelect {
   onSelect(users: Array<User>): any;
 }
 
-const CooperationUserSelect = compose<ComposedProps, CoopUserSelectProps>(
+interface CoopUserSelectProps extends UserSelect {
+  achievementId: string;
+}
+
+export const CooperationUserSelect = compose<
+  ComposedProps,
+  CoopUserSelectProps
+>(
   graphql(QUERY_USERS_SIMILAR_TRACKING),
+  withProps(({ data }: ComposedProps) => ({
+    users:
+      data.users && data.users.edges && data.users.edges.length
+        ? data.users.edges
+        : []
+  })),
   withStateHandlers(
     {
       selectedUsers: []
@@ -80,5 +109,4 @@ const CooperationUserSelect = compose<ComposedProps, CoopUserSelectProps>(
   )
 )(SelectableUserList);
 
-export { CooperationUserSelect };
-export default CooperationUserSelect;
+export default SelectableUserList;

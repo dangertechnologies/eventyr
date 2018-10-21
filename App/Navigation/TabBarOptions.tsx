@@ -1,9 +1,6 @@
 import React from "react";
 import {
   TabScene,
-  NavigationScreenProps,
-  NavigationState,
-  NavigationBottomTabScreenOptions,
   BottomTabNavigatorConfig,
   NavigationScreenConfigProps
 } from "react-navigation";
@@ -40,7 +37,9 @@ const TabBarOptions: BottomTabNavigatorConfig = {
 
       const tint = focused
         ? EStyleSheet.value("$colorSecondary")
-        : color(EStyleSheet.value("$colorSecondary")).fade(0.5);
+        : color(EStyleSheet.value("$colorSecondary"))
+            .fade(0.5)
+            .string();
 
       switch (routeName) {
         case "AchievementsScreen":

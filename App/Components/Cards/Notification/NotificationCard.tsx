@@ -3,6 +3,8 @@ import { CoopRequest, FriendRequest, Notification } from "App/Types/GraphQL";
 
 import CoopRequestNotification from "./CoopRequest";
 import FriendRequestNotification from "./FriendRequest";
+import SharedAchievementNotification from "./SharedAchievement";
+import SharedListNotification from "./SharedList";
 
 interface Props {
   item: Notification;
@@ -19,9 +21,9 @@ const NotificationCard = ({ item }: Props) => {
     case "COOPERATION_REQUEST_RECEIVED":
       return <CoopRequestNotification item={item} />;
     case "SHARED_ACHIEVEMENT_RECEIVED":
-      return null;
+      return <SharedAchievementNotification item={item} />;
     case "SHARED_LIST_RECEIVED":
-      return null;
+      return <SharedListNotification item={item} />;
     case "FRIEND_REQUEST_RECEIVED":
       return <FriendRequestNotification item={item} />;
     default:

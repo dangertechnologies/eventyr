@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { withUser } from "App/Providers/UserProvider";
 
 /** COMPONENTS **/
-import { Card, CardItem, Text } from "native-base";
+import { Card, CardItem, Text, Right } from "native-base";
 
 /** UTILS **/
 import { compose } from "recompose";
@@ -14,7 +14,7 @@ import { isEqual, round } from "lodash";
 import distance from "haversine-distance";
 
 /** TYPES **/
-import { Achievement } from "App/Types/GraphQL";
+import { Achievement, User } from "App/Types/GraphQL";
 import { UserContext } from "App/Providers/UserProvider";
 
 /** STYLES **/
@@ -23,6 +23,7 @@ import Overview, { LongPressAction } from "../Achievement/Overview";
 import withLocation, {
   LocationContext
 } from "../../Providers/LocationProvider";
+import RemoteImage from "../RemoteImage";
 
 interface Props {
   achievement: Achievement | null;
@@ -79,6 +80,18 @@ const AchievementCard = ({
               <Text note style={styles.distance}>
                 {kmAway}
               </Text>
+
+              {achievement.cooperationUsers && (
+                <View style={styles.cooperationUsers}>
+                  {achievement.cooperationUsers.map((user: User) => (
+                    <RemoteImage
+                      key={`achievement:${achievement.id}:avatar:${user.id}`}
+                      source={{ uri: user.avatar as string }}
+                      style={styles.tinyAvatar}
+                    />
+                  ))}
+                </View>
+              )}
             </CardItem>
           )}
       </View>
@@ -113,6 +126,19 @@ const styles = EStyleSheet.create({
 
   distance: {
     fontSize: 11
+  },
+
+  tinyAvatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10
+  },
+
+  cooperationUsers: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignContent: "flex-end",
+    flex: 1
   }
 });
 

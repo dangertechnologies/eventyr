@@ -3,6 +3,7 @@ package com.eventyr;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.reactlibrary.RNAppAuthPackage;
@@ -13,7 +14,6 @@ import com.airbnb.android.react.maps.MapsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.geektime.rnonesignalandroid.ReactNativeOneSignalPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
-import com.rnfs.RNFSPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.auth0.react.A0Auth0Package;
 import com.rnfs.RNFSPackage;
@@ -42,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFSPackage(),
             new FastImageViewPackage(),
             new ReactNativePushNotificationPackage(),
             new RNAppAuthPackage(),
@@ -52,7 +53,6 @@ public class MainApplication extends Application implements ReactApplication {
             new VectorIconsPackage(),
             new ReactNativeOneSignalPackage(),
             new LinearGradientPackage(),
-            new RNFSPackage(),
             new ReactNativeConfigPackage(),
             new A0Auth0Package(),
             new RNFSPackage(),

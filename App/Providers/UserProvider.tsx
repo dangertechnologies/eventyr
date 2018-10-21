@@ -1,9 +1,9 @@
 import React from "react";
 // @ts-ignore
 import gql from "graphql-tag";
-import { propType } from "graphql-anywhere";
 import { graphql, DataValue } from "react-apollo";
-import { get } from "lodash";
+import jwtdecode from "jwt-decode";
+import { isFuture } from "date-fns";
 
 import { RehydrationContext, withRehydratedState } from "./RehydrationProvider";
 import { compose, branch, lifecycle } from "recompose";
@@ -11,6 +11,8 @@ import { Query, Notification, NotificationEdge } from "App/Types/GraphQL";
 import QUERY_NOTIFICATIONS, {
   subscription
 } from "App/GraphQL/Queries/Users/Notifications";
+import { withUIHelpers, UIContext } from "./UIProvider";
+import notificationTitle from "App/Helpers/notificationTitle";
 
 export interface User {
   id: string | null;
@@ -36,7 +38,11 @@ interface Props {
 interface ComposedProps extends Props {
   rehydratedState: RehydrationContext;
   userQuery: DataValue<Query>;
+}
+
+interface ComposedPropsWithNotifications extends ComposedProps {
   notificationsQuery: DataValue<Query>;
+  ui: UIContext;
 }
 
 type State = {
@@ -63,7 +69,10 @@ const INITIAL_CONTEXT: UserContext = {
 
 const { Provider, Consumer } = React.createContext(INITIAL_CONTEXT);
 
-class UserProvider extends React.Component<ComposedProps, State> {
+class UserProvider extends React.Component<
+  ComposedPropsWithNotifications,
+  State
+> {
   static fragments = {
     user: gql`
       fragment userInfo on User {
@@ -76,6 +85,26 @@ class UserProvider extends React.Component<ComposedProps, State> {
 
   state: State = {
     updatedSinceLogin: false
+  };
+
+  componentDidUpdate() {
+    const { rehydratedState } = this.props;
+    if (rehydratedState.restored && rehydratedState.authenticationToken) {
+      this.sessionExpirationCheck(rehydratedState);
+    }
+    return null;
+  }
+
+  private sessionExpirationCheck = ({
+    authenticationToken
+  }: RehydrationContext) => {
+    if (authenticationToken) {
+      const { exp } = jwtdecode(authenticationToken);
+
+      if (!isFuture(exp * 1000)) {
+        this.props.rehydratedState.clear();
+      }
+    }
   };
 
   render() {
@@ -136,7 +165,7 @@ export const withUser = <P extends object>(
   };
 
 export default {
-  Provider: compose<ComposedProps, Props>(
+  Provider: compose<ComposedPropsWithNotifications, Props>(
     withRehydratedState,
     // When we're logged out, this always yields an error, and thats ok. Drop it.
     graphql(QUERY_USER, {
@@ -150,12 +179,17 @@ export default {
       */
       ({ userQuery }: ComposedProps) =>
         Boolean(userQuery && userQuery.currentUser && userQuery.currentUser.id),
-      compose<ComposedProps, ComposedProps>(
+      compose<ComposedPropsWithNotifications, ComposedProps>(
         graphql(QUERY_NOTIFICATIONS, {
           name: "notificationsQuery"
         }),
-        lifecycle<ComposedProps, State>({
-          componentWillMount() {
+        withUIHelpers,
+        lifecycle<ComposedPropsWithNotifications, State>({
+          componentDidMount() {
+            console.log({
+              name: "UserProvider#subscription",
+              value: "Subscribed to websockets"
+            });
             this.props.notificationsQuery.subscribeToMore({
               document: subscription,
               variables: {},
@@ -173,10 +207,27 @@ export default {
                       notification.node.id === newNotification.id
                   )
                 ) {
-                  previous.notifications.edges = [
-                    { __typename: "NotificationEdge", node: newNotification },
-                    ...previous.notifications.edges
-                  ];
+                  previous.notifications.edges.unshift({
+                    __typename: "NotificationEdge",
+                    node: newNotification
+                  });
+
+                  console.log({
+                    name: "UserProvider#subscription",
+                    value: {
+                      pushNotification: notificationTitle(newNotification),
+                      newNotification
+                    }
+                  });
+
+                  this.props.ui.localPushNotification(
+                    notificationTitle(newNotification)
+                  );
+
+                  // FIXME: This is some weird Apollo bug? UserProvider
+                  // doesn't update properly here, so we call forceUpdate.
+                  this.forceUpdate();
+                  return previous;
                 }
                 return previous;
               }

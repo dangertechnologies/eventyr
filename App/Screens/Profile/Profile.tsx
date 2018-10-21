@@ -55,11 +55,18 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
 
   scrollView: ScrollView | null = null;
 
-  componentWillMount() {
+  componentDidMount() {
+    this.setUserNavigationParams();
+  }
+  componentDidUpdate() {
+    this.setUserNavigationParams();
+  }
+
+  private setUserNavigationParams = () => {
     const { currentUser, data } = this.props;
     const { user } = data;
 
-    if (user && user.name) {
+    if (user && this.props.navigation.getParam("title") !== user.name) {
       this.props.navigation.setParams({
         title: user.name,
         avatar: user.avatar,
@@ -68,22 +75,7 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
         )
       });
     }
-  }
-
-  componentWillReceiveProps(nextProps: ComposedProps) {
-    const { currentUser, data } = nextProps;
-    const { user } = data;
-
-    if (user && !isEqual(user, this.props.data.user)) {
-      this.props.navigation.setParams({
-        title: user.name,
-        avatar: user.avatar,
-        isSelf: Boolean(
-          currentUser && user && `${currentUser.id}` === `${user.id}`
-        )
-      });
-    }
-  }
+  };
 
   onScrollEndSnapToEdge = (event: any) => {
     const y = event.nativeEvent.contentOffset.y;
@@ -125,21 +117,15 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
         >
           {UserHeaderPlaceholder}
 
-          <Container>
-            <Content style={styles.content}>
-              {user &&
-                this.props.selectedTab === 1 && (
-                  <UnlockedAchievements user={user} />
-                )}
+          {user &&
+            this.props.selectedTab === 1 && (
+              <UnlockedAchievements user={user} />
+            )}
 
-              {user &&
-                this.props.selectedTab === 0 && (
-                  <UserAchievements user={user} />
-                )}
+          {user &&
+            this.props.selectedTab === 0 && <UserAchievements user={user} />}
 
-              {user && this.props.selectedTab === 2 && <ListsTab />}
-            </Content>
-          </Container>
+          {user && this.props.selectedTab === 2 && <ListsTab />}
         </Animated.ScrollView>
         <AnimatedView
           // @ts-ignore

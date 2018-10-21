@@ -1,10 +1,11 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import Map, { Region, Marker } from "react-native-maps";
+import Map, { Region } from "react-native-maps";
 import { Query, Achievement } from "App/Types/GraphQL";
 import { ApolloQueryResult } from "apollo-client";
 import { compose, graphql } from "react-apollo";
 import { withProps } from "recompose";
+import MapMarker from "App/Components/MapMarker";
 
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
@@ -42,6 +43,7 @@ class AchievementsView extends React.PureComponent<Props, State> {
   };
 
   map: Map | null = null;
+  hasBeenZoomed: boolean = false;
 
   componentDidMount() {
     if (this.map) {
@@ -49,15 +51,16 @@ class AchievementsView extends React.PureComponent<Props, State> {
     }
   }
 
-  componentWillReceiveProps() {
-    if (this.map) {
+  componentDidUpdate() {
+    if (this.map && !this.hasBeenZoomed) {
+      this.hasBeenZoomed = true;
       this.map.fitToElements(true);
     }
   }
 
   render() {
     const { data } = this.props;
-    const { achievement, loading } = data;
+    const { achievement } = data;
     console.log({
       name: "AchievementsCreate#render",
       state: this.state,
@@ -82,13 +85,10 @@ class AchievementsView extends React.PureComponent<Props, State> {
                 objective.kind === "LOCATION" &&
                 objective.lat &&
                 objective.lng ? (
-                  <Marker
-                    title={objective.tagline}
+                  <MapMarker
+                    objective={objective}
                     pinColor={objectiveColors[index % 100]}
-                    coordinate={{
-                      latitude: objective.lat,
-                      longitude: objective.lng
-                    }}
+                    key={objective.id}
                   />
                 ) : null
             )}

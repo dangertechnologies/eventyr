@@ -115,7 +115,7 @@ class RehydrationProvider extends React.Component<Props, State> {
     client: new ApolloClient({ cache: MEMORY_CACHE, link: this.link })
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.restoreCache();
   }
 

@@ -5,9 +5,7 @@ import PushNotification, {
 
 const OPTIONS: PushNotificationOptions = {
   // (optional) Called when Token is generated (iOS and Android)
-  onRegister: function(token) {
-    console.log("TOKEN:", token);
-  },
+  onRegister: function(token) {},
 
   // (required) Called when a remote or local notification is opened or received
   onNotification: function(notification) {

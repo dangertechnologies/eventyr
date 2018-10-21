@@ -50,6 +50,7 @@ class AchievementsView extends React.PureComponent<Props, State> {
   };
 
   map: Map | null = null;
+  hasBeenZoomed: boolean = false;
 
   componentDidMount() {
     if (this.map) {
@@ -57,8 +58,9 @@ class AchievementsView extends React.PureComponent<Props, State> {
     }
   }
 
-  componentWillReceiveProps() {
-    if (this.map) {
+  componentDidUpdate() {
+    if (this.map && !this.hasBeenZoomed) {
+      this.hasBeenZoomed = true;
       this.map.fitToElements(true);
     }
   }

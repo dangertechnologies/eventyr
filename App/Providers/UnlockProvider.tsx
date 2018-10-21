@@ -36,6 +36,7 @@ interface TrackedObjective {
 }
 interface State {
   lastTrackRefresh: Date | null;
+  lastRecalculation: Date | null;
   lastTrackRefreshCoordinates: null | {
     latitude: number;
     longitude: number;
@@ -117,8 +118,11 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
   state: State = {
     tracked: [],
     lastTrackRefresh: null,
-    lastTrackRefreshCoordinates: null
+    lastTrackRefreshCoordinates: null,
+    lastRecalculation: null
   };
+
+  recalculationTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * When new props are received, we parse the TrackedAchievements
@@ -138,33 +142,16 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
    * @param {ComposedProps} { location, data }
    * @memberof UnlockProvider
    */
-  componentWillReceiveProps({ location, data }: ComposedProps) {
+  static getDerivedStateFromProps(
+    { location, data }: ComposedProps,
+    state: State
+  ) {
     // Refresh tracked Achievement if they haven't been refreshed in
     // more than a day, or if distance since last refresh is more than
     // 10km
-    if (this.state.lastTrackRefreshCoordinates && this.props.location) {
-      const d = haversine(
-        this.state.lastTrackRefreshCoordinates,
-        this.props.location
-      );
+    if (state.lastTrackRefreshCoordinates && location) {
+      const d = haversine(state.lastTrackRefreshCoordinates, location);
       console.log({ distance: d });
-    }
-    if (
-      !this.state.lastTrackRefresh ||
-      (this.state.lastTrackRefreshCoordinates &&
-        haversine(this.state.lastTrackRefreshCoordinates, this.props.location) >
-          10000) ||
-      differenceInDays(this.state.lastTrackRefresh, new Date()) > 1
-    ) {
-      if (this.props.location && this.props.rehydratedState.isLoggedIn) {
-        console.log({ name: "UnlockProvider#refreshTracked" });
-        this.setState(
-          {
-            lastTrackRefresh: new Date()
-          },
-          this.refreshTrackedAchievements
-        );
-      }
     }
 
     if (
@@ -195,21 +182,58 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
         "distance"
       );
 
-      // Find shortest time and recalculate:
-      if (tracked.length) {
-        const nearest = sortBy(tracked, "nextCalculation")[0];
-        const { nextCalculation } = nearest;
+      return { tracked };
+    }
+    return null;
+  }
 
-        console.log({
-          name: "UnlockProvider#recalculateTimer",
-          value: { nearest }
-        });
-
-        setTimeout(this.recalculate, nextCalculation - new Date().getTime());
+  componentDidUpdate() {
+    if (
+      !this.state.lastTrackRefresh ||
+      (this.state.lastTrackRefreshCoordinates &&
+        haversine(this.state.lastTrackRefreshCoordinates, this.props.location) >
+          10000) ||
+      differenceInDays(this.state.lastTrackRefresh, new Date()) > 1
+    ) {
+      if (this.props.location && this.props.rehydratedState.isLoggedIn) {
+        console.log({ name: "UnlockProvider#refreshTracked" });
+        this.refreshTrackedAchievements();
       }
+    }
 
-      this.setState({
-        tracked
+    if (!this.recalculationTimer) {
+      // Find the shortest time interval in this.state.tracked, and set
+      // our recalculationTimer to update lastRecalculation to that time.
+      // This will cause getDerivedStateFromProps to run again, and recalculate
+      // all distances.
+      this.recalculationTimer = setTimeout(
+        () => this.setState({ lastRecalculation: new Date() }),
+        this.state.tracked
+          .map(({ nextCalculation }) => nextCalculation)
+          .sort()[0] - new Date().getTime()
+      );
+    }
+
+    // Check if any objective is within 30 meters radius and attempt to unlock it
+    if (this.state.tracked && this.state.tracked.length) {
+      this.state.tracked.forEach((tracked: TrackedObjective) => {
+        const distance = tracked.distance;
+
+        // Attempt unlock
+        if (distance < 30) {
+          console.log({
+            name: "UnlockProvider#attemptUnlock",
+            distance,
+            tracked
+          });
+          this.completeObjective(tracked.objective.id).then(
+            (unlocked: Array<Unlocked>) => {
+              if (unlocked.length) {
+                this.props.ui.notifySuccess(unlocked[0].achievement.name);
+              }
+            }
+          );
+        }
       });
     }
   }
@@ -273,65 +297,6 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
             }
           })
       );
-
-  /**
-   * Go through this.state.tracked and recalculate the distance
-   * to every Objective which has a nextCalculation time in the
-   * past. If the objective is within 30 meters, we'll immediately
-   * try to unlock it, and display a notification.
-   *
-   * We attempt to unlock Objectives that are within 30 meters
-   * every 15 seconds.
-   *
-   * @memberof UnlockProvider
-   */
-  recalculate = () => {
-    const { location } = this.props;
-    this.setState(
-      {
-        tracked: this.state.tracked.map((tracked: TrackedObjective) => {
-          if (tracked.nextCalculation < new Date().getTime()) {
-            const distance = haversine(tracked.objective, location);
-
-            // Attempt unlock
-            if (distance < 30) {
-              console.log({
-                name: "UnlockProvider#attemptUnlock",
-                distance,
-                tracked
-              });
-              this.completeObjective(tracked.objective.id).then(
-                (unlocked: Array<Unlocked>) => {
-                  if (unlocked.length) {
-                    this.props.ui.notifySuccess(unlocked[0].achievement.name);
-                  }
-                }
-              );
-            }
-
-            return {
-              objective: tracked.objective,
-              distance,
-              nextCalculation: addSeconds(
-                new Date(),
-                distance > 15 ? distance : 15
-              ).getTime()
-            };
-          }
-          return tracked;
-        })
-      },
-      () => {
-        const { tracked } = this.state;
-        // Find shortest time and recalculate:
-        if (tracked.length) {
-          const { nextCalculation } = sortBy(tracked, "nextCalculation")[0];
-
-          setTimeout(this.recalculate, nextCalculation - new Date().getTime());
-        }
-      }
-    );
-  };
 
   /**
    * Attempts to complete an objective by ID. This presumes

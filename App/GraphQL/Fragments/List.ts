@@ -4,6 +4,7 @@ export default `
     title
     isPublic
     isEditable
+    isFollowed
     achievementsCount
     author {
       id

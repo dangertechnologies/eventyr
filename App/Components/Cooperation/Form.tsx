@@ -5,7 +5,7 @@ import reformed, { ReformedProps } from "react-reformed";
 import { Input, Icon, Button, Text } from "native-base";
 
 import { Achievement, CoopRequest, User } from "App/Types/GraphQL";
-import CooperationUserSelect from "App/Components/User/SelectableList";
+import { CooperationUserSelect } from "App/Components/User/UserList";
 import { ValidationProps } from "react-reformed/lib/validateSchema";
 
 import validateForm from "./Validate";

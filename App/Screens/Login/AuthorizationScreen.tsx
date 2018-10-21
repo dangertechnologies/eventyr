@@ -41,19 +41,18 @@ class AuthorizationScreen extends React.PureComponent<ComposedProps> {
   delayedCheck: any = null;
 
   componentDidMount() {
-    if (this.props.rehydratedState.restored) {
-      this.delayedCheck = setTimeout(this.routeUser, 500);
-    }
-  }
-
-  componentWillReceiveProps(nextProps: ComposedProps) {
-    if (nextProps.rehydratedState.restored && !this.delayedCheck) {
+    if (!this.delayedCheck) {
       this.delayedCheck = setTimeout(this.routeUser, 500);
     }
   }
 
   routeUser = () => {
     this.delayedCheck = clearTimeout(this.delayedCheck);
+    if (!this.props.rehydratedState.restored) {
+      this.delayedCheck = setTimeout(this.routeUser, 500);
+      return;
+    }
+
     this.props.navigation.navigate(
       this.props.rehydratedState.isLoggedIn ? "LoggedIn" : "LoggedOut"
     );

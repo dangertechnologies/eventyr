@@ -1,7 +1,13 @@
 import React from "react";
 
 /** COMPONENTS **/
-import { View, TouchableOpacity } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
+  TextInputSubmitEditingEventData
+} from "react-native";
 import {
   Input,
   Textarea,
@@ -14,15 +20,14 @@ import {
   H3,
   Button,
   Text,
-  Icon
+  Icon,
+  ActionSheet
 } from "native-base";
 // @ts-ignore
 import Select from "react-native-picker-select";
-import ActionButton from "react-native-action-button";
 
 import IconPicker from "./IconPicker";
 import ObjectiveChip from "./ObjectiveChip";
-import ProtoObjectiveDialog from "./ProtoObjectiveDialog";
 
 /** UTILS **/
 import { graphql } from "react-apollo";
@@ -72,6 +77,21 @@ interface ComposedProps extends Props {
   data: Query & ApolloQueryResult<Query> & { error: string };
 }
 
+const BLANK_OBJECTIVE: Omit<ProtoObjective, "kind"> = {
+  id: "",
+  tagline: "",
+  lat: null,
+  lng: null,
+  basePoints: 10,
+  isPublic: false,
+  requiredCount: 1,
+  altitude: 0,
+  country: null,
+  fromTimestamp: null,
+  toTimestamp: null,
+  timeConstraint: "NONE"
+};
+
 class AchievementForm extends React.Component<ComposedProps, State> {
   state: State = {
     // This contains a temporary objective, while
@@ -113,8 +133,6 @@ class AchievementForm extends React.Component<ComposedProps, State> {
       modeMultiplier(achievement.mode)
     );
   };
-
-  fab: ActionButton | null = null;
 
   render() {
     console.log({ name: "AchievementForm#render", props: this.props });
@@ -209,25 +227,87 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                       />
                     ))}
 
-                <Button
-                  rounded
-                  small
-                  transparent
-                  onPress={() =>
-                    this.fab &&
-                    // @ts-ignore
-                    this.fab.animateButton.apply(this.fab, this.fab)
-                  }
-                  iconLeft
-                  style={{ margin: 2 }}
-                >
-                  <Icon
-                    name="plus"
-                    type="MaterialCommunityIcons"
-                    fontSize={20}
-                  />
-                  <Text>Add objective</Text>
-                </Button>
+                {this.state._objective ? (
+                  <Item style={styles.newObjectiveItem}>
+                    <Icon name="plus" style={styles.newObjectiveIcon} />
+                    <Input
+                      onChangeText={(tagline: string) =>
+                        this.state._objective &&
+                        this.setState({
+                          _objective: { ...this.state._objective, tagline }
+                        })
+                      }
+                      value={this.state._objective.tagline}
+                      placeholder="Give your objective a tagline"
+                      style={styles.newObjectiveInput}
+                      onSubmitEditing={() => {
+                        if (this.state._objective) {
+                          const listOfObjective: Array<EditableObjective> = [
+                            this.state._objective
+                          ];
+                          const existingObjectives: Array<EditableObjective> =
+                            achievement.objectives;
+
+                          onChange(
+                            "objectives",
+                            existingObjectives.concat(listOfObjective)
+                          );
+                          this.setState({ _objective: null });
+                        }
+                      }}
+                    />
+                  </Item>
+                ) : (
+                  <Button
+                    rounded
+                    small
+                    transparent
+                    onPress={() =>
+                      ActionSheet.show(
+                        {
+                          title: "Add objective",
+                          options: ["New Action", "New Location", "Cancel"],
+                          cancelButtonIndex: 2
+                        },
+                        (buttonIndex: number) => {
+                          switch (buttonIndex) {
+                            case 0:
+                              return this.setState({
+                                _objective: {
+                                  ...BLANK_OBJECTIVE,
+                                  kind: "ACTION"
+                                }
+                              });
+                            case 1:
+                              return this.setState({
+                                _objective: {
+                                  ...BLANK_OBJECTIVE,
+                                  kind: "LOCATION",
+                                  lat: this.props.coordinates
+                                    ? this.props.coordinates.latitude
+                                    : 0,
+                                  lng: this.props.coordinates
+                                    ? this.props.coordinates.longitude
+                                    : 0
+                                }
+                              });
+                            case 2:
+                              return;
+                          }
+                        }
+                      )
+                    }
+                    iconLeft
+                    style={{ margin: 2 }}
+                  >
+                    <Icon
+                      name="plus"
+                      type="MaterialCommunityIcons"
+                      fontSize={20}
+                    />
+                    <Text>Add objective</Text>
+                  </Button>
+                )}
               </View>
             </Item>
           </Body>
@@ -240,10 +320,16 @@ class AchievementForm extends React.Component<ComposedProps, State> {
               <Textarea
                 rowSpan={3}
                 placeholder="Give other users a background story for your achievement"
-                onChangeText={(title: string) =>
-                  onChange("fullDescription", title)
+                onSubmitEditing={({
+                  nativeEvent: { text }
+                }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) =>
+                  onChange("fullDescription", text)
                 }
-                value={achievement.fullDescription || ""}
+                onBlur={({
+                  nativeEvent: { text }
+                }: NativeSyntheticEvent<TextInputFocusEventData>) =>
+                  onChange("fullDescription", text)
+                }
               />
             </Item>
           </Body>
@@ -266,72 +352,6 @@ class AchievementForm extends React.Component<ComposedProps, State> {
             </TouchableOpacity>
           )}
         </CardItem>
-
-        <ActionButton
-          buttonColor="transparent"
-          renderIcon={() => null}
-          ref={(instance: any) => {
-            this.fab = instance;
-          }}
-          verticalOrientation="down"
-          // @ts-ignore
-          offsetY={this.state.expandedForm ? "50%" : "20%"}
-        >
-          <ActionButton.Item
-            buttonColor="#9b59b6"
-            title="Location"
-            onPress={() =>
-              this.setState({
-                _objective: {
-                  id: "",
-                  tagline: "",
-                  kind: "LOCATION",
-                  lat: this.props.coordinates
-                    ? this.props.coordinates.latitude
-                    : 0,
-                  lng: this.props.coordinates
-                    ? this.props.coordinates.longitude
-                    : 0,
-                  basePoints: 0,
-                  isPublic: false,
-                  requiredCount: 1,
-                  achievements: [],
-                  altitude: 0,
-                  country: null,
-                  fromTimestamp: null,
-                  toTimestamp: null,
-                  timeConstraint: "NONE"
-                }
-              })
-            }
-          >
-            <Icon
-              name="flag-variant"
-              type="MaterialCommunityIcons"
-              style={styles.actionButtonIcon}
-            />
-          </ActionButton.Item>
-          <ActionButton.Item buttonColor="#3498db" title="Action">
-            <Icon
-              name="run"
-              type="MaterialCommunityIcons"
-              style={styles.actionButtonIcon}
-            />
-          </ActionButton.Item>
-        </ActionButton>
-
-        <ProtoObjectiveDialog
-          objective={this.state._objective ? this.state._objective : undefined}
-          onClose={() => this.setState({ _objective: null })}
-          onChange={(objective: EditableObjective) => {
-            const listOfObjective: Array<EditableObjective> = [objective];
-            const existingObjectives: Array<EditableObjective> =
-              achievement.objectives;
-
-            onChange("objectives", existingObjectives.concat(listOfObjective));
-            this.setState({ _objective: null });
-          }}
-        />
       </React.Fragment>
     );
   }
@@ -364,9 +384,21 @@ const styles = EStyleSheet.create({
 
   objectivesLabel: { marginBottom: 10 },
   objectivesChips: {
-    flex: 1,
     flexDirection: "column",
     justifyContent: "space-evenly"
+  },
+
+  newObjectiveItem: {
+    width: "$screenWidth - 40",
+    marginLeft: "$spacing",
+    borderBottomWidth: 0
+  },
+  newObjectiveInput: {
+    fontSize: 14,
+    paddingLeft: 8
+  },
+  newObjectiveIcon: {
+    fontSize: 20
   },
 
   actions: {

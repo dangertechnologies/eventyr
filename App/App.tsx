@@ -18,20 +18,20 @@ const RootContainer = () => (
   <Root>
     <Rehydration.Provider>
       <OneSignal.Provider>
-        <CurrentUser.Provider>
-          <View style={{ flex: 1 }}>
-            <StatusBar barStyle="light-content" hidden />
-            <PortalProvider>
-              <UI.Provider>
+        <UI.Provider>
+          <CurrentUser.Provider>
+            <View style={{ flex: 1 }}>
+              <StatusBar barStyle="light-content" hidden />
+              <PortalProvider>
                 <Unlock.Provider>
                   <Navigation />
                   <WhitePortal name="outside" />
                   <WhitePortal name="dialog" />
                 </Unlock.Provider>
-              </UI.Provider>
-            </PortalProvider>
-          </View>
-        </CurrentUser.Provider>
+              </PortalProvider>
+            </View>
+          </CurrentUser.Provider>
+        </UI.Provider>
       </OneSignal.Provider>
     </Rehydration.Provider>
   </Root>

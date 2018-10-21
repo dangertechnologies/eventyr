@@ -2,6 +2,7 @@ import React from "react";
 import { CoopRequest, Achievement, Notification } from "App/Types/GraphQL";
 import { compose, withHandlers } from "recompose";
 import { graphql, MutationFn } from "react-apollo";
+import notificationTitle from "App/Helpers/notificationTitle";
 
 import { Text, Left, Card, CardItem, Button } from "native-base";
 import TinyAchievement from "App/Components/Achievement/TinyAchievement";
@@ -34,15 +35,8 @@ const CoopRequestNotification = ({
 }: ComposedProps) => {
   const target: CoopRequest = item.target as CoopRequest;
   const achievement = target.achievement as Achievement;
-  console.log({ item, target });
 
-  let title;
-
-  if (item.kind === "COOPERATION_REQUEST_ACCEPTED") {
-    title = "accepted your cooperation request";
-  } else {
-    title = "wants to cooperate";
-  }
+  const { title } = notificationTitle(item);
 
   return (
     <Card>
@@ -55,7 +49,7 @@ const CoopRequestNotification = ({
             />
           )}
         <Left>
-          <Text note>{`${item.sender && item.sender.name} ${title}`}</Text>
+          <Text note>{title}</Text>
         </Left>
       </CardItem>
       {!target.message ? null : (

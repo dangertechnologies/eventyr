@@ -16,7 +16,7 @@ import AchievementForm from "App/Components/AchievementForm";
 import reformed from "react-reformed";
 import { withStateHandlers, defaultProps } from "recompose";
 import { omit, pick } from "lodash";
-import { compose, graphql } from "react-apollo";
+import { compose, graphql, MutationResult } from "react-apollo";
 import validateAchievement from "App/Components/AchievementForm/Validate";
 
 /** STYLES **/
@@ -63,13 +63,9 @@ type ComposedProps = Props &
     setCoordinates(region?: Region): any;
   };
 
-interface State {
-  achievement: ProtoAchievement;
-}
-
 const CROSSHAIR_SIZE = 20;
 
-class AchievementsCreate extends React.Component<ComposedProps, State> {
+class AchievementsCreate extends React.PureComponent<ComposedProps> {
   componentDidMount() {
     this.props.setCoordinates();
   }
@@ -108,8 +104,7 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
         variables: protoAchievement,
         refetchQueries: ["AchievementsList"]
       })
-      .then(({ data }) => {
-        console.log({ data });
+      .then(({ data }: any) => {
         const { errors, achievement } = data.createAchievement;
 
         if (errors && errors.length) {
@@ -128,7 +123,6 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
   map: Map | null = null;
 
   render() {
-    console.log({ name: "AchievementsCreate#render", state: this.state });
     const { data } = this.props;
     const model = this.props.model as ProtoAchievement;
 
@@ -193,6 +187,24 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
                     objective={objective}
                     key={objective.id || `new-objective-${index}`}
                     color={objectiveColors[index % 100]}
+                    draggable={objective.id === ""}
+                    onDragEnd={(e: any) => {
+                      this.props.setProperty(
+                        "objectives",
+                        model.objectives.map(
+                          (editableObjective: EditableObjective) => {
+                            if (objective.id === editableObjective.id) {
+                              return {
+                                ...editableObjective,
+                                lat: e.nativeEvent.coordinate.latitude,
+                                lng: e.nativeEvent.coordinate.longitude
+                              };
+                            }
+                            return editableObjective;
+                          }
+                        )
+                      );
+                    }}
                   />
                 )
             )}
@@ -205,24 +217,26 @@ class AchievementsCreate extends React.Component<ComposedProps, State> {
           />
         </View>
 
-        <Drawer snapTo={[30, "35%", "70%"]} initialSnapIndex={2}>
-          <AchievementForm
-            onChange={this.props.setProperty}
-            validationErrors={this.props.validationErrors}
-            achievement={this.props.model}
-            coordinates={this.props.coordinates}
-            onSubmit={this.createAchievement}
-            onClickObjective={(objective: EditableObjective) =>
-              objective.lat &&
-              objective.lng &&
-              this.map &&
-              this.map.animateToCoordinate({
-                latitude: objective.lat,
-                longitude: objective.lng
-              })
-            }
-          />
-        </Drawer>
+        {this.props.navigation.isFocused() && (
+          <Drawer snapTo={[30, "35%", "70%"]} initialSnapIndex={2}>
+            <AchievementForm
+              onChange={this.props.setProperty}
+              validationErrors={this.props.validationErrors}
+              achievement={this.props.model}
+              coordinates={this.props.coordinates}
+              onSubmit={this.createAchievement}
+              onClickObjective={(objective: EditableObjective) =>
+                objective.lat &&
+                objective.lng &&
+                this.map &&
+                this.map.animateToCoordinate({
+                  latitude: objective.lat,
+                  longitude: objective.lng
+                })
+              }
+            />
+          </Drawer>
+        )}
       </View>
     );
   }
