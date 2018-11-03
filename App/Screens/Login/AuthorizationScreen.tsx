@@ -86,7 +86,7 @@ class AuthorizationScreen extends React.PureComponent<ComposedProps> {
               style={styles.title}
               duration={1500}
             >
-              Eventyr
+              Æventyr
             </AnimatedText>
           </AnimatedView>
 
@@ -139,7 +139,7 @@ const styles = EStyleSheet.create({
   },
 
   underline: {
-    width: 200,
+    width: 250,
     height: 5,
     borderTopLeftRadius: 5,
     borderBottomRightRadius: 5,

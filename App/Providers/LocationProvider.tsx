@@ -22,21 +22,17 @@ export interface LocationOptions {
   watch?: boolean;
 }
 
-interface State extends LocationContext {
-  watchId: number | null;
-}
+const { Provider, Consumer } = React.createContext(DEFAULT_CONTEXT);
 
-const withLocation = (options: LocationOptions = { watch: false }) => <
-  P extends object
->(
-  Component: React.ComponentType<P & { location: LocationContext }>
-) =>
-  class LocationProvider extends React.Component<P, State> {
-    state: State = { ...DEFAULT_CONTEXT, watchId: null };
+interface State extends LocationContext {}
 
-    private extractPosition = (position: GeolocationReturnType) =>
-      position &&
-      position.coords &&
+class LocationProvider extends React.Component<{}, State> {
+  watchId: number | null = null;
+  state: State = { ...DEFAULT_CONTEXT };
+
+  private extractPosition = (position: GeolocationReturnType) => {
+    if (position && position.coords) {
+      console.log({ name: "LocationProvider#extract", value: position });
       this.setState({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
@@ -45,45 +41,45 @@ const withLocation = (options: LocationOptions = { watch: false }) => <
         alt: position.coords.altitude,
         timestamp: position.timestamp
       });
-
-    private geoLocationError = (error: GeolocationError) => console.warn(error);
-
-    componentDidMount() {
-      navigator.geolocation.requestAuthorization();
-      if (options.watch) {
-        this.setState({
-          watchId: navigator.geolocation.watchPosition(
-            this.extractPosition,
-            this.geoLocationError,
-            {
-              maximumAge: 60 * 1000, // Maximum one minute old cache
-              enableHighAccuracy: true,
-              distanceFilter: 50
-            }
-          )
-        });
-      } else {
-        navigator.geolocation.getCurrentPosition(
-          this.extractPosition,
-          this.geoLocationError,
-          {
-            maximumAge: 60 * 1000, // Maximum one minute old cache
-            enableHighAccuracy: true
-          }
-        );
-      }
-    }
-
-    componentWillUnmount() {
-      if (this.state.watchId) {
-        this.setState({ watchId: navigator.clearWatch(this.state.watchId) });
-      }
-      navigator.geolocation.stopObserving();
-    }
-
-    render() {
-      return <Component {...this.props} location={this.state} />;
     }
   };
 
+  private geoLocationError = (error: GeolocationError) => console.warn(error);
+
+  componentDidMount() {
+    navigator.geolocation.requestAuthorization();
+    this.watchId = navigator.geolocation.watchPosition(
+      this.extractPosition,
+      this.geoLocationError,
+      {
+        maximumAge: 60 * 1000, // Maximum one minute old cache
+        enableHighAccuracy: true,
+        distanceFilter: 15
+      }
+    );
+  }
+
+  componentWillUnmount() {
+    if (this.watchId !== null) {
+      console.log({ name: "LocationProvider#unmount", value: this.watchId });
+      navigator.geolocation.clearWatch(this.watchId);
+    }
+  }
+
+  render() {
+    return <Provider value={this.state}>{this.props.children}</Provider>;
+  }
+}
+
+const withLocation = (options: LocationOptions = { watch: false }) => <
+  P extends object
+>(
+  Component: React.ComponentType<P & { location: LocationContext }>
+) => (props: P) => (
+  <Consumer>
+    {location => <Component {...props} location={location} />}
+  </Consumer>
+);
+
+export { LocationProvider as Provider, withLocation, Consumer };
 export default withLocation;

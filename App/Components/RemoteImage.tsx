@@ -15,7 +15,9 @@ const RemoteImage = ({ source, ...rest }: Props) => {
   ) {
     src = {
       ...source,
-      uri: `${__DEV__ ? "http" : "https"}://${Config.baseUrl}${source.uri}`
+      uri: `${
+        __DEV__ ? `http://${Config.baseUrlDev}` : `https://${Config.baseUrl}`
+      }${source.uri}`
     };
   } else {
     src = source;

@@ -2,7 +2,10 @@ import React from "react";
 
 /** PROVIDERS **/
 import withLocation from "App/Providers/LocationProvider";
-import { withUnlockHelpers, UnlockContext } from "App/Providers/UnlockProvider";
+import {
+  withUnlockHelpers,
+  UnlockContext
+} from "App/Providers/__deprecated_UnlockProvider";
 
 /** COMPONENTS **/
 import { View, StyleSheet, FlatList } from "react-native";
@@ -12,9 +15,14 @@ import MapMarker from "App/Components/MapMarker";
 import DetailsView from "../../Components/Achievement/Drawer";
 import Drawer from "App/Components/Drawer";
 
+// @ts-ignore
+import haversine from "haversine-distance";
+
 /** UTILS **/
 import { compose, graphql } from "react-apollo";
+import { shouldUpdate } from "recompose";
 import objectiveColors from "App/Components/AchievementForm/Colors";
+import { omit, isEqual } from "lodash";
 
 /** TYPES **/
 import { LocationContext } from "App/Providers/LocationProvider";
@@ -107,6 +115,8 @@ class AchievementsView extends React.PureComponent<Props, State> {
           initialRegion={this.state.coordinates || undefined}
           // region={this.state.coordinates || undefined}
           onPress={this.onMapPress}
+          showsUserLocation
+          showsMyLocationButton
           // onRegionChangeComplete={this.onRegionChange}
         >
           {visibleObjectives &&
@@ -192,6 +202,12 @@ const styles = EStyleSheet.create({
 
 const Screen = compose(
   withLocation(),
+  shouldUpdate(
+    (prev: Props, next: Props) =>
+      Boolean(!prev.location && next.location) ||
+      haversine(prev.location, next.location) > 2000 ||
+      !isEqual(omit(prev, ["location"]), omit(next, ["location"]))
+  ),
   graphql(QUERY_NEARBY_ACHIEVEMENTS, {
     options: ({ location }: Props) => ({ variables: location })
   }),

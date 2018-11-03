@@ -153,6 +153,9 @@ class AchievementsCreate extends React.PureComponent<ComposedProps> {
             longitudeDelta: 0.03
           }}
           onRegionChangeComplete={this.props.setCoordinates}
+          followsUserLocation
+          showsUserLocation
+          showsMyLocationButton
         >
           {/* Show existing objectives and allow user to add existing 
                objectives to the achievement */}
@@ -218,9 +221,20 @@ class AchievementsCreate extends React.PureComponent<ComposedProps> {
         </View>
 
         {this.props.navigation.isFocused() && (
-          <Drawer snapTo={[30, "35%", "70%"]} initialSnapIndex={2}>
+          <Drawer
+            snapTo={[-1, "35%", "70%"]}
+            initialSnapIndex={2}
+            onOutOfScreen={() =>
+              this.props.navigation.navigate("AchievementsScreen")
+            }
+          >
             <AchievementForm
-              onChange={this.props.setProperty}
+              onChange={(field, value) => {
+                if (field === "name") {
+                  this.props.navigation.setParams({ title: value });
+                }
+                this.props.setProperty(field, value);
+              }}
               validationErrors={this.props.validationErrors}
               achievement={this.props.model}
               coordinates={this.props.coordinates}
@@ -287,7 +301,7 @@ const Screen = compose(
       fullDescription: "",
       icon: "binoculars",
       basePoints: 10,
-      mode: null,
+      mode: "EASY",
       category: null,
       type: null,
       objectives: [],

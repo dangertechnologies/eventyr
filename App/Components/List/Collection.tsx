@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList } from "react-native";
+
 import { compose, withProps } from "recompose";
 import { graphql, DataValue } from "react-apollo";
 import { List, Query, ListConnection } from "App/Types/GraphQL";
@@ -21,6 +22,7 @@ interface Props {
   selected?: Array<List>;
   onSelect?(list: List): any;
   onDeselect?(list: List): any;
+  emptyComponent?: React.ReactNode;
 }
 
 interface ComposedProps extends Props {
@@ -84,12 +86,21 @@ export class ListCollection extends React.PureComponent<ComposedProps> {
 
     console.log({ name: "ListsCollection#render", value: this.props });
 
+    if (
+      this.props.emptyComponent &&
+      (!this.props.lists.edges || !this.props.lists.edges.length)
+    ) {
+      return this.props.emptyComponent;
+    }
+
     return (
       <FlatList
         data={this.props.lists.edges || []}
         keyExtractor={item => (item.node && item.node.id ? item.node.id : "0")}
         extraData={this.props.selected}
-        refreshing={this.props.data && this.props.data.loading}
+        refreshing={
+          (this.props.data && this.props.data.loading) || this.props.loading
+        }
         onRefresh={() => this.props.data && this.props.data.refetch()}
         renderItem={({ item }) => (
           <ListCard

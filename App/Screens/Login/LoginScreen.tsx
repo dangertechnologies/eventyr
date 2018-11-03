@@ -1,8 +1,12 @@
 import React from "react";
 
 /** COMPONENTS **/
-import { StyleSheet } from "react-native";
-import { Icon, Button, Text, Content } from "native-base";
+import {
+  StyleSheet,
+  NativeSyntheticEvent,
+  TextInputSubmitEditingEventData
+} from "react-native";
+import { Icon, Button, Text, Content, Input } from "native-base";
 import LinearGradient from "react-native-linear-gradient";
 import {
   Text as AnimatedText,
@@ -78,6 +82,41 @@ class LoginScreen extends React.PureComponent<ComposedProps> {
       });
   };
 
+  loginDemo = async (token: string) => {
+    this.props
+      .mutate({
+        variables: { provider: "demo", token },
+        // @ts-ignore
+        updateQueries
+      })
+      .then((result: any) => {
+        if (
+          result.data.authenticateUser &&
+          result.data.authenticateUser.errors &&
+          result.data.authenticateUser.errors.length
+        ) {
+          // FIXME: Handle errors here by showing a notification. Use UIProvider.
+          console.log({
+            name: "Login#error",
+            value: result.data.authenticateUser.errors
+          });
+        } else {
+          // Update credentials to log user in
+          const { authenticateUser } = result.data;
+
+          console.log({ authenticateUser });
+
+          if (authenticateUser.user.authenticationToken) {
+            this.props.rehydratedState.updateCredentials(
+              authenticateUser.user.authenticationToken
+            );
+
+            this.props.navigation.navigate("Authorization");
+          }
+        }
+      });
+  };
+
   render() {
     return (
       <LinearGradient
@@ -106,13 +145,44 @@ class LoginScreen extends React.PureComponent<ComposedProps> {
               style={styles.title}
               duration={1500}
             >
-              Eventyr
+              Æventyr
             </AnimatedText>
           </AnimatedView>
-          <Button iconLeft rounded onPress={this.loginGoogle}>
-            <Icon type="MaterialCommunityIcons" name="google" />
-            <Text>Sign in with Google</Text>
-          </Button>
+          <AnimatedView
+            style={{
+              height: 200,
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <Input
+              placeholder="Log in by code"
+              style={{
+                backgroundColor: "rgba(44,44,44,0.3)",
+                width: 230,
+                height: 50,
+                paddingLeft: 20,
+                color: "#FFFFFF",
+                flex: 0,
+                marginBottom: 50,
+                borderRadius: 30
+              }}
+              onSubmitEditing={(
+                e: NativeSyntheticEvent<TextInputSubmitEditingEventData>
+              ) => this.loginDemo(e.nativeEvent.text)}
+            />
+
+            <Button
+              iconLeft
+              rounded
+              style={{ borderRadius: 20 }}
+              full
+              onPress={this.loginGoogle}
+            >
+              <Icon type="MaterialCommunityIcons" name="google" />
+              <Text>Sign in with Google</Text>
+            </Button>
+          </AnimatedView>
         </Content>
       </LinearGradient>
     );
@@ -145,7 +215,7 @@ const styles = EStyleSheet.create({
   },
 
   underline: {
-    width: 200,
+    width: 250,
     height: 5,
     borderTopLeftRadius: 5,
     borderBottomRightRadius: 5,

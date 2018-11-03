@@ -89,6 +89,22 @@ export default `
           }
         }
       }
+
+      ...on Unlocked {
+        id
+        points
+        coop
+        coopBonus
+        achievement {
+          id
+          name
+          points
+          inLists {
+            id
+            title
+          }
+        }
+      }
     }
   }
 `;

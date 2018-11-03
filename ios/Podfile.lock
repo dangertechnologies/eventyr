@@ -101,6 +101,12 @@ PODS:
   - SDWebImage/GIF (4.4.2):
     - FLAnimatedImage (~> 1.0)
     - SDWebImage/Core
+  - Sentry (4.0.1):
+    - Sentry/Core (= 4.0.1)
+  - Sentry/Core (4.0.1)
+  - SentryReactNative (0.39.1):
+    - React
+    - Sentry (~> 4.0.1)
   - yoga (0.57.1.React)
 
 DEPENDENCIES:
@@ -131,6 +137,7 @@ DEPENDENCIES:
   - React/RCTWebSocket (from `../node_modules/react-native`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - SentryReactNative (from `../node_modules/react-native-sentry`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga/yoga.podspec`)
 
 SPEC REPOS:
@@ -141,6 +148,7 @@ SPEC REPOS:
     - Google-Maps-iOS-Utils
     - GoogleMaps
     - SDWebImage
+    - Sentry
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -167,6 +175,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  SentryReactNative:
+    :path: "../node_modules/react-native-sentry"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga/yoga.podspec"
 
@@ -189,8 +199,10 @@ SPEC CHECKSUMS:
   RNFS: bbb1a64eb245763daf34aea86f97c97c4e85f74c
   RNSVG: 6252323c0312735f0af5f58b5adf2965b6a9ffbf
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
+  Sentry: a38f7879924c02239e121b19d993d23bdd1684db
+  SentryReactNative: d476259b21060a59dc637a29a40d60f0aac09cf7
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: 888981d75e055cdce348cf5bdb1e63c6f2456cac
+PODFILE CHECKSUM: cb8a7136f911630d53973e6dc52f40fcd987e57e
 
 COCOAPODS: 1.5.3

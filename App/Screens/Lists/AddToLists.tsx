@@ -151,7 +151,7 @@ class ListsScreen extends React.Component<ComposedProps, State> {
             selectable
             currentUser={this.props.currentUser}
             lists={this.props.data.lists}
-            loading={this.props.data.loading}
+            loading={Boolean(this.props.data.loading)}
             userId={this.props.currentUser.id || "0"}
             selected={this.state.selectedLists}
             onSelect={this.selectList}

@@ -49,12 +49,34 @@ class AchievementsView extends React.PureComponent<Props, State> {
     if (this.map) {
       this.map.fitToElements(true);
     }
+
+    if (
+      this.props.data &&
+      this.props.data.achievement &&
+      this.props.navigation.getParam("title") !==
+        this.props.data.achievement.name
+    ) {
+      this.props.navigation.setParams({
+        title: this.props.data.achievement.name
+      });
+    }
   }
 
   componentDidUpdate() {
     if (this.map && !this.hasBeenZoomed) {
       this.hasBeenZoomed = true;
       this.map.fitToElements(true);
+    }
+
+    if (
+      this.props.data &&
+      this.props.data.achievement &&
+      this.props.navigation.getParam("title") !==
+        this.props.data.achievement.name
+    ) {
+      this.props.navigation.setParams({
+        title: this.props.data.achievement.name
+      });
     }
   }
 
@@ -78,6 +100,9 @@ class AchievementsView extends React.PureComponent<Props, State> {
           onRegionChangeComplete={(region: Region) =>
             this.setState({ coordinates: region })
           }
+          followsUserLocation
+          showsUserLocation
+          showsMyLocationButton
         >
           {achievement &&
             achievement.objectives.map(

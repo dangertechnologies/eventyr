@@ -9,8 +9,8 @@ import withLocation, { LocationContext } from "App/Providers/LocationProvider";
 import { Container, Content, Text } from "native-base";
 
 /** UTILS */
-import { withProps, compose, withStateHandlers } from "recompose";
-import { concat, sortBy, uniqBy } from "lodash";
+import { withProps, compose, shouldUpdate } from "recompose";
+import { concat, sortBy, uniqBy, omit, isEqual } from "lodash";
 // @ts-ignore
 import haversine from "haversine-distance";
 
@@ -134,11 +134,16 @@ const AchievementsScreen = ({ listsQuery, achievementsQuery, feed }: Props) => {
           data={data || []}
           refreshing={listsQuery.loading || achievementsQuery.loading}
           onRefresh={() => achievementsQuery && achievementsQuery.refetch()}
+          onEndReachedThreshold={60}
           onEndReached={() =>
             achievementsQuery &&
             achievementsQuery.achievements &&
             achievementsQuery.achievements.edges &&
             achievementsQuery.achievements.edges.length &&
+            achievementsQuery.variables.after !==
+              achievementsQuery.achievements.edges[
+                achievementsQuery.achievements.edges.length - 1
+              ].cursor &&
             achievementsQuery.fetchMore({
               variables: {
                 after:
@@ -159,8 +164,11 @@ const AchievementsScreen = ({ listsQuery, achievementsQuery, feed }: Props) => {
                     ...prev.achievements,
                     edges: uniqBy(
                       [
-                        ...(prev.achievements.edges || []),
-                        ...(fetchMoreResult.achievements.edges || [])
+                        ...((prev.achievements && prev.achievements.edges) ||
+                          []),
+                        ...((fetchMoreResult.achievements &&
+                          fetchMoreResult.achievements.edges) ||
+                          [])
                       ],
                       ({ node }) => node && node.id
                     )
@@ -197,6 +205,10 @@ const ListWithDefaultProps = (
     withProps(defaultProps),
     withLocation(),
 
+    shouldUpdate(
+      (props: Props, newProps: Props) =>
+        !isEqual(omit(props, ["location"]), omit(newProps, ["location"]))
+    ),
     // Query for Achievements nearby
     graphql(QUERY_ACHIEVEMENTS, {
       name: "achievementsQuery",

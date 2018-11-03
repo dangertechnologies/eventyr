@@ -201,6 +201,9 @@ export default {
                   subscriptionData.data.notificationReceived;
 
                 if (
+                  previous &&
+                  previous.notifications &&
+                  previous.notifications.edges &&
                   !previous.notifications.edges.find(
                     (notification: NotificationEdge) =>
                       notification.node &&

@@ -13,14 +13,20 @@ export const updateQueries = {
   ) => {
     const { data } = mutationResult;
 
+    console.log({ name: "Mutation#refreshTracked", value: "Updating" });
     if (
       data &&
       data.refreshSuggested &&
       data.refreshSuggested.achievements &&
-      previousData.achievements &&
       queryVariables.type === "suggested"
     ) {
+      console.log({ name: "Mutation#refreshTracked", value: "Updated" });
       previousData.achievements = data.refreshSuggested.achievements;
+    } else {
+      console.log({
+        name: "Mutation#refreshTracked",
+        value: { data, previousData, queryVariables }
+      });
     }
 
     return previousData;
@@ -31,8 +37,11 @@ export default gql`
   mutation RefreshTracked($coordinates: [Float!]) {
     refreshSuggested(input: { coordinates: $coordinates }) {
       achievements {
+        __typename
         edges {
+          cursor
           node {
+            __typename
             ...achievementWithObjectives
           }
         }
