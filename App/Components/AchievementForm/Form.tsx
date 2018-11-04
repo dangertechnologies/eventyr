@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   NativeSyntheticEvent,
   TextInputFocusEventData,
-  TextInputSubmitEditingEventData
+  TextInputSubmitEditingEventData,
+  Keyboard
 } from "react-native";
 import {
   Input,
@@ -172,6 +173,12 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                 <Input
                   placeholder="Title"
                   onChangeText={(title: string) => onChange("name", title)}
+                  onSubmitEditing={({
+                    nativeEvent: { text }
+                  }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+                    onChange("name", text);
+                    Keyboard.dismiss();
+                  }}
                   value={achievement.name}
                 />
               </Item>
@@ -252,6 +259,7 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                             "objectives",
                             existingObjectives.concat(listOfObjective)
                           );
+                          Keyboard.dismiss();
                           this.setState({ _objective: null });
                         }
                       }}
@@ -322,9 +330,10 @@ class AchievementForm extends React.Component<ComposedProps, State> {
                 placeholder="Give other users a background story for your achievement"
                 onSubmitEditing={({
                   nativeEvent: { text }
-                }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) =>
-                  onChange("fullDescription", text)
-                }
+                }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+                  onChange("fullDescription", text);
+                  Keyboard.dismiss();
+                }}
                 onBlur={({
                   nativeEvent: { text }
                 }: NativeSyntheticEvent<TextInputFocusEventData>) =>

@@ -1,10 +1,16 @@
 import React from "react";
-import { CoopRequest, FriendRequest, Notification } from "App/Types/GraphQL";
+import {
+  CoopRequest,
+  FriendRequest,
+  Notification,
+  Unlocked
+} from "App/Types/GraphQL";
 
 import CoopRequestNotification from "./CoopRequest";
 import FriendRequestNotification from "./FriendRequest";
 import SharedAchievementNotification from "./SharedAchievement";
 import SharedListNotification from "./SharedList";
+import UnlockedCard from "../Unlocked";
 
 interface Props {
   item: Notification;
@@ -13,7 +19,7 @@ interface Props {
 const NotificationCard = ({ item }: Props) => {
   switch (item.kind) {
     case "ACHIEVEMENT_UNLOCKED":
-      return null;
+      return <UnlockedCard unlocked={item.target as Unlocked} />;
     case "ACHIEVEMENT_UNLOCKED_COOP_BONUS":
       return null;
     case "COOPERATION_REQUEST_ACCEPTED":

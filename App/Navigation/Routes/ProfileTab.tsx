@@ -1,20 +1,19 @@
 import React from "react";
+import { TouchableWithoutFeedback } from "react-native";
 import {
   createStackNavigator,
   NavigationScreenProp,
   NavigationState
 } from "react-navigation";
-import ProfileScreen from "App/Screens/Profile/Profile";
-import NotificationsScreen from "App/Screens/Notifications/Notifications";
-import Image from "App/Components/RemoteImage";
 import { Icon } from "native-base";
-
-import EStyleSheet from "react-native-extended-stylesheet";
-import Config from "../../../app.json";
-import headerStyles from "../HeaderStyle";
-import { TouchableWithoutFeedback } from "react-native";
 import FastImage from "react-native-fast-image";
 
+import ProfileScreen from "App/Screens/User/Profile";
+import Image from "App/Components/RemoteImage";
+
+import EStyleSheet from "react-native-extended-stylesheet";
+
+import headerStyles from "../HeaderStyle";
 const AVATAR_SIZE = 30;
 
 const Routes = createStackNavigator(
@@ -45,23 +44,6 @@ const Routes = createStackNavigator(
           />
         ) : (
           <Icon name="ios-person" type="Ionicons" style={[styles.userIcon]} />
-        )
-      })
-    },
-    NotificationsScreen: {
-      screen: NotificationsScreen,
-      navigationOptions: ({
-        navigation
-      }: {
-        navigation: NavigationScreenProp<NavigationState>;
-      }) => ({
-        ...headerStyles,
-        title: "Notifications",
-        headerLeft: null,
-        headerRight: (
-          <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-            <Icon name="close" style={styles.notificationsIcon} />
-          </TouchableWithoutFeedback>
         )
       })
     }

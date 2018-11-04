@@ -5,6 +5,7 @@ export default gql`
   query UserLists($userId: String!) {
     lists(userId: $userId) {
       edges {
+        cursor
         node {
           ...list
         }

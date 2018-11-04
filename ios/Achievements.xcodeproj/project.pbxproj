@@ -62,12 +62,14 @@
 		889FA29A8C874ED31FA0DE59 /* libPods-Achievements.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2B79E7D4FEED4121ECA4182 /* libPods-Achievements.a */; };
 		93096EA210D74EF5B3466751 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 88F29B6AC4D0418F93CC46AB /* MaterialCommunityIcons.ttf */; };
 		95CA510773C745848BBD5137 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9F663A9A1BC4C5B85D5B3A5 /* FontAwesome.ttf */; };
+		A48D6967889F41C4AC0C58FF /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 682FA262C8E24FCBB06E8595 /* libz.tbd */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B82CBAD561A64E91B55EF093 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9D052613DC9423AA8E8E0E1 /* SimpleLineIcons.ttf */; };
 		B876964B55994359805CC736 /* AguafinaScript-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 56754C4B08EC4E888EB652D1 /* AguafinaScript-Regular.ttf */; };
 		BE3D168723AF4FF584E188D7 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 76A5300532BA4B2182EE6EC3 /* FontAwesome5_Brands.ttf */; };
 		F5D546621065437EBBE87977 /* Italianno-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AC13C5047A4403380BB0514 /* Italianno-Regular.ttf */; };
 		F7BC2ACF6CF5418DB2059DCE /* rubicon-icon-font.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 76559F125BDD4F4C86DCA99C /* rubicon-icon-font.ttf */; };
+		FA6C86BEF89A456A8B454FD2 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A8CBAC52C494947AF76DA08 /* libRNGestureHandler.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -421,6 +423,13 @@
 			remoteGlobalIDString = 62CA59B71E3C173B002D7188;
 			remoteInfo = Lottie_iOS;
 		};
+		42C52072218F39CD00799FD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49E70EFF544D4F27989C6608 /* RNGestureHandler.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNGestureHandler;
+		};
 		42D8394421582D7200363112 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 42D8393F21582D7200363112 /* RCTPushNotification.xcodeproj */;
@@ -516,6 +525,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Achievements/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Achievements/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		1A8CBAC52C494947AF76DA08 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		20920E3DD2DE444CB6BFD951 /* libRCTOneSignal.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTOneSignal.a; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Achievements-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Achievements-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Achievements-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Achievements-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -533,6 +543,7 @@
 		42E88F7C21753C6D0000FB2B /* FastImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		42E8903F217CD2E20000FB2B /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		42E89041217CD3D60000FB2B /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNFS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		49E70EFF544D4F27989C6608 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		4ABCD48881084F28900E6770 /* ReactNativeConfig.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeConfig.xcodeproj; path = "../node_modules/react-native-config/ios/ReactNativeConfig.xcodeproj"; sourceTree = "<group>"; };
 		4ACEE183EF7C4D8B8AB98E83 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		50D158FEBB2F4B8AB71ADB60 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -540,6 +551,7 @@
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		61FB579A9A1848319C4C3FC2 /* libA0Auth0.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libA0Auth0.a; sourceTree = "<group>"; };
 		67CCB13E40B149C190D2699F /* RNAppAuth.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAppAuth.xcodeproj; path = "../node_modules/react-native-app-auth/ios/RNAppAuth.xcodeproj"; sourceTree = "<group>"; };
+		682FA262C8E24FCBB06E8595 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		76559F125BDD4F4C86DCA99C /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
 		76A5300532BA4B2182EE6EC3 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		77C7912EBB934597A0E0D881 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/native-base/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -601,6 +613,8 @@
 				42E88FBE217CCF4B0000FB2B /* libRNVectorIcons.a in Frameworks */,
 				889FA29A8C874ED31FA0DE59 /* libPods-Achievements.a in Frameworks */,
 				42E88FC0217CCF720000FB2B /* libRNAppAuth.a in Frameworks */,
+				A48D6967889F41C4AC0C58FF /* libz.tbd in Frameworks */,
+				FA6C86BEF89A456A8B454FD2 /* libRNGestureHandler.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -755,6 +769,7 @@
 				E2B79E7D4FEED4121ECA4182 /* libPods-Achievements.a */,
 				42E8903F217CD2E20000FB2B /* libRNSVG.a */,
 				42E89041217CD3D60000FB2B /* libRNFS.a */,
+				682FA262C8E24FCBB06E8595 /* libz.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -777,6 +792,7 @@
 				4ACEE183EF7C4D8B8AB98E83 /* libRNVectorIcons.a */,
 				9B4D6AA341CC4DBCB496D800 /* libAirMaps.a */,
 				FDFAD02F8C564BFEBF8DEA79 /* libRNAppAuth.a */,
+				1A8CBAC52C494947AF76DA08 /* libRNGestureHandler.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -847,6 +863,14 @@
 			isa = PBXGroup;
 			children = (
 				429A8FFE2142FF0B00B70804 /* libLottieReactNative.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		42C5206F218F39CC00799FD5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				42C52073218F39CD00799FD5 /* libRNGestureHandler.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -947,6 +971,7 @@
 				DDC56FF20F8143FEBE5BD566 /* RCTOneSignal.xcodeproj */,
 				0BFC38E081F4431A9422EB2A /* RNVectorIcons.xcodeproj */,
 				67CCB13E40B149C190D2699F /* RNAppAuth.xcodeproj */,
+				49E70EFF544D4F27989C6608 /* RNGestureHandler.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1029,6 +1054,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				3E9C5A1B3A23EB324FB40426 /* [CP] Copy Pods Resources */,
 				429A90072142FF6300B70804 /* Embed Frameworks */,
+				02787B0E1FA3419E8BFB94A2 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -1090,7 +1116,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = M55G84NM6X;
+						DevelopmentTeam = R3PC2YD7K4;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -1206,6 +1232,10 @@
 				{
 					ProductGroup = 429A8F3C213DC27900B70804 /* Products */;
 					ProjectRef = 429A8F3B213DC27900B70804 /* RNBlur.xcodeproj */;
+				},
+				{
+					ProductGroup = 42C5206F218F39CC00799FD5 /* Products */;
+					ProjectRef = 49E70EFF544D4F27989C6608 /* RNGestureHandler.xcodeproj */;
 				},
 				{
 					ProductGroup = 429A8F73213DD36500B70804 /* Products */;
@@ -1556,6 +1586,13 @@
 			remoteRef = 429A8FFD2142FF0B00B70804 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		42C52073218F39CD00799FD5 /* libRNGestureHandler.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNGestureHandler.a;
+			remoteRef = 42C52072218F39CD00799FD5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		42D8394521582D7200363112 /* libRCTPushNotification.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1680,7 +1717,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport NODE_BINARY=node\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		02787B0E1FA3419E8BFB94A2 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1694,7 +1745,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport NODE_BINARY=node\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
 		3E9C5A1B3A23EB324FB40426 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1704,10 +1755,14 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Achievements/Pods-Achievements-resources.sh",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/QBImagePickerController/QBImagePicker.bundle",
+				"${PODS_ROOT}/RSKImageCropper/RSKImageCropper/RSKImageCropperStrings.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RSKImageCropperStrings.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1819,11 +1874,15 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = AchievementsTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1848,11 +1907,15 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = AchievementsTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1871,7 +1934,7 @@
 				CODE_SIGN_ENTITLEMENTS = Achievements/Achievements.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = M55G84NM6X;
+				DEVELOPMENT_TEAM = R3PC2YD7K4;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-auth0/ios",
@@ -1882,6 +1945,7 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = Achievements/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1890,7 +1954,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.achievementsapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangertechnologies.eventyr;
 				PRODUCT_NAME = Achievements;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1903,7 +1967,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Achievements/Achievements.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = M55G84NM6X;
+				DEVELOPMENT_TEAM = R3PC2YD7K4;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-auth0/ios",
@@ -1914,6 +1978,7 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = Achievements/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1922,7 +1987,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.achievementsapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangertechnologies.eventyr;
 				PRODUCT_NAME = Achievements;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1949,10 +2014,14 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = "Achievements-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1986,10 +2055,14 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = "Achievements-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2022,10 +2095,14 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = "Achievements-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2058,10 +2135,14 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = "Achievements-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",

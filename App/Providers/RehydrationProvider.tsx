@@ -101,7 +101,9 @@ class RehydrationProvider extends React.Component<Props, State> {
   link: ApolloLink = ApolloLink.from([
     onError(this.onError),
     new BatchHttpLink({
-      uri: Config.apiUrl,
+      uri: `${
+        __DEV__ ? `http://${Config.baseUrlDev}` : `https://${Config.baseUrl}`
+      }/graphql`,
       fetch: this.authenticatedFetch,
       batchMax: 3
     })

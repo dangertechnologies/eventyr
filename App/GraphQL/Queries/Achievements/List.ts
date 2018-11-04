@@ -15,6 +15,7 @@ export default gql`
       coordinates: $coordinates
       listId: $listId
     ) {
+      __typename
       edges {
         cursor
         node {

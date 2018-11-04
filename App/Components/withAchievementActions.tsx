@@ -21,9 +21,17 @@ import {
   List,
   ListEdge,
   AchievementEdge,
-  User
+  User,
+  ShareListPayload,
+  ShareAchievementPayload,
+  DeletePayload,
+  RequestCoopPayload,
+  ShareAchievementInput,
+  DeleteInput,
+  RequestCoopInput,
+  ShareListInput
 } from "App/Types/GraphQL";
-import { MutationFunc } from "react-apollo";
+import { MutationFunc, FetchResult } from "react-apollo";
 import { graphql } from "react-apollo";
 
 import MUTATE_DELETE_ACHIEVEMENT, {
@@ -35,6 +43,7 @@ import MUTATE_SHARE_LIST from "App/GraphQL/Mutations/Share/List";
 
 import RequestCooperationDrawer from "App/Components/Cooperation/Drawer";
 import ShareItemDrawer from "App/Components/Share/Drawer";
+import { ExecutionResult } from "graphql";
 
 interface Props {
   data: Array<ListEdge | AchievementEdge> | Array<AchievementEdge>;
@@ -46,10 +55,22 @@ interface ComposedProps extends Props {
   navigation: NavigationScreenProp<NavigationState>;
   ui: UIContext;
   mutate: MutationFunc;
-  pushCoopRequest: MutationFunc;
-  pushAchievementDeleteRequest: MutationFunc;
-  pushAchievementShareRequest: MutationFunc;
-  pushListShareRequest: MutationFunc;
+  pushCoopRequest: MutationFunc<
+    { requestCoop: RequestCoopPayload },
+    Omit<RequestCoopInput, "clientMutationId">
+  >;
+  pushAchievementDeleteRequest: MutationFunc<
+    DeletePayload,
+    Omit<DeleteInput, "clientMutationId">
+  >;
+  pushAchievementShareRequest: MutationFunc<
+    { shareAchievement: ShareAchievementPayload },
+    Omit<ShareAchievementInput, "clientMutationId">
+  >;
+  pushListShareRequest: MutationFunc<
+    { shareList: ShareListPayload },
+    Omit<ShareListInput, "clientMutationId">
+  >;
 }
 
 interface State {
@@ -183,31 +204,36 @@ const withAchievementActions = <P extends object>(
       if (this.state.selectedItem) {
         // @ts-ignore
         if (this.state.selectedItem.__typename === "List") {
-          const { data } = await this.props.pushListShareRequest({
+          const results = await this.props.pushListShareRequest({
             variables: {
               userIds: model.users.map(({ id }) => id),
               listId: this.state.selectedItem.id
             }
           });
 
-          const { errors } = data.shareList;
-          if (errors && errors.length) {
-            this.props.ui.notifyError(errors[0]);
+          if (results && results.data && results.data) {
+            const { data } = results;
+            const { errors } = data.shareList;
+            if (errors && errors.length) {
+              this.props.ui.notifyError(errors[0]);
+            }
+            await this.props.ui.notifySuccess("Sent");
           }
-          await this.props.ui.notifySuccess("Sent");
         } else {
-          const { data } = await this.props.pushAchievementShareRequest({
+          const results = await this.props.pushAchievementShareRequest({
             variables: {
               userIds: model.users.map(({ id }) => id),
               achievementId: this.state.selectedItem.id
             }
           });
 
-          const { errors } = data.shareAchievement;
-          if (errors && errors.length) {
-            this.props.ui.notifyError(errors[0]);
+          if (results && results.data) {
+            const { errors } = results.data.shareAchievement;
+            if (errors && errors.length) {
+              this.props.ui.notifyError(errors[0]);
+            }
+            await this.props.ui.notifySuccess("Sent");
           }
-          await this.props.ui.notifySuccess("Sent");
         }
       }
       this.reset();
@@ -227,22 +253,25 @@ const withAchievementActions = <P extends object>(
         return;
       }
 
-      const { data } = await this.props.pushCoopRequest({
+      const results = await this.props.pushCoopRequest({
         variables: {
           message: model.message || "",
           userIds: model.users.map(({ id }) => id),
-          achievementId: this.state.selectedItem.id
+          achievementId: this.state.selectedItem.id,
+          listId: null
         }
       });
 
       await this.props.ui.closeNotification();
       await this.reset();
 
-      const { errors } = data.requestCoop;
-      if (errors && errors.length) {
-        this.props.ui.notifyError(errors[0]);
+      if (results && results.data && results.data.requestCoop) {
+        const { errors } = results.data.requestCoop;
+        if (errors && errors.length) {
+          this.props.ui.notifyError(errors[0]);
+        }
+        this.props.ui.notifySuccess("Sent");
       }
-      this.props.ui.notifySuccess("Sent");
     };
 
     /**

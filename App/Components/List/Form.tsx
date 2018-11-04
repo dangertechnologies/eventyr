@@ -28,6 +28,7 @@ interface Props {
   // Preselected Achievements to create list with
   achievementIds?: Array<string>;
   onCreate(list: List): any;
+  onCancel(): any;
   initiallyOpen?: boolean;
 }
 
@@ -39,7 +40,6 @@ interface ComposedProps extends Props {
 
 interface State {
   title: string;
-  visible: boolean;
 }
 
 /**
@@ -53,66 +53,42 @@ interface State {
  */
 class ListForm extends Component<ComposedProps, State> {
   state: State = {
-    title: "",
-    visible: false
+    title: ""
   };
 
-  toggle = () => this.setState({ visible: !this.state.visible });
-
-  componentDidMount() {
-    if (this.props.initiallyOpen) {
-      this.setState({ visible: true });
-    }
-  }
-
   createList = () =>
-    this.setState({ visible: false }, () =>
-      this.props
-        .mutate({
-          variables: {
-            title: this.state.title,
-            achievements: this.props.achievementIds
-          },
-          // @ts-ignore
-          updateQueries
-        })
-        .then((result: MutationResult) =>
-          this.props.ui.notifySuccess("New list").then(() => {
-            this.setState({ title: "" });
-            if (
-              result.data &&
-              result.data.createList &&
-              result.data.createList.list
-            ) {
-              if (this.props.onCreate) {
-                this.props.onCreate(result.data.createList.list);
-              }
-            } else if (
-              result.data &&
-              result.data.createList &&
-              result.data.createList.errors
-            ) {
-              this.props.ui.notifyError(result.data.createList.errors[0]);
+    this.props
+      .mutate({
+        variables: {
+          title: this.state.title,
+          achievements: this.props.achievementIds
+        },
+        // @ts-ignore
+        updateQueries
+      })
+      .then((result: MutationResult) =>
+        this.props.ui.notifySuccess("New list").then(() => {
+          this.setState({ title: "" });
+          if (
+            result.data &&
+            result.data.createList &&
+            result.data.createList.list
+          ) {
+            if (this.props.onCreate) {
+              this.props.onCreate(result.data.createList.list);
             }
-          })
-        )
-    );
+          } else if (
+            result.data &&
+            result.data.createList &&
+            result.data.createList.errors
+          ) {
+            this.props.ui.notifyError(result.data.createList.errors[0]);
+          }
+        })
+      );
 
   render() {
-    return !this.state.visible ? (
-      <View style={styles.buttonContainer}>
-        <Button
-          iconLeft
-          small
-          rounded
-          style={styles.button}
-          onPress={this.toggle}
-        >
-          <Icon name="add-to-list" type="Entypo" style={styles.icon} />
-          <Text>New list</Text>
-        </Button>
-      </View>
-    ) : (
+    return (
       <ListCard>
         <CardItem>
           <Left>
@@ -139,7 +115,7 @@ class ListForm extends Component<ComposedProps, State> {
         </CardItem>
         <CardItem>
           <Left>
-            <Button transparent small rounded onPress={this.toggle}>
+            <Button transparent small rounded onPress={this.props.onCancel}>
               <Text>Cancel</Text>
             </Button>
           </Left>

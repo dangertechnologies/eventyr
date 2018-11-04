@@ -46,7 +46,9 @@ export const CACHE_PERSISTOR = new CachePersistor({
   debug: true
 });
 
-const WEBSOCKET_URI = `ws://${Config.baseUrl}/subscriptions`;
+const WEBSOCKET_URI = `ws://${
+  __DEV__ ? Config.baseUrlDev : Config.baseUrl
+}/subscriptions`;
 
 export const createWebsocketLink = ({
   tokenAccessor

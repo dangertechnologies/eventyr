@@ -9,7 +9,7 @@ import { compose, withProps } from "recompose";
 import { graphql, MutationFunc, MutationResult } from "react-apollo";
 import { intersection } from "lodash";
 
-import { ListCollection } from "App/Components/List/Collection";
+import ListCollection from "App/Components/List/Collection";
 import ListForm from "App/Components/List/Form";
 
 import { List, Query } from "App/Types/GraphQL";
@@ -139,20 +139,16 @@ class ListsScreen extends React.Component<ComposedProps, State> {
     return (
       <Container>
         <Content style={styles.content}>
-          <ListForm
-            onCreate={this.selectList}
-            initiallyOpen={Boolean(
-              this.props.data.lists &&
-                this.props.data.lists.edges &&
-                this.props.data.lists.edges.length < 1
-            )}
-          />
+          <ListForm onCreate={this.selectList} onCancel={() => null} />
           <ListCollection
             selectable
-            currentUser={this.props.currentUser}
-            lists={this.props.data.lists}
-            loading={this.props.data.loading}
-            userId={this.props.currentUser.id || "0"}
+            query={{
+              query: QUERY_USER_LISTS,
+              variables: { userId: this.props.currentUser.id }
+            }}
+            listEdgeMapper={(query: Query) =>
+              (query.lists && query.lists.edges) || []
+            }
             selected={this.state.selectedLists}
             onSelect={this.selectList}
             onDeselect={this.deselectList}
@@ -182,10 +178,5 @@ export default compose<ComposedProps, Props>(
     // @ts-ignore
     achievementIds: navigation.getParam("achievementIds")
   })),
-  graphql(QUERY_USER_LISTS, {
-    options: ({ currentUser }: ComposedProps) => ({
-      variables: { userId: currentUser.id }
-    })
-  }),
   graphql(MUTATE_ADD_TO_LIST)
 )(ListsScreen);

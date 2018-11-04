@@ -1,9 +1,9 @@
 import React from "react";
-import { sortBy, flatten, omit } from "lodash";
+import { flatten, omit } from "lodash";
 
 // @ts-ignore
 import haversine from "haversine-distance";
-import { addSeconds, differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
 import {
   Unlocked,
   Objective,
@@ -24,34 +24,20 @@ import MUTATE_REFRESH_TRACKED, {
 } from "App/GraphQL/Mutations/Achievements/RefreshTracked";
 import QUERY_TRACKED from "App/GraphQL/Queries/Achievements/List";
 import { RehydrationContext, withRehydratedState } from "./RehydrationProvider";
+import { isEqual } from "apollo-utilities";
 
 export interface UnlockContext {
   completeObjective(id: string): Promise<Array<Unlocked>>;
 }
 
-interface TrackedObjective {
-  distance: number;
-  nextCalculation: number;
-  objective: Objective;
-}
 interface State {
   lastTrackRefresh: Date | null;
-  lastRecalculation: Date | null;
   lastTrackRefreshCoordinates: null | {
     latitude: number;
     longitude: number;
   };
-
-  // Assigns every Objective a deadline for when
-  // distance should be re-calculated. The shorter
-  // the distance is to an objective, the shorter
-  // the deadline will be. This allows us to avoid
-  // unnecessary calculations for objectives that are
-  // far away, and we can defer those until later,
-  // while for objectives that are getting closer
-  // and closer, we can check the distance more and
-  // more often to trigger an unlock
-  tracked: Array<TrackedObjective>;
+  refreshing: boolean;
+  objectives: Objective[];
 }
 
 interface Props {
@@ -75,158 +61,104 @@ const { Provider, Consumer } = React.createContext(DEFAULT_CONTEXT);
 
 /**
  * UnlockProvider makes use of LocationProvider to attempt to track the
- * user as he/she moves around in the world. We estimate that it takes
- * 1 second to walk 1 meter, so after fetching all Tracked Achievements,
- * which are the Achievements within a < 10km radius of the user, we
- * assign a distance value retrieved from calculating the haversine
- * distance between the Objective's coordinates and the users position
- * at the time, then find the lowest distance value (e.g the closest Objective),
- * to set a METERS * 1000ms Timeout, at which point we'll recalculate the
- * distance to any and all Objectives with a "nextCalculation" in the past.
- * This goes on and on, until an Objective is within range (30 meters), at
- * which point we'll try to complete it.
+ * user as he/she moves around in the world.
  *
- * When an Objective is completed, it may or may not unlock one or more
- * Achievements, returned from the mutation. These will be shown to the user
- * as a local push notification if any are returned, and the Tracked Achievements
- * will be refetched.
- *
- * This process continues in the background at all times.
- *
- * An alternative way of doing this would be to provide a listener, where
- * all Tracked Objectives register to listen for when the user is near
- * those coordinates, and could be done like:
- * - UnlockContext.addListener(59.8488, 10.49493, () => UnlockContext.completeObjective(objective.id))
- *
- * The reason I've chosen not to do this is because it would require us
- * to check the location at a set interval, e.g every 10 seconds, or less often,
- * whereas with this solution we can check more and more often the closer a
- * user gets, and less and less often the further away a user gets, to save
- * battery usage.
- *
- * Another reason is because we would need a way to "deregister" all previously
- * registered objectives once new Tracked Achievements are fetched, and keep
- * track of which objectives exist and which ones have been removed.
- * We need a way to dynamically do the fetching, and tracking, of location and
- * nearby Achievements in the background - but this may be a viable alternative
- * in the future, since it's a much simpler, and much cleaner solution.
+ * This is a much more simplified version of the old one, that only
+ * does:
+ * 1. Extract all objectives to state
+ * 2. When location changes, check if any objectives in state is within 30m, and attempt unlock
+ * 3. If its been more than a day, or 10km, since we last updated TrackedAchievements, then refresh
+ * 4. If we're already refreshing, dont try to refresh again
  *
  * @class UnlockProvider
  * @extends {React.Component<ComposedProps, State>}
  */
 class UnlockProvider extends React.Component<ComposedProps, State> {
   state: State = {
-    tracked: [],
     lastTrackRefresh: null,
     lastTrackRefreshCoordinates: null,
-    lastRecalculation: null
+    refreshing: false,
+    objectives: []
   };
 
   recalculationTimer: ReturnType<typeof setTimeout> | null = null;
 
-  /**
-   * When new props are received, we parse the TrackedAchievements
-   * into an array of Objectives with some metadata, like distance,
-   * and deadline for the next check of that objective.
-   * We also need to add a timestamp of when we did this last refresh
-   * of TrackedAchievements, to avoid spamming the server with requests
-   * on every prop update, and so we only make a new request if
-   * the user has moved more than 10km since last time, or we have no
-   * previous data.
-   *
-   * TODO: This check is useless unless we actually cache that data with
-   * AsyncStorage / RehydrationProvider, otherwise we'll end up making
-   * requests all the time, if the app has been in the closed, or in the
-   * background. State is not persisted when app is reloaded.
-   *
-   * @param {ComposedProps} { location, data }
-   * @memberof UnlockProvider
-   */
-  static getDerivedStateFromProps(
-    { location, data }: ComposedProps,
-    state: State
-  ) {
-    // Refresh tracked Achievement if they haven't been refreshed in
-    // more than a day, or if distance since last refresh is more than
-    // 10km
-    if (state.lastTrackRefreshCoordinates && location) {
-      const d = haversine(state.lastTrackRefreshCoordinates, location);
-      console.log({ distance: d });
-    }
-
+  static getDerivedStateFromProps(props: ComposedProps, state: State) {
     if (
-      location &&
-      data &&
-      data.achievements &&
-      data.achievements.edges &&
-      data.achievements.edges.length
+      props.data.achievements &&
+      props.data.achievements.edges &&
+      props.data.achievements.edges.length
     ) {
-      const objectives: Array<Objective> = flatten(
-        data.achievements.edges.map(({ node }) => (node ? node.objectives : []))
-      );
-
-      const tracked = sortBy(
-        objectives.filter(node => node && node.lat && node.lng).map(
-          (objective): TrackedObjective => {
-            const distance = haversine(objective, location);
-            return {
-              objective,
-              distance,
-              nextCalculation: addSeconds(
-                new Date(),
-                distance > 15 ? distance : 15
-              ).getTime()
-            };
-          }
-        ),
-        "distance"
-      );
-
-      return { tracked };
+      return {
+        objectives: flatten(
+          props.data.achievements.edges.map(
+            ({ node }) => (node && node.objectives) || []
+          )
+        )
+      };
     }
     return null;
   }
 
-  componentDidUpdate() {
-    if (
-      !this.state.lastTrackRefresh ||
-      (this.state.lastTrackRefreshCoordinates &&
-        haversine(this.state.lastTrackRefreshCoordinates, this.props.location) >
-          10000) ||
-      differenceInDays(this.state.lastTrackRefresh, new Date()) > 1
-    ) {
-      if (this.props.location && this.props.rehydratedState.isLoggedIn) {
-        console.log({ name: "UnlockProvider#refreshTracked" });
-        this.refreshTrackedAchievements();
-      }
-    }
+  /**
+   * If location has changed, we check if we can unlock any tracked
+   * achievements.
+   *
+   * If location remains the same, we do nothing, but we trigger a
+   * refresh of tracked achievements if we've never fetched any before,
+   * if it's more than a day ago, or if we were more than 5 km away
+   * when we did
+   */
+  componentDidUpdate(oldProps: ComposedProps) {
+    const isUpdatedEver = Boolean(this.state.lastTrackRefresh);
+    const isUpdatedLast24H = Boolean(
+      this.state.lastTrackRefresh &&
+        differenceInDays(new Date(), this.state.lastTrackRefresh) < 1
+    );
+    const isUpdatedWithin10km = Boolean(
+      this.state.lastTrackRefreshCoordinates &&
+        haversine(this.state.lastTrackRefreshCoordinates, this.props.location) <
+          10000
+    );
 
-    if (!this.recalculationTimer) {
-      // Find the shortest time interval in this.state.tracked, and set
-      // our recalculationTimer to update lastRecalculation to that time.
-      // This will cause getDerivedStateFromProps to run again, and recalculate
-      // all distances.
-      this.recalculationTimer = setTimeout(
-        () => this.setState({ lastRecalculation: new Date() }),
-        this.state.tracked
-          .map(({ nextCalculation }) => nextCalculation)
-          .sort()[0] - new Date().getTime()
-      );
+    const isPreparedToUpdate = Boolean(
+      this.props.location &&
+        this.props.rehydratedState.isLoggedIn &&
+        !this.state.refreshing
+    );
+
+    if (
+      (!isUpdatedEver || !isUpdatedLast24H || !isUpdatedWithin10km) &&
+      isPreparedToUpdate
+    ) {
+      console.log({
+        name: "UnlockProvider#refreshTracked",
+        isUpdatedEver,
+        isUpdatedLast24H,
+        isUpdatedWithin10km,
+        lastTrackRefresh: this.state.lastTrackRefresh
+      });
+
+      this.setState({ refreshing: true }, this.refreshTrackedAchievements);
     }
 
     // Check if any objective is within 30 meters radius and attempt to unlock it
-    if (this.state.tracked && this.state.tracked.length) {
-      this.state.tracked.forEach((tracked: TrackedObjective) => {
-        const distance = tracked.distance;
+    if (
+      this.state.objectives &&
+      this.state.objectives.length &&
+      !isEqual(oldProps.location, this.props.location)
+    ) {
+      this.state.objectives.forEach((objective: Objective) => {
+        const distance = haversine(objective, this.props.location);
 
         // Attempt unlock
         if (distance < 30) {
           console.log({
             name: "UnlockProvider#attemptUnlock",
             distance,
-            tracked
+            objective
           });
-          this.completeObjective(tracked.objective.id).then(
+          this.completeObjective(objective.id).then(
             (unlocked: Array<Unlocked>) => {
               if (unlocked.length) {
                 this.props.ui.notifySuccess(unlocked[0].achievement.name);
@@ -252,8 +184,8 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
    * @param {State} state
    * @memberof UnlockProvider
    */
-  shouldComponentUpdate() {
-    return false;
+  shouldComponentUpdate(props: ComposedProps) {
+    return !isEqual(props.location, this.props.location);
   }
 
   /**
@@ -273,30 +205,41 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
    *
    * @todo Cache this data with RehydrationProvider
    */
-  refreshTrackedAchievements = () =>
-    this.props.location &&
-    this.props
-      .refreshTracked({
-        variables: {
-          coordinates: [
-            this.props.location.latitude,
-            this.props.location.longitude
-          ]
-        },
-        // @ts-ignore
-        updateQueries: updateTrackedAchievements
-      })
-      .then(
-        (result: any) =>
-          this.props.location &&
-          this.setState({
-            lastTrackRefresh: new Date(),
-            lastTrackRefreshCoordinates: {
-              latitude: this.props.location.latitude,
-              longitude: this.props.location.longitude
-            }
-          })
-      );
+  refreshTrackedAchievements = () => {
+    if (this.props.location) {
+      console.log({ name: "Unlock#refreshTracked", value: "request" });
+      this.props
+        .refreshTracked({
+          variables: {
+            coordinates: [
+              this.props.location.latitude,
+              this.props.location.longitude
+            ]
+          },
+          // @ts-ignore
+          updateQueries: updateTrackedAchievements
+        })
+        .then((result: any) => {
+          if (this.props.location) {
+            this.setState({
+              lastTrackRefresh: new Date(),
+              refreshing: false,
+              lastTrackRefreshCoordinates: {
+                latitude: this.props.location.latitude,
+                longitude: this.props.location.longitude
+              }
+            });
+          } else {
+            console.log({
+              name: "Unlock#error",
+              value: omit(this.props, ["children"])
+            });
+          }
+        });
+    } else {
+      console.log({ name: "Unlock#refreshTracked", value: "failed" });
+    }
+  };
 
   /**
    * Attempts to complete an objective by ID. This presumes
@@ -368,8 +311,8 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
               // us from recalculating every 15 seconds for a completed
               // objective
               this.setState({
-                tracked: this.state.tracked.filter(
-                  ({ objective }) => objective.id !== id
+                objectives: this.state.objectives.filter(
+                  objective => objective.id !== id
                 )
               });
             }
@@ -388,11 +331,6 @@ class UnlockProvider extends React.Component<ComposedProps, State> {
     const contextValue = {
       completeObjective: this.completeObjective
     };
-
-    console.log({
-      name: "UnlockProvider#render",
-      props: omit(this.props, ["children"])
-    });
 
     return <Provider value={contextValue}>{this.props.children}</Provider>;
   }

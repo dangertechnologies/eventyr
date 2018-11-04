@@ -8,7 +8,7 @@ import {
 import { MutationResult } from "react-apollo";
 
 export const updateQueries = {
-  UserLists: (
+  FollowedLists: (
     previous: Query,
     { mutationResult }: { mutationResult: MutationResult }
   ) => {
@@ -19,13 +19,13 @@ export const updateQueries = {
       data.followList &&
       data.followList.list &&
       previous &&
-      previous.lists &&
-      previous.lists.edges &&
-      !previous.lists.edges.some(({ node }) =>
+      previous.followedLists &&
+      previous.followedLists.edges &&
+      !previous.followedLists.edges.some(({ node }) =>
         Boolean(node && node.id === data.followList.list.id)
       )
     ) {
-      previous.lists.edges = previous.lists.edges.concat([
+      previous.followedLists.edges = previous.followedLists.edges.concat([
         {
           // @ts-ignore
           __typename: "ListEdge",

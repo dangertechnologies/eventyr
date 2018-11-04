@@ -47,7 +47,7 @@ interface ComposedProps extends Props {
   actions: Actions;
 }
 
-const Feed = ({ currentUser, actions, ...rest }: ComposedProps) => (
+const Feed = ({ currentUser, location, actions, ...rest }: ComposedProps) => (
   <React.Fragment>
     <FlatList
       {...rest}
@@ -117,7 +117,7 @@ const Feed = ({ currentUser, actions, ...rest }: ComposedProps) => (
 
 export default compose<ComposedProps, Props>(
   withUser,
-  withLocation(),
+  withLocation({ watch: true }),
   withUIHelpers,
   withNavigation,
   withAchievementActions
