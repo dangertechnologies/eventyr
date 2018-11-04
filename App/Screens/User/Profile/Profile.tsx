@@ -30,7 +30,6 @@ import UnlockedAchievements from "./Tabs/UnlockedList";
 import UserAchievements from "./Tabs/AchievementList";
 
 import QUERY_USER_DETAILS from "App/GraphQL/Queries/Users/Details";
-import ListsTab from "./Tabs/ListsTab";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>;
@@ -124,8 +123,6 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
 
           {user &&
             this.props.selectedTab === 0 && <UserAchievements user={user} />}
-
-          {user && this.props.selectedTab === 2 && <ListsTab />}
         </Animated.ScrollView>
         <AnimatedView
           // @ts-ignore
@@ -137,7 +134,7 @@ class ProfileScreen extends React.PureComponent<ComposedProps> {
           }}
         >
           <MaterialTabs
-            items={["Created", "Unlocked", "Lists"]}
+            items={["Created", "Unlocked"]}
             selectedIndex={this.props.selectedTab}
             onChange={this.props.setTab}
             barColor={`${EStyleSheet.value("$colorPrimary")}`}

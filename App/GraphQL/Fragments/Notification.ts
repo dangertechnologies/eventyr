@@ -1,3 +1,5 @@
+import achievement from "./Achievement";
+
 export default `
   fragment notification on Notification {
     id
@@ -96,15 +98,10 @@ export default `
         coop
         coopBonus
         achievement {
-          id
-          name
-          points
-          inLists {
-            id
-            title
-          }
+          ...achievement
         }
       }
     }
   }
+  ${achievement}
 `;

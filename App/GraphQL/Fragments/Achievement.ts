@@ -6,7 +6,7 @@ fragment achievement on Achievement {
   icon
   upvotes
   downvotes
-
+  unlocked
   isSuggestedGlobal
   isGlobal
   cooperationUsers {

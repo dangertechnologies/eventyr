@@ -1,28 +1,52 @@
 import {
   createStackNavigator,
   createSwitchNavigator,
-  createBottomTabNavigator
+  createBottomTabNavigator,
+  createDrawerNavigator,
+  NavigationContainer,
+  DrawerNavigator
 } from "react-navigation";
+
 import { compose } from "recompose";
 
 import AchievementsScreen from "./Routes/AchievementsTab";
-import ProfileScreen from "./Routes/ProfileTab";
 import CreateScreen from "./Routes/CreateTab";
+import MapScreen from "./Routes/MapTab";
+
+// These will be added into the tab bar navigation, but hidden,
+// and we route to them from the NavigationDrawer
 
 import LoginScreen from "../Screens/Login/LoginScreen";
 import AuthorizationScreen from "../Screens/Login/AuthorizationScreen";
 
 import TabBarOptions from "./TabBarOptions";
-
+import NavigationDrawer from "./NavigationDrawer";
 import { withUser } from "../Providers/UserProvider";
 
 const Tabs = {
+  MapScreen,
   AchievementsScreen,
-  CreateScreen,
-  ProfileScreen
+  CreateScreen
 };
 
-const loggedInNavigation = createBottomTabNavigator(Tabs, TabBarOptions);
+const loggedInNavigation = createDrawerNavigator(
+  {
+    Home: {
+      screen: createBottomTabNavigator(Tabs, TabBarOptions),
+      navigationOptions: { header: null }
+    }
+  },
+  {
+    initialRouteName: "Home",
+    contentComponent: NavigationDrawer,
+
+    // @ts-ignore
+    drawerType: "push-screen",
+    navigationOptions: {
+      header: null
+    }
+  }
+);
 
 const loggedOutNavigation = createStackNavigator(
   {

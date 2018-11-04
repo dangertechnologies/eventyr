@@ -1,27 +1,33 @@
 import React from "react";
 import {
-  createStackNavigator,
-  createMaterialTopTabNavigator,
   NavigationScreenConfig,
   NavigationScreenProp,
-  NavigationState
+  NavigationState,
+  createStackNavigator
 } from "react-navigation";
-import { TouchableOpacity } from "react-native";
-import { Icon as NBIcon } from "native-base";
 
 // @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 
-import AchievementsScreen from "App/Screens/Achievements/List/Screen";
+import AchievementsScreen from "App/Screens/Achievements/List";
 import AchievementDetailsScreen from "App/Screens/Achievements/Details";
-import AchievementEditScreen from "App/Screens/Achievements/Edit";
-import NearbyMapScreen from "App/Screens/Achievements/Map";
 import AddToListsScreen, {
   HeaderSaveButton as AddToListsSaveButton
 } from "App/Screens/Lists/AddToLists";
 import ListContentScreen from "App/Screens/Lists/ListContentScreen";
+import SettingsScreen, {
+  HeaderSaveButton as SettingsSaveButton
+} from "App/Screens/User/Settings";
 
-import HeaderStyle from "../HeaderStyle";
+// User screens navigated to from Drawer
+import ProfileScreen from "App/Screens/User/Profile";
+import NotificationsScreen from "App/Screens/User/Notifications";
+import ListsScreen, {
+  HeaderAddButton as AddNewListButton
+} from "App/Screens/User/Lists";
+
+import headerStyle from "../HeaderStyle";
+import { screenWithMenuButton } from "./MenuButton";
 
 const styles = EStyleSheet.create({
   header: {
@@ -46,118 +52,46 @@ const styles = EStyleSheet.create({
 
 const AchievementsTab = createStackNavigator(
   {
-    AchievementScreen: {
-      screen: createMaterialTopTabNavigator(
-        {
-          Browse: AchievementsScreen.All,
-          Community: AchievementsScreen.Community
-        },
-        {
-          swipeEnabled: false,
-          tabBarOptions: {
-            style: {
-              backgroundColor: "#5cb85c"
-            },
-            indicatorStyle: {
-              backgroundColor: "#FFD300"
-            }
-          }
-        }
-      ),
-      navigationOptions: ({
-        navigation
-      }: {
-        navigation: NavigationScreenProp<NavigationState>;
-      }) => ({
-        title: "Achievements",
-        headerStyle: styles.header,
-        headerTintColor: "#FFFFFF",
-        headerRight: (
-          <TouchableOpacity
-            onPress={() => navigation.navigate("NearbyMapScreen")}
-          >
-            <NBIcon name="map" style={styles.headerIcon} />
-          </TouchableOpacity>
-        )
-      })
-    },
+    AchievementScreen: screenWithMenuButton(AchievementsScreen, () => ({
+      title: "Achievements"
+    })),
 
-    EditScreen: {
-      screen: AchievementEditScreen,
+    AddToLists: screenWithMenuButton(
+      AddToListsScreen,
 
-      navigationOptions: {
-        headerStyle: styles.header,
-        headerTintColor: "#FFFFFF",
-        title: "Edit"
-      }
-    },
-
-    AddToLists: {
-      screen: AddToListsScreen,
-
-      navigationOptions: ({
-        navigation
-      }: {
-        navigation: NavigationScreenProp<NavigationState>;
-      }) => ({
+      ({ navigation }) => ({
         title: "Add to Lists",
-        headerStyle: styles.header,
-        headerTintColor: "#FFFFFF",
-        headerLeft: null,
         headerRight: <AddToListsSaveButton state={navigation.state} />
       })
-    },
+    ),
 
-    ListContent: {
-      screen: ListContentScreen,
-      navigationOptions: ({
-        navigation
-      }: {
-        navigation: NavigationScreenProp<NavigationState>;
-      }) => ({
-        title: navigation.getParam("list")
-          ? navigation.getParam("list").title
-          : "List",
-        headerStyle: styles.header,
-        headerTintColor: "#FFFFFF",
-        headerLeft: null
-      })
-    },
+    ListContent: screenWithMenuButton(ListContentScreen, ({ navigation }) => ({
+      title: navigation.getParam("list")
+        ? navigation.getParam("list").title
+        : "List"
+    })),
 
-    DetailsScreen: {
-      screen: AchievementDetailsScreen,
+    DetailsScreen: screenWithMenuButton(AchievementDetailsScreen, () => ({
+      title: "Details"
+    })),
 
-      navigationOptions: {
-        ...HeaderStyle,
-        headerTintColor: "#FFFFFF",
-        title: "Details"
-      }
-    },
+    ProfileScreen: screenWithMenuButton(ProfileScreen, ({ navigation }) => ({
+      title: navigation.getParam("title", "Profile")
+    })),
 
-    NearbyMapScreen: {
-      screen: NearbyMapScreen,
+    SettingsScreen: screenWithMenuButton(SettingsScreen, ({ navigation }) => ({
+      title: "Settings",
+      headerRight: <SettingsSaveButton navigation={navigation} />
+    })),
 
-      navigationOptions: ({
-        navigation
-      }: {
-        navigation: NavigationScreenProp<NavigationState>;
-      }) => ({
-        title: "Achievements",
-        headerStyle: styles.header,
-        headerTintColor: "#FFFFFF",
-        headerLeft: null,
-
-        headerRight: (
-          <TouchableOpacity
-            onPress={() => navigation.navigate("AchievementScreen")}
-          >
-            <NBIcon name="list" type="Entypo" style={styles.headerIcon} />
-          </TouchableOpacity>
-        )
-      })
-    }
+    NotificationsScreen: screenWithMenuButton(NotificationsScreen, () => ({
+      title: "Notifications"
+    })),
+    ListsScreen: screenWithMenuButton(ListsScreen, ({ navigation }) => ({
+      title: "Lists",
+      headerRight: <AddNewListButton navigation={navigation} />
+    }))
   },
-  //{ initialRouteName: "NearbyMapScreen" }
   { initialRouteName: "AchievementScreen" }
 );
 

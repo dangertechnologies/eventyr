@@ -3,18 +3,14 @@ import React from "react";
 /** COMPONENTS **/
 import { View, Animated, StyleSheet, Dimensions } from "react-native";
 import { Icon } from "native-base";
-import {
-  View as AnimatedView,
-  Text as AnimatedText,
-  Image
-} from "react-native-animatable";
+import { View as AnimatedView } from "react-native-animatable";
 
 import EStyleSheet from "react-native-extended-stylesheet";
 import Config from "../../../app.json";
 
 /** TYPES **/
 import { User } from "App/Types/GraphQL";
-import Points from "../../Components/Profile/Points";
+import Points from "App/Components/Profile/Points";
 
 interface Props {
   user: User;

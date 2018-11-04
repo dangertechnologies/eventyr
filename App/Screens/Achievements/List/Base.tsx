@@ -29,30 +29,32 @@ import {
   ListEdge,
   AchievementEdge
 } from "App/Types/GraphQL";
-import { MutateProps } from "react-apollo";
 
 import QUERY_ACHIEVEMENTS from "App/GraphQL/Queries/Achievements/List";
 import QUERY_LISTS from "App/GraphQL/Queries/Lists/NearbyLists";
 
 import Feed from "./Feed";
 
-interface Props extends MutateProps {
+interface Props {
+  type: "all" | "personal" | "suggested" | "community";
+  list?: List;
+  feed?: Array<ListEdge | AchievementEdge>;
+}
+
+interface ComposedProps extends Props {
   listsQuery: DataValue<Query>;
   achievementsQuery: DataValue<Query>;
   navigation: NavigationScreenProp<NavigationState>;
-  type: "all" | "personal" | "suggested" | "community";
-  list?: List;
   ui: UIContext;
   location: LocationContext;
   currentUser: UserContext;
-  feed?: Array<ListEdge | AchievementEdge>;
 }
 
 const FeedFactory = ({
   location,
   listsQuery,
   achievementsQuery
-}: Pick<Props, "location" | "listsQuery" | "achievementsQuery">) =>
+}: Pick<ComposedProps, "location" | "listsQuery" | "achievementsQuery">) =>
   location &&
   location.latitude &&
   location.longitude &&
@@ -110,7 +112,11 @@ const FeedFactory = ({
       // component display only Achievements instead
       undefined;
 
-const AchievementsScreen = ({ listsQuery, achievementsQuery, feed }: Props) => {
+const AchievementsScreen = ({
+  listsQuery,
+  achievementsQuery,
+  feed
+}: ComposedProps) => {
   if (listsQuery.error) {
     return <Text>{listsQuery.error.toString()}</Text>;
   }
@@ -198,58 +204,44 @@ const styles = EStyleSheet.create({
   }
 });
 
-const ListWithDefaultProps = (
-  defaultProps: object = {}
-): React.ComponentType<Props> => {
-  const ListScreen: React.ComponentType<Props> = compose<Props, Props>(
-    withProps(defaultProps),
-    withLocation(),
+export default compose<ComposedProps, Props>(
+  withLocation(),
 
-    shouldUpdate(
-      (props: Props, newProps: Props) =>
-        !isEqual(omit(props, ["location"]), omit(newProps, ["location"]))
-    ),
-    // Query for Achievements nearby
-    graphql(QUERY_ACHIEVEMENTS, {
-      name: "achievementsQuery",
-      options: ({ type, location }: Props) => ({
-        variables: {
-          type,
-          coordinates:
-            location && location.latitude && location.longitude
-              ? [location.latitude, location.longitude]
-              : null
-        }
-      })
-    }),
+  shouldUpdate(
+    (props: Props, newProps: Props) =>
+      !isEqual(omit(props, ["location"]), omit(newProps, ["location"]))
+  ),
+  // Query for Achievements nearby
+  graphql(QUERY_ACHIEVEMENTS, {
+    name: "achievementsQuery",
+    options: ({ type, location }: ComposedProps) => ({
+      variables: {
+        type,
+        coordinates:
+          location && location.latitude && location.longitude
+            ? [location.latitude, location.longitude]
+            : null
+      }
+    })
+  }),
 
-    // Query for Lists nearby
-    graphql(QUERY_LISTS, {
-      name: "listsQuery",
-      options: ({ type, location }: Props) => ({
-        variables: {
-          type,
-          coordinates:
-            location && location.latitude && location.longitude
-              ? [location.latitude, location.longitude]
-              : null
-        }
-      })
-    }),
+  // Query for Lists nearby
+  graphql(QUERY_LISTS, {
+    name: "listsQuery",
+    options: ({ type, location }: ComposedProps) => ({
+      variables: {
+        type,
+        coordinates:
+          location && location.latitude && location.longitude
+            ? [location.latitude, location.longitude]
+            : null
+      }
+    })
+  }),
 
-    // Merge Lists and Achievements and order by distance
-    withProps(FeedFactory),
+  // Merge Lists and Achievements and order by distance
+  withProps(FeedFactory),
 
-    withUIHelpers,
-    withUser
-  )(AchievementsScreen);
-
-  return ListScreen;
-};
-
-export default {
-  All: ListWithDefaultProps({ type: "all" }),
-  Suggested: ListWithDefaultProps({ type: "suggested" }),
-  Personal: ListWithDefaultProps({ type: "personal" }),
-  Community: ListWithDefaultProps({ type: "community" })
-};
+  withUIHelpers,
+  withUser
+)(AchievementsScreen);

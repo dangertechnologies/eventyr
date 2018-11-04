@@ -11,7 +11,8 @@ const RemoteImage = ({ source, ...rest }: Props) => {
     source &&
     typeof source === "object" &&
     source.uri &&
-    !source.uri.startsWith("http")
+    !source.uri.startsWith("http") &&
+    !source.uri.startsWith("data")
   ) {
     src = {
       ...source,

@@ -33,6 +33,7 @@ PODS:
   - lottie-react-native (2.5.9):
     - lottie-ios
     - React
+  - QBImagePickerController (3.4.0)
   - React (0.57.1):
     - React/Core (= 0.57.1)
   - react-native-blur (0.8.0):
@@ -93,10 +94,15 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
-  - RNFS (2.12.0):
+  - RNFS (2.12.1):
     - React
+  - RNImageCropPicker (0.21.3):
+    - QBImagePickerController
+    - React/Core
+    - RSKImageCropper
   - RNSVG (6.5.2):
     - React
+  - RSKImageCropper (2.2.1)
   - SDWebImage/Core (4.4.2)
   - SDWebImage/GIF (4.4.2):
     - FLAnimatedImage (~> 1.0)
@@ -136,6 +142,7 @@ DEPENDENCIES:
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
   - RNFS (from `../node_modules/react-native-fs`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - SentryReactNative (from `../node_modules/react-native-sentry`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga/yoga.podspec`)
@@ -147,6 +154,8 @@ SPEC REPOS:
     - FLAnimatedImage
     - Google-Maps-iOS-Utils
     - GoogleMaps
+    - QBImagePickerController
+    - RSKImageCropper
     - SDWebImage
     - Sentry
 
@@ -173,6 +182,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   RNFS:
     :path: "../node_modules/react-native-fs"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   SentryReactNative:
@@ -191,18 +202,21 @@ SPEC CHECKSUMS:
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   lottie-ios: 9f24be3ecb13412223b6ac70d97437742b0e3de1
   lottie-react-native: db4bd75685428c4ad0ec2f913145abff3d38b640
+  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
   react-native-blur: c35c1f6c2c76db7108bde7ed343bd2b01d64e0c0
   react-native-fast-image: cba3d9bf9c2cf8ddb643d887a686c53a5dd90a2c
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
   RNFS: bbb1a64eb245763daf34aea86f97c97c4e85f74c
+  RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
   RNSVG: 6252323c0312735f0af5f58b5adf2965b6a9ffbf
+  RSKImageCropper: 98296ad26b41753f796b6898d015509598f13d97
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   Sentry: a38f7879924c02239e121b19d993d23bdd1684db
   SentryReactNative: d476259b21060a59dc637a29a40d60f0aac09cf7
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: cb8a7136f911630d53973e6dc52f40fcd987e57e
+PODFILE CHECKSUM: 7366d932619a138747a2f8c8e6fd284da55c8c19
 
 COCOAPODS: 1.5.3

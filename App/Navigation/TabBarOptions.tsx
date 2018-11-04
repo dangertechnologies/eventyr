@@ -9,13 +9,12 @@ import Ionicon from "react-native-vector-icons/Ionicons";
 
 import CreateScreenIcon from "./CreateButton";
 
-// @ts-ignore
 import EStyleSheet from "react-native-extended-stylesheet";
 import color from "color";
 
 const TabBarOptions: BottomTabNavigatorConfig = {
-  initialRouteName: "AchievementsScreen",
-  order: ["AchievementsScreen", "CreateScreen", "ProfileScreen"],
+  initialRouteName: __DEV__ ? "AchievementsScreen" : "MapScreen",
+  order: ["MapScreen", "CreateScreen", "AchievementsScreen"],
   // Default config for all screens
   tabBarPosition: "bottom",
   swipeEnabled: true,
@@ -43,7 +42,7 @@ const TabBarOptions: BottomTabNavigatorConfig = {
 
       switch (routeName) {
         case "AchievementsScreen":
-          return <Icon name="map" color={tint as string} size={25} />;
+          return <Icon name="view-list" color={tint as string} size={25} />;
         case "CreateScreen":
           return <CreateScreenIcon />;
         case "ProfileScreen":

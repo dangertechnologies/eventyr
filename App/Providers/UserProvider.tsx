@@ -13,6 +13,7 @@ import QUERY_NOTIFICATIONS, {
 } from "App/GraphQL/Queries/Users/Notifications";
 import { withUIHelpers, UIContext } from "./UIProvider";
 import notificationTitle from "App/Helpers/notificationTitle";
+import { Sentry } from "react-native-sentry";
 
 export interface User {
   id: string | null;
@@ -45,9 +46,7 @@ interface ComposedPropsWithNotifications extends ComposedProps {
   ui: UIContext;
 }
 
-type State = {
-  updatedSinceLogin: boolean;
-};
+type State = UserContext;
 
 const LOGGED_OUT_USER = {
   id: "0",
@@ -79,13 +78,47 @@ class UserProvider extends React.Component<
         id
         name
         email
+        avatar
+        allowCoop
       }
     `
   };
 
-  state: State = {
-    updatedSinceLogin: false
-  };
+  static getDerivedStateFromProps(props: ComposedPropsWithNotifications) {
+    const { userQuery, rehydratedState, notificationsQuery } = props;
+
+    // Set up Sentry user object so we can track the user
+    // that received the error for better debugging :-)
+    if (!__DEV__ && userQuery && userQuery.currentUser) {
+      Sentry.setUserContext({
+        email: userQuery.currentUser.email,
+        username: userQuery.currentUser.name,
+        id: userQuery.currentUser.id
+      });
+    }
+
+    return {
+      ...((userQuery && userQuery.currentUser) || LOGGED_OUT_USER),
+      authenticationToken: rehydratedState.authenticationToken,
+      refreshCredentials: () => null,
+      logout: rehydratedState.clear,
+      isLoggedIn: rehydratedState.isLoggedIn,
+      refetchNotifications: notificationsQuery
+        ? notificationsQuery.refetch
+        : null,
+      notificationsLoading: notificationsQuery
+        ? notificationsQuery.loading
+        : false,
+      notifications:
+        notificationsQuery &&
+        notificationsQuery.notifications &&
+        notificationsQuery.notifications.edges
+          ? notificationsQuery.notifications.edges.map(
+              ({ node }) => node as Notification
+            )
+          : []
+    };
+  }
 
   componentDidUpdate() {
     const { rehydratedState } = this.props;
@@ -108,35 +141,11 @@ class UserProvider extends React.Component<
   };
 
   render() {
-    const { rehydratedState, userQuery, notificationsQuery } = this.props;
-
-    const contextValue: UserContext = {
-      ...((userQuery && userQuery.currentUser) || LOGGED_OUT_USER),
-      authenticationToken: rehydratedState.authenticationToken,
-      refreshCredentials: () => null,
-      logout: rehydratedState.clear,
-      isLoggedIn: rehydratedState.isLoggedIn,
-      refetchNotifications: notificationsQuery
-        ? notificationsQuery.refetch
-        : null,
-      notificationsLoading: notificationsQuery
-        ? notificationsQuery.loading
-        : false,
-      notifications:
-        notificationsQuery &&
-        notificationsQuery.notifications &&
-        notificationsQuery.notifications.edges
-          ? notificationsQuery.notifications.edges.map(
-              ({ node }) => node as Notification
-            )
-          : []
-    };
-
     console.log({
       provider: "User",
-      value: contextValue
+      value: this.state
     });
-    return <Provider value={contextValue}>{this.props.children}</Provider>;
+    return <Provider value={this.state}>{this.props.children}</Provider>;
   }
 }
 

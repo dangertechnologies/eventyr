@@ -2,10 +2,7 @@ import React from "react";
 
 /** PROVIDERS **/
 import withLocation from "App/Providers/LocationProvider";
-import {
-  withUnlockHelpers,
-  UnlockContext
-} from "App/Providers/__deprecated_UnlockProvider";
+import { withUnlockHelpers, UnlockContext } from "App/Providers/UnlockProvider";
 
 /** COMPONENTS **/
 import { View, StyleSheet, FlatList } from "react-native";

@@ -3,16 +3,19 @@ import { View, StatusBar } from "react-native";
 import { Root } from "native-base";
 import { PortalProvider, WhitePortal } from "react-native-portal";
 import { Sentry } from "react-native-sentry";
-Sentry.config(
-  "https://c543dd7d43de4436acff3887eb457577@sentry.io/1314735"
-).install();
+
+if (!__DEV__) {
+  Sentry.config(
+    "https://c543dd7d43de4436acff3887eb457577@sentry.io/1314735"
+  ).install();
+}
 
 // Providers
 import OneSignal from "./Providers/OneSignalProvider";
 import Rehydration from "./Providers/RehydrationProvider";
 import CurrentUser from "./Providers/UserProvider";
 import UI from "./Providers/UIProvider";
-import Unlock from "./Providers/__deprecated_UnlockProvider";
+import Unlock from "./Providers/UnlockProvider";
 import * as Location from "./Providers/LocationProvider";
 
 import Navigation from "./Navigation/Router";

@@ -27,6 +27,7 @@ export default gql`
         personalPoints
         unlockedCount
         coopPoints
+        allowCoop
 
         role {
           id
