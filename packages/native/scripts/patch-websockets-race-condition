@@ -1,0 +1,4 @@
+echo "Patching RCTSRWebSocket.m from https://github.com/facebook/react-native/pull/19489"
+# The patch iself outputs a failure when the file is already patched therefor the output is silenced and the exit code is ignored
+# Important: Note that due to the above the patch might silently fail to apply in a future version of react-native!
+curl -sS https://patch-diff.githubusercontent.com/raw/facebook/react-native/pull/19489.patch | patch -p1 -N -d ../node_modules/react-native &> /dev/null || true

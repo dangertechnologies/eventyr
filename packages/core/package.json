@@ -1,0 +1,79 @@
+{
+  "name": "@eventyr/core",
+  "version": "1.0.0",
+  "description": "Shared base components used both by web and app",
+  "author": "Victor Rudolfsson",
+  "homepage": "https://gitlab.com/Achievements/eventyr#readme",
+  "license": "ISC",
+  "main": "index.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/Achievements/eventyr.git"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/Achievements/eventyr/issues"
+  },
+  "private": true,
+  "resolutions": {
+    "@types/react": "^16.7.6",
+    "@babel/node": "^7.0.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-transform-modules-umd": "^7.0.0",
+    "@babel/plugin-transform-react-jsx-source": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.0.0",
+    "@babel/code-frame": "^7.0.0",
+    "@babel/traverse": "^7.0.0",
+    "@babel/helper-module-imports": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-preset-react-native": "^5.0.2",
+    "babel-register": "7.0.0-beta.3"
+  },
+  "devDependencies": {
+    "@types/actioncable": "^5.2.0",
+    "@types/date-fns": "^2.6.0",
+    "@types/graphql": "^14.0.3",
+    "@types/jest": "^23.3.1",
+    "@types/jwt-decode": "^2.2.1",
+    "@types/lodash": "^4.14.116",
+    "@types/node": "^10.12.5",
+    "@types/randomcolor": "^0.5.0",
+    "@types/react": "^16.7.6",
+    "@types/react-test-renderer": "^16.0.2",
+    "@types/recompose": "0.27.1",
+    "jest": "^23.5.0",
+    "ts-jest": "^23.1.4",
+    "typescript": "^3.0.3"
+  },
+  "dependencies": {
+    "@eventyr/graphql": "^1.0.0",
+    "actioncable": "^5.2.1",
+    "apollo-cache-inmemory": "^1.3.9",
+    "apollo-cache-persist": "^0.1.1",
+    "apollo-client": "^2.4.5",
+    "apollo-link": "^1.2.3",
+    "apollo-link-batch-http": "^1.2.3",
+    "apollo-link-error": "^1.1.1",
+    "graphql": "^14.0.2",
+    "graphql-ruby-client": "^1.5.0",
+    "graphql-tag": "^2.10.0",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.10",
+    "react": "^16.6.1",
+    "react-apollo": "^2.2.4",
+    "react-native": "^0.57.4",
+    "recompose": "^0.30.0",
+    "redux-persist-fs-storage": "^1.2.2"
+  }
+}
