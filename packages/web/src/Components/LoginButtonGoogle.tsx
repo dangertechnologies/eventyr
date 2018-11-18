@@ -31,6 +31,8 @@ class GoogleButton extends React.Component<ComposedProps> {
   ) => {
     const authResponse = await (response as GoogleLoginResponse).getAuthResponse();
 
+    console.log({ authResponse });
+
     this.props
       .mutate({
         variables: { provider: "google", token: authResponse.id_token },
@@ -75,7 +77,6 @@ class GoogleButton extends React.Component<ComposedProps> {
           </Button>
         )}
         buttonText="Login"
-        accessType="offline"
         scope={"openid profile email"}
         onSuccess={this.onLogin}
         onFailure={this.onFailure}

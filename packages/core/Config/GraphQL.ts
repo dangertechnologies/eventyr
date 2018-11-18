@@ -16,7 +16,7 @@ import { Operation } from "apollo-link";
 import { DefinitionNode } from "graphql";
 
 import introspectionSchema from "@eventyr/graphql/fragmentMatcher.json";
-import Config from "./app.json";
+import Config from "./Constants";
 
 // @ts-ignore
 const introspectionQueryResultData: IntrospectionResultData = introspectionSchema;

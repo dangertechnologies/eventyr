@@ -42,7 +42,8 @@ const ActionCableJwt = {
             // @ts-ignore
             ActionCable.INTERNAL.protocols.concat(jwt)
           );
-          this.webSocket.protocol = "actioncable-v1-json";
+          console.log({ ws: this.webSocket });
+          // this.webSocket.protocol = "actioncable-v1-json";
           this.installEventHandlers();
           this.monitor.start();
         }

@@ -1,15 +1,15 @@
 import gql from "graphql-tag";
-import objectiveWithAchievements from "../../Fragments/ObjectiveWithAchievements";
+import achievementWithObjectives from "../../Fragments/AchievementWithObjectives";
 
 export default gql`
   query ObjectivesNearby($latitude: Float!, $longitude: Float!) {
-    objectives(near: [$latitude, $longitude]) {
+    achievements(near: [$latitude, $longitude]) {
       edges {
         node {
-          ...objectiveWithAchievements
+          ...achievementWithObjectives
         }
       }
     }
   }
-  ${objectiveWithAchievements}
+  ${achievementWithObjectives}
 `;

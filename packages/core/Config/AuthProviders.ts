@@ -28,7 +28,12 @@ export default {
       authorizationEndpoint: "https://graph.facebook.com/oauth/authorize"
     }
   }),
-  google: ({ clientId }: Omit<OAuthClientOptions, "clientSecret">) => ({
+  google: ({
+    clientId
+  }: Pick<
+    OAuthClientOptions,
+    keyof Exclude<OAuthClientOptions, "clientSecret">
+  >) => ({
     issuer: "https://accounts.google.com",
     clientId: `${clientId}.apps.googleusercontent.com`,
     redirectUrl: `com.googleusercontent.apps.${clientId}:/oauth2redirect/google`,
