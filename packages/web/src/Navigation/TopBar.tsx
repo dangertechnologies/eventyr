@@ -10,7 +10,6 @@ import {
   Divider,
   IconButton
 } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import MenuIcon from "@material-ui/icons/Person";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -19,72 +18,10 @@ import Menu from "./Menu";
 
 const drawerWidth = 240;
 
-const styles = (theme: Theme) => ({
-  root: {
-    display: "flex"
-  },
-  appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 20,
-    color: "#FFFFFF"
-  },
-  hide: {
-    display: "none"
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0
-  },
-  drawerPaper: {
-    width: drawerWidth
-  },
-  drawerHeader: {
-    display: "flex",
-    alignItems: "center",
-    padding: "0 8px",
-    ...theme.mixins.toolbar,
-    justifyContent: "flex-end"
-  },
-  content: {
-    flexDirection: "column" as "column",
-    flexGrow: 1,
-    display: "flex",
-    paddingTop: theme.spacing.unit * 8,
-    paddingBottom: theme.spacing.unit * 3,
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: 0
-  },
-  contentShift: {
-    display: "flex",
-    flexDirection: "column" as "column",
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: drawerWidth
-  }
-});
-
 interface Props {
   children: React.ReactNode;
-  title: string;
+  title?: string;
+  contentRight?: React.ReactNode;
 }
 
 interface ComposedProps extends Props {
@@ -110,7 +47,7 @@ class TopBar extends React.Component<ComposedProps, State> {
   };
 
   render() {
-    const { classes, theme, children, title } = this.props;
+    const { classes, theme, children, title, contentRight } = this.props;
     const { open } = this.state;
 
     return (
@@ -132,10 +69,26 @@ class TopBar extends React.Component<ComposedProps, State> {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" color="textSecondary" noWrap>
-              {title}
-            </Typography>
+            {title ? (
+              <Typography variant="h6" color="textSecondary" noWrap>
+                {title}
+              </Typography>
+            ) : (
+              <Typography
+                variant="body1"
+                color="textSecondary"
+                noWrap
+                style={{
+                  transform: "rotate(-5deg)",
+                  fontFamily: "italianno",
+                  fontSize: "2.5rem"
+                }}
+              >
+                Eventyr
+              </Typography>
+            )}
           </Toolbar>
+          {contentRight}
         </AppBar>
         <Drawer
           className={classes.drawer}
@@ -147,7 +100,14 @@ class TopBar extends React.Component<ComposedProps, State> {
           }}
         >
           <div className={classes.drawerHeader}>
-            <IconButton onClick={this.handleDrawerClose}>
+            <Typography
+              variant="display1"
+              classes={{ root: classes.logoText }}
+              color="textSecondary"
+            >
+              Eventyr
+            </Typography>
+            <IconButton onClick={this.handleDrawerClose} color="inherit">
               {theme.direction === "ltr" ? (
                 <ChevronLeftIcon />
               ) : (
@@ -167,6 +127,83 @@ class TopBar extends React.Component<ComposedProps, State> {
     );
   }
 }
+
+const styles = (theme: Theme) => ({
+  root: {
+    display: "flex"
+  },
+  appBar: {
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    display: "flex",
+    flexDirection: "row" as "row",
+    justifyContent: "space-between",
+    paddingRight: theme.spacing.unit * 3
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  },
+  menuButton: {
+    marginLeft: 12,
+    marginRight: 20,
+    color: "#FFFFFF"
+  },
+  hide: {
+    display: "none"
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0
+  },
+  drawerPaper: {
+    width: drawerWidth,
+    backgroundColor: theme.palette.primary.main
+  },
+  drawerHeader: {
+    display: "flex",
+    alignItems: "center",
+    color: theme.palette.secondary.main,
+    padding: "0 8px",
+    ...theme.mixins.toolbar,
+    justifyContent: "space-between",
+    paddingLeft: theme.spacing.unit * 2
+  },
+
+  logoText: {
+    fontFamily: "'Italianno', cursive",
+    transform: "rotate(-5deg)",
+    fontSize: "3rem",
+    paddingLeft: "calc(25%)"
+  },
+  content: {
+    flexDirection: "column" as "column",
+    flexGrow: 1,
+    display: "flex",
+    paddingTop: theme.spacing.unit * 8,
+    paddingBottom: theme.spacing.unit * 3,
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginLeft: 0
+  },
+  contentShift: {
+    display: "flex",
+    flexDirection: "column" as "column",
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: drawerWidth
+  }
+});
 
 export default compose<ComposedProps, Props>(
   withStyles(styles, { withTheme: true })

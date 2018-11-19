@@ -6,7 +6,11 @@ import {
   Divider,
   ListItemText,
   ListItemIcon,
-  withStyles
+  withStyles,
+  Grid,
+  Typography,
+  Avatar,
+  Theme
 } from "@material-ui/core";
 
 import { RehydratedState, User } from "@eventyr/core";
@@ -20,42 +24,92 @@ interface Props {}
 
 interface ComposedProps extends Props {
   currentUser: UserContext;
+  classes: { [key: string]: string };
 }
 
-const Menu = () => (
+const Menu = ({ currentUser, classes }: ComposedProps) => (
   <>
+    <Grid container classes={{ container: classes.userInfo }}>
+      {currentUser && currentUser.avatar ? (
+        <Avatar
+          sizes="lg"
+          src={`${
+            process.env.NODE_ENV !== "production"
+              ? process.env.BASE_URL_DEV
+              : process.env.BASE_URL
+          }${currentUser.avatar}`}
+          classes={{ root: classes.avatar }}
+        />
+      ) : null}
+      {currentUser && currentUser.name ? (
+        <Typography variant="title" color="textSecondary">
+          {currentUser.name}
+        </Typography>
+      ) : null}
+    </Grid>
+    <Divider />
     <List>
       <ListItem button>
-        <ListItemIcon>
+        <ListItemIcon classes={{ root: classes.itemText }}>
           <HomeIcon />
         </ListItemIcon>
-        <ListItemText primary="Home" />
+        <ListItemText primary="Home" classes={{ primary: classes.itemText }} />
       </ListItem>
 
       <ListItem button>
-        <ListItemIcon>
+        <ListItemIcon classes={{ root: classes.itemText }}>
           <NotificationIcon />
         </ListItemIcon>
-        <ListItemText primary="Notifications" />
+        <ListItemText
+          primary="Notifications"
+          classes={{ primary: classes.itemText }}
+        />
       </ListItem>
 
       <ListItem button>
-        <ListItemIcon>
+        <ListItemIcon classes={{ root: classes.itemText }}>
           <ListIcon />
         </ListItemIcon>
-        <ListItemText primary="Lists" />
+        <ListItemText primary="Lists" classes={{ primary: classes.itemText }} />
       </ListItem>
     </List>
     <Divider />
     <List>
       <ListItem button>
-        <ListItemIcon>
+        <ListItemIcon classes={{ root: classes.itemText }}>
           <SettingsIcon />
         </ListItemIcon>
-        <ListItemText primary="Settings" />
+        <ListItemText
+          primary="Settings"
+          classes={{ primary: classes.itemText }}
+        />
       </ListItem>
     </List>
   </>
 );
 
-export default compose<ComposedProps, Props>(User.withUser)(Menu);
+const styles = (theme: Theme) => ({
+  itemText: {
+    color: theme.palette.text.secondary
+  },
+
+  avatar: {
+    width: 80,
+    height: 80,
+    margin: 10,
+    border: `2px solid ${theme.palette.primary.dark}`
+  },
+  userInfo: {
+    marginBottom: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit * 3,
+    flexDirection: "unset" as "unset",
+    alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center"
+  }
+});
+
+export default compose<ComposedProps, Props>(
+  User.withUser,
+  withStyles(styles)
+)(Menu);

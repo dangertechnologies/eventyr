@@ -7,13 +7,22 @@ import white from "@material-ui/core/colors/grey";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { RehydratedState, User } from "@eventyr/core";
 
-import LandingPage from "./Screens/Landing";
+import LandingPage from "./Screens/Landing/Page";
 import ManageCreatedPage from "./Screens/Achievements/Manage/Created";
+
+require("./index.css");
 
 const theme = createMuiTheme({
   palette: {
-    secondary: white,
-    primary: green,
+    secondary: {
+      dark: "#DDDDDD",
+      light: "#FFFFFF",
+      main: "#EFEFEF"
+    },
+    primary: {
+      ...green,
+      contrastText: "#EFEFEF"
+    },
     text: {
       secondary: "#FFFFFF"
     }
