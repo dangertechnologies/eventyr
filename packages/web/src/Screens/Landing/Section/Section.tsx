@@ -12,26 +12,31 @@ interface ComposedProps extends Props {
   theme: Theme;
 }
 
-const Section = ({
-  classes,
-  backgroundImage,
-  backgroundPosition,
-  children
-}: ComposedProps) => (
-  <Grid
-    container
-    classes={{ container: classes.header }}
-    style={{
-      backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-      backgroundSize: "cover",
-      backgroundPositionY: backgroundPosition || "center",
-      alignItems: "center"
-    }}
-    justify="center"
-  >
-    {children}
-  </Grid>
-);
+const Section = ({ classes, backgroundImage, children }: ComposedProps) => {
+  const viewHeight = React.Children.map(children, () => 1).length * 100;
+
+  return (
+    <Grid
+      container
+      classes={{ container: classes.header }}
+      className="snapping-section"
+      style={{
+        height: `${viewHeight}vh`,
+
+        // opacity: visible ? progress + 0.1 : 0,
+        backgroundImage: backgroundImage
+          ? `url(${backgroundImage})`
+          : undefined,
+        backgroundSize: "cover",
+        // Background position moves closer to 50% as we scroll
+        alignItems: "center"
+      }}
+      justify="center"
+    >
+      {children}
+    </Grid>
+  );
+};
 
 const styles = (theme: Theme) => ({
   header: {

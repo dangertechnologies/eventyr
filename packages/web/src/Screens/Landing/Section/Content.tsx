@@ -8,6 +8,7 @@ interface Props {
   children: string;
   reverse?: boolean;
   contentAside?: React.ReactNode;
+  progress: number;
 }
 interface ComposedProps extends Props {
   classes: { [key: string]: string };
@@ -19,44 +20,55 @@ const Section = ({
   contentAside,
   reverse,
   children,
+  progress,
   title
-}: ComposedProps) => (
-  <Grid item xs={12} lg={8}>
-    <Grid
-      container
-      direction={reverse === true ? "row-reverse" : "row"}
-      classes={{ container: classes.header }}
-    >
-      <Grid item xs={5} style={{ paddingTop: 64 }}>
-        <Typography
-          variant="display2"
-          color="textSecondary"
-          classes={{ display2: classes.shadow }}
-        >
-          {title}
-        </Typography>
-        {children.split(/\n\s*\n\s*/).map(paragraph => (
+}: ComposedProps) => {
+  let opacity;
+  if (progress < 0.1) {
+    opacity = progress * (100 * 0.1);
+  } else {
+    opacity = 1;
+  }
+  console.log({ progress, opacity });
+  return (
+    <Grid item xs={12} lg={8}>
+      <Grid
+        container
+        direction={reverse === true ? "row-reverse" : "row"}
+        style={{ opacity: opacity > 1 ? 1 - opacity : opacity }}
+        classes={{ container: classes.header }}
+      >
+        <Grid item xs={5} style={{ paddingTop: 64 }}>
           <Typography
-            variant="headline"
+            variant="display2"
             color="textSecondary"
-            classes={{ headline: classes.shadow }}
-            style={{ marginTop: 8 }}
+            classes={{ display2: classes.shadow }}
           >
-            {paragraph}
+            {title}
           </Typography>
-        ))}
-      </Grid>
-      <Grid item xs={2} />
-      <Grid item xs={5}>
-        {contentAside}
+          {children.split(/\n\s*\n\s*/).map(paragraph => (
+            <Typography
+              variant="headline"
+              color="textSecondary"
+              classes={{ headline: classes.shadow }}
+              style={{ marginTop: 8 }}
+            >
+              {paragraph}
+            </Typography>
+          ))}
+        </Grid>
+        <Grid item xs={2} />
+        <Grid item xs={5}>
+          {contentAside}
+        </Grid>
       </Grid>
     </Grid>
-  </Grid>
-);
+  );
+};
 
 const styles = (theme: Theme) => ({
   header: {
-    minHeight: window.screen.height / 1.5,
+    minHeight: `calc(${window.screen.height}px - 256px)`,
 
     padding: theme.spacing.unit * 6
   },

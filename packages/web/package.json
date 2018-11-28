@@ -69,6 +69,8 @@
     "react-dev-utils": "^6.1.1",
     "react-dom": "^16.6.0",
     "react-google-login": "^3.2.1",
+    "react-over-scroll": "^3.2.0",
+    "react-page-scroller": "^1.4.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "recompose": "^0.30.0",

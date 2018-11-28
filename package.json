@@ -5,6 +5,7 @@
     "lerna": "^3.4.3"
   },
   "dependencies": {
-    "actioncable": "^5.2.1"
+    "actioncable": "^5.2.1",
+    "react-blur": "^0.6.0"
   }
 }

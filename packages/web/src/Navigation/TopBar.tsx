@@ -1,12 +1,14 @@
 import React from "react";
 import { compose } from "recompose";
 import { withStyles, Theme } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 
 import {
   Drawer,
   AppBar,
   Toolbar,
   Typography,
+  Button,
   Divider,
   IconButton
 } from "@material-ui/core";
@@ -15,6 +17,7 @@ import MenuIcon from "@material-ui/icons/Person";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 import Menu from "./Menu";
+import { UserContext, withUser } from "@eventyr/core/Providers/UserProvider";
 
 const drawerWidth = 240;
 
@@ -27,6 +30,7 @@ interface Props {
 interface ComposedProps extends Props {
   theme: Theme;
   classes: { [key: string]: string };
+  currentUser: UserContext;
 }
 
 interface State {
@@ -47,7 +51,14 @@ class TopBar extends React.Component<ComposedProps, State> {
   };
 
   render() {
-    const { classes, theme, children, title, contentRight } = this.props;
+    const {
+      classes,
+      theme,
+      children,
+      title,
+      contentRight,
+      currentUser
+    } = this.props;
     const { open } = this.state;
 
     return (
@@ -88,7 +99,24 @@ class TopBar extends React.Component<ComposedProps, State> {
               </Typography>
             )}
           </Toolbar>
-          {contentRight}
+          <Toolbar>
+            {contentRight}
+
+            {currentUser.isLoggedIn ? (
+              <Button onClick={() => currentUser.logout()}>
+                <Typography color="textSecondary">Sign out</Typography>
+              </Button>
+            ) : (
+              <Button
+                // @ts-ignore
+                component={Link}
+                // @ts-ignore
+                to="/sign-in"
+              >
+                <Typography color="textSecondary">Sign in</Typography>
+              </Button>
+            )}
+          </Toolbar>
         </AppBar>
         <Drawer
           className={classes.drawer}
@@ -206,5 +234,6 @@ const styles = (theme: Theme) => ({
 });
 
 export default compose<ComposedProps, Props>(
+  withUser,
   withStyles(styles, { withTheme: true })
 )(TopBar);
