@@ -1,19 +1,17 @@
 const path = require("path");
+const process = require("process");
 
 const extraNodeModules = {
   "react-native": path.resolve(__dirname, "node_modules/react-native")
 };
+
 const blacklistRegexes = [
-  /[/\\]Users[/\\]amnesthesia[/\\]Code[/\\]AchievementsApp[/\\]Achievements[/\\]packages[/\\]graphql[/\\]node_modules[/\\]react-native[/\\].*/,
-  /[/\\]Users[/\\]amnesthesia[/\\]Code[/\\]AchievementsApp[/\\]Achievements[/\\]packages[/\\]core[/\\]node_modules[/\\]react-native[/\\].*/
+  new RegExp(path.resolve(__dirname, "../core/node_modules/react-native")),
+  new RegExp(path.resolve(__dirname, "../graphql/node_modules/react-native"))
 ];
 const watchFolders = [
-  path.resolve(
-    "/Users/amnesthesia/Code/AchievementsApp/Achievements/packages/graphql"
-  ),
-  path.resolve(
-    "/Users/amnesthesia/Code/AchievementsApp/Achievements/packages/core"
-  )
+  path.resolve(__dirname, "..", "packages", "graphql"),
+  path.resolve(__dirname, "..", "packages", "core")
 ];
 
 const metroVersion = require("metro/package.json").version;
